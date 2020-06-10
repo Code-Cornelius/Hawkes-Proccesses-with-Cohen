@@ -12,7 +12,7 @@ import functions_MLE
 
 from class_kernel import *
 
-# defaut kernel :
+# defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel = fct_plain, name = "flat")
 INFINITY = float("inf")
 

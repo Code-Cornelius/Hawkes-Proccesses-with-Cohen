@@ -223,10 +223,13 @@ def call_newton_raph_MLE_opt(T_t, T, w = None, silent = True ):
 
 
 
-def estimation_hp(hp, estimator, T_max, kernel_weight = kernel_plain, time_estimation=0, silent = True):
+def estimation_hp(hp, estimator, T_max, kernel_weight = kernel_plain, time_estimation=0, silent = True, **kwargs): #TODO (*) BIANCA a better way to do that?
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
     ## the flag notes if the convergence was a success. If yes, function hands in the results
+
+    #TODO (*) BIANCA a better way to do that?
+    ## the kwargs is any additionnal parameter I need to give to the dataframe.
     flag_success_convergence = False
     while not flag_success_convergence:
         intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
@@ -242,7 +245,8 @@ def estimation_hp(hp, estimator, T_max, kernel_weight = kernel_plain, time_estim
              "weight function": [kernel_weight.name],
              "value": [mu_hat[s]],
              'T_max': [T_max],
-             'true value': [hp.MU[s]]
+             'true value': [hp.MU[s]],
+             'number of guesses': [nb_of_guesses] #TODO (*) BIANCA a better way to do that?
              }), sort=True
         )
         for t in range(M):
@@ -254,7 +258,8 @@ def estimation_hp(hp, estimator, T_max, kernel_weight = kernel_plain, time_estim
                  "weight function": [kernel_weight.name],
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
-                 'true value': [hp.ALPHA[s,t]]
+                 'true value': [hp.ALPHA[s,t]],
+                 'number of guesses': [nb_of_guesses] #TODO (*) BIANCA a better way to do that?
                  }), sort=True
             )
             estimator.DF = (estimator.DF).append(pd.DataFrame(
@@ -265,7 +270,8 @@ def estimation_hp(hp, estimator, T_max, kernel_weight = kernel_plain, time_estim
                  "weight function": [kernel_weight.name],
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
-                 'true value': [hp.BETA[s,t]]
+                 'true value': [hp.BETA[s,t]],
+                 'number of guesses': [nb_of_guesses]     #TODO (*) BIANCA a better way to do that?
                  }), sort=True
             )
     return # no need to return the estimator.
@@ -279,9 +285,10 @@ def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_we
             if i%1 == 0 :
                 print("estimation {} out of {} estimations.".format( i, nb_of_guesses ))
         else :
-            if i%15 == 0 :
+            if i%20 == 0 :
                 print("estimation {} out of {} estimations.".format( i, nb_of_guesses ))
-        estimation_hp(hp, estimator, T_max, kernel_weight= kernel_weight, time_estimation= time_estimation, silent = silent)
+        # TODO (*) BIANCA a better way to do that?
+        estimation_hp(hp, estimator, T_max, kernel_weight= kernel_weight, time_estimation= time_estimation, silent = silent, nb_of_guesses = nb_of_guesses)
 
     return # no need to return the estimator.
 

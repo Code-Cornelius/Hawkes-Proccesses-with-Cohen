@@ -14,6 +14,3 @@ def multi_list_generator(size):
                 break
         ans.append(medium_list) # no copy because recreated every j
     return ans
-
-
-print(multi_list_generator(2))
