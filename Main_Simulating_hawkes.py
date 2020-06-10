@@ -113,14 +113,13 @@ if plot:
     plt.show()
 
 
+graph = Graph.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv',
+                        PARAMETERS)
+print(
+    functions_general_for_Hawkes.mean_HP(graph.estimator)
+)
 
-
-
-
-
-
-
-
+time.sleep(1000)
 
 
 
@@ -138,7 +137,7 @@ if plot:
 ################################################
 # simulation
 silent = True
-test_mode = True
+test_mode = False
 ################################################
 ################################################
 if test_mode :
@@ -218,7 +217,7 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ###################################### SIMPLE MULTI
+do = True ###################################### SIMPLE MULTI
 if do:
     estimator_multi = Estimator(estimator)
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
@@ -229,10 +228,9 @@ if do:
     estimator_multi.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index = False, header=True)
 
 
-
 #-----------------------------------------------------------------------------------------------
-do = True ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
-nb_of_times = 4
+do = False ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
+nb_of_times = 4 #50
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
     #I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.

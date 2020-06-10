@@ -14,25 +14,23 @@ class Estimator:
     def function_upon_separeted_data(self, separator, fct, name, **kwargs):
         # separator is a string
         # fct is a fct
-        # name is the name of a column.
+        # name is the name of a column where the data will lie.
         # one value is one parameter... is it enough parameter ?
         # the function does create a new column in the DF, by looking at the data in the separator and applying the function to it.
         self.DF[name] = self.DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
-    # TODO computation about the estimators. Like compute the mean stuff like that, and return the value.
 
+    def mean(self, name, separators):
+        ## name is the name of a column where the data lies.
 
-# it corresponds to S^2. This is the empirical estimator of the variance.
-def estimateur_variance(x_real, mean):
-    # x real is a vector numpy array
-    # mean a constant
-    ans = 0
-    for i in range(len(x_real)):
-        ans += x_real[i] * x_real[i]
-    ans *= 1 / len(x_real)
-    ans -= mean * mean
-    return ans
+        return self.DF[name].mean()
+
+    # it corresponds to S^2. This is the empirical estimator of the variance.
+    def estimateur_variance(self, name, ddof = 1 ):
+        ## ddof is by how much one normalize the results (usually  / n-1). This gives the unbiased estimator of the variance if the mean is known.
+        return self.DF[name].var(ddof = ddof)
+
 
 
 

@@ -26,12 +26,13 @@ class Graph:
     #### create another init that takes the same parameter, with the diff that it takes the path.
     # another constructor :
     @classmethod
-    def from_path(cls, path, nb_of_guesses, parameters):
+    def from_path(cls, path, parameters):
         # path has to be raw. with \\
         estimator = Estimator(pd.read_csv(path))
         # get the max value which is M-1
         T_max = estimator.DF["T_max"].max()
-        return cls(estimator, parameters[0], parameters[1], parameters[2], T_max, nb_of_guesses)
+        nb_of_guesses = estimator.DF['number of guesses'].max()
+        return cls(estimator, parameters, T_max, nb_of_guesses)
 
     # work-in-progress
     def histogram_of_realisations_of_estimator(self):

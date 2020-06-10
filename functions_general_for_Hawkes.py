@@ -14,3 +14,17 @@ def multi_list_generator(size):
                 break
         ans.append(medium_list)  # no copy because recreated every j
     return ans
+
+#BIANCA-HERE if we create a ESTIM-HP then we can put that function inside of the class.
+def mean_HP(estimator, separator = None):
+    ## separators is a list, of the estimators to gather together.
+    separators = ['variable', 'm', 'n']
+    if separator is not None:
+        for strg in separator: separators.append(strg)
+    intermediate_DF = estimator.DF.groupby(separators)
+    print("I \n", intermediate_DF)
+    print( "II \n",
+        intermediate_DF['value'].mean()
+    )
+    # la dernière expression recupere une série. Juste à mettre la clé genre 'alpha', 0, 0
+    return
