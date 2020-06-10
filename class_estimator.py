@@ -20,7 +20,8 @@ class Estimator:
         self.DF[name] = self.DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
-    #TODO computation about the estimators. Like compute the mean stuff like that.
+    #TODO computation about the estimators. Like compute the mean stuff like that, and return the value.
+
 
 
 

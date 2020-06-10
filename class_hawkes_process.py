@@ -36,19 +36,21 @@ def step_fun(tt, time_real):
 
 
 class Hawkes_process:
-    def __init__(self, tt, ALPHA, BETA, MU):
+    def __init__(self, tt, parameters):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
         self.tt = tt
-        self.ALPHA = ALPHA.copy() #without the copy, if I update the parameters inside HP, it also updates the parameters outside of the object.
-        self.BETA = BETA.copy()
-        self.MU = MU.copy()
+        self.parameters = parameters.copy() #without the copy, if I update the parameters inside HP, it also updates the parameters outside of the object.
+        self.ALPHA = self.parameters[1]
+        self.BETA = self.parameters[2]
+        self.NU = self.parameters[0]
+        self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
         self.M = np.shape(self.ALPHA)[1]
-        self.parameters = np.append(np.append(MU, np.ravel(ALPHA)), np.ravel(BETA)) # creates a flat vector, with ALPHA, BETA, MU just like in the matrix.
+
 
 
     def __repr__(self):
-        return 'Hawkes process, with parameters : {}, {}, {}'.format( self.ALPHA, self.BETA, self.MU)
+        return 'Hawkes process, with parameters : {}, {}, {}'.format(self.ALPHA, self.BETA, self.NU)
 
     # if plot bool  then draw the path of the simulation.
     def simulation_Hawkes_exact(self, T_max, nb_of_sim=100000,
@@ -62,21 +64,13 @@ class Hawkes_process:
         # here alpha and beta should be scalars in a matrix form.
         if np.shape(self.ALPHA) != np.shape(self.BETA):
             raise Exception("Why are the parameters not of the good shape ?")
-        # take back the dimensions of the problem :
-        else:
-            nb_of_dim = self.ALPHA.ndim
-            if nb_of_dim == 1:
-                N = 1
-                M = len(self.ALPHA)
-            else:
-                N, M = np.shape(self.ALPHA)
 
         ########################################################################################
         # empty vector for stocking the information (the times at which something happens).
-        T_t = [[] for i in range(M)]
+        T_t = [[] for i in range(self.M)]
 
         # where I evaluate the function of intensity
-        intensity = np.zeros((N, len(self.tt)))
+        intensity = np.zeros((self.M, len(self.tt)))
         last_jump = 0
         # if nb_of_sim is not None :
         counter = 0
@@ -86,8 +80,8 @@ class Hawkes_process:
 
         # For the evaluation, we stock the last lambda. Like aa, (later), each row is a m, each column is a i.
 
-        previous_lambda = np.zeros((M, M))
-        small_lambdas = np.zeros((M, M, len(self.tt)))
+        previous_lambda = np.zeros((self.M, self.M))
+        small_lambdas = np.zeros((self.M, self.M, len(self.tt)))
 
         def CDF_LEE(U, lambda_value, delta):
             if np.asscalar(U) > 1 - np.exp(- lambda_value / delta):
@@ -98,14 +92,14 @@ class Hawkes_process:
         condition = True
         while condition:
             # aa is the matrix of the a_m^i. Each column represents one i, each row a m, just the way the equations are written.
-            aa = np.zeros((M, M + 1))
+            aa = np.zeros((self.M, self.M + 1))
             ################## first loop over the m_dims.
             ################## second loop over where from.
-            for m_dims in range(M):
-                for i_where_from in range(M + 1):
+            for m_dims in range(self.M):
+                for i_where_from in range(self.M + 1):
                     U = np.random.rand(1)
                     if i_where_from == 0:
-                        aa[m_dims, i_where_from] = CDF_exp(U, self.MU[m_dims])
+                        aa[m_dims, i_where_from] = CDF_exp(U, self.NU[m_dims])
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
                     else:
@@ -113,7 +107,7 @@ class Hawkes_process:
                                                            self.BETA[i_where_from - 1, m_dims])
             next_a_value = np.amin(aa)
             # next_a_index indicates the dimension in which the jump happens.
-            if N > 1:
+            if self.M > 1:
                 next_a_index = np.unravel_index(np.argmin(aa, axis=None), aa.shape)[0]
             else:
                 next_a_index = 0
@@ -132,15 +126,15 @@ class Hawkes_process:
 
             # previous lambda gives the lambda for simulation.
             # small lambda is the lambda in every dimension for plotting.
-            for ii in range(M):
+            for ii in range(self.M):
                 previous_lambda[next_a_index, ii] = previous_lambda[next_a_index, ii] * np.exp(
                     - self.BETA[next_a_index, ii] * next_a_value) + \
                                                     self.ALPHA[next_a_index, ii]
 
             if plot_bool:
-                # TODO I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
-                for i_line in range(M):
-                    for j_column in range(M):
+                # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
+                for i_line in range(self.M):
+                    for j_column in range(self.M):
                         for i_times in range(len(self.tt)):
                             # this is when there is the jump. It means the time is exactly smaller but the next one bigger.
                             if self.tt[i_times - 1] <= last_jump and self.tt[i_times] > last_jump:
@@ -181,16 +175,16 @@ class Hawkes_process:
                     condition = False
         # will be an empty list if not for plot purpose.
         if plot_bool:
-            for i_line in range(M):
+            for i_line in range(self.M):
                 for i_times in range(len(self.tt)):
-                    intensity[i_line, i_times] = self.MU[i_line]
-                    for j_from in range(M):
+                    intensity[i_line, i_times] = self.NU[i_line]
+                    for j_from in range(self.M):
                         intensity[i_line, i_times] += small_lambdas[j_from, i_line, i_times]
         # tricks, not giving back a list of list but a list of numpy array.
         # T_t = [np.array(aa) for aa in T_t]
         return intensity, T_t
 
-    # TODO this guy shouldn't be here... one has to move it to graphs.
+    # BIANCA-HERE this guy shouldn't be here... one has to move it to graphs.
     def plot_hawkes(self, time_real, intensity, name=None):
         # I need alpha and beta in order for me to plot them.
         shape_intensity = np.shape(intensity)
@@ -240,7 +234,7 @@ class Hawkes_process:
         plt.axis('off')
 
         plt.subplot2grid((21, 21), (19, 16), rowspan=1, colspan=5)
-        plt.text(0.5, 0, "$\\mu$" + str(self.MU), fontsize=11, color='black')
+        plt.text(0.5, 0, "$\\mu$" + str(self.NU), fontsize=11, color='black')
         plt.axis('off')
 
         if name is not None:
@@ -254,178 +248,14 @@ class Hawkes_process:
 
     def update_coef(self, time, fct, **kwargs):
         # fct here is a list of lists of lists; because we want to change each coeff indep.
-        # for MU, the functions are on the first column.
+        # for NU, the functions are on the first column.
         for i in range(self.M):
-            self.MU[i] = (fct[2][i][0])(time, **kwargs)
+            self.NU[i] = (fct[0][i])(time, **kwargs)
             for j in range(self.M):
-                self.ALPHA[i, j] = (fct[0][i][j])(time, **kwargs)
-                self.BETA[i, j] =  (fct[1][i][j])(time, **kwargs)
+                self.ALPHA[i, j] = (fct[1][i][j])(time, **kwargs)
+                self.BETA[i, j] =  (fct[2][i][j])(time, **kwargs)
 
 
         return
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# function estimation over time:
-def TO_DELETE_estimation_hawkes_parameter_over_time(T_max, function_weight, nb_of_guesses=1, silent=False):
-    _, M = np.shape(self.ALPHA)
-    # TODO FUNCTION WEIGHT AS A LIST FOR COMPARING RESULTS
-
-    # T is where we evaluate the estimation
-    T = np.linspace(0.1 * T_max, 0.9 * T_max, 25)
-    estimators = pd.DataFrame(columns=['variable', 'n', 'm', 'time estimation', 'weight function', 'value'])
-
-    for i_weights in range(len(function_weight)):
-        if not silent:
-            print(" function weight : {} out of {}".format(i_weights+1, len(function_weight)))
-
-        for i in range(len(T)):
-            if not silent:
-                print(" time : {} out of {}".format(i+1, len(T)))
-            # TODO CLEAN HOW TO CHANGE THE ALPHA BETA MU, HERE I JUST ADD A SMALL STEP WHERE I CHANGE THE INPUTS,
-            #  it would be better to ad something at the top of the function.
-            # For example patterns of growth for the parameters
-
-            new_ALPHA = self.ALPHA * (T_max - T[i]) / T_max + self.ALPHA * 2 * T[i] / T_max
-            new_BETA = self.BETA * (T_max - T[i]) / T_max + self.BETA * 2 * T[i] / T_max
-            new_MU = self.MU * (T_max - T[i]) / T_max + self.MU / 2 * T[i] / T_max
-
-            #TODO PROBLEM CA CEST DANS LE PROCESS, IL FATU CHANGER LES PARAMS
-
-            ALPHA_HAT, BETA_HAT, MU_HAT = self.multi_estimations_at_one_time(T_max, T[i], function_weight[i_weights], nb_of_guesses)
-            # TODO BIANCA OVER HERE
-            for s in range(M):
-                for t in range(M):
-                    estimators = estimators.append(pd.DataFrame(
-                        {"time estimation": T[i],
-                         "variable": "alpha",
-                         "n": s,
-                         "m": t,
-                         "weight function": str(function_weight[i_weights].name),
-                         "value": ALPHA_HAT[s, t]
-                         }), sort=True
-                    )
-                for t in range(M):
-                    estimators = estimators.append(pd.DataFrame(
-                        {"time estimation": T[i],
-                         "variable": "beta",
-                         "n": s,
-                         "m": t,
-                         "weight function": str(function_weight[i_weights].name),
-                         "value": BETA_HAT[s, t]
-                         }), sort=True
-                    )
-                    estimators = estimators.append(pd.DataFrame(
-                        {"time estimation": T[i],
-                         "variable": "nu",
-                         "n": s,
-                         "m": 0,
-                         "weight function": str(function_weight[i_weights].name),
-                         "value": MU_HAT[s]
-                         }), sort=True
-                    )
-    # isolating estimation of each type
-    estim_alpha = estimators[estimators['variable'] == "alpha"]
-    estim_beta = estimators[estimators['variable'] == "beta"]
-    estim_mu = estimators[estimators['variable'] == "nu"]
-
-    plot = sns.relplot(data=estim_alpha, x="time estimation", y="value",
-                       hue='weight function',  # style="weight function",
-                       # markers=True, dashes=False,
-                       kind="line", sort=True, ci=None)
-    title = " Evolution of the estimation of the estimator of the parameter $\\alpha$, {} estimations.".format(
-        nb_of_guesses)
-    plot.fig.suptitle(title, verticalalignment='top', fontsize=15)
-    sous_text = " Parameters : \n \
-    ALPHA {}, \n     BETA {}, \n     NU {}".format(self.ALPHA, self.BETA, self.MU)
-    plot.fig.text(0, 0.1, sous_text, fontsize=10)
-    plt.savefig('estimation_alpha.png', dpi=800)
-
-    plot = sns.relplot(data=estim_beta, x="time estimation", y="value",
-                       hue='weight function',  # style="weight function",
-                       # markers=True, dashes=False,
-                       kind="line", sort=True, ci=None)
-    title = " Evolution of the estimation of the estimator of the parameter $\\beta$, {} estimations.".format(
-        nb_of_guesses)
-    plot.fig.suptitle(title, verticalalignment='top', fontsize=15)
-    sous_text = " Parameters : \n \
-    ALPHA {}, \n     BETA {}, \n     NU {}".format(self.ALPHA, self.BETA, self.MU)
-    plot.fig.text(0, 0.1, sous_text, fontsize=10)
-    plt.savefig('estimation_beta.png', dpi=800)
-
-    plot = sns.relplot(data=estim_mu, x="time estimation", y="value",
-                       hue='weight function',  # style="weight function",
-                       # markers=True, dashes=False,
-                       kind="line", sort=True, ci=None)
-    title = " Evolution of the estimation of the estimator of the parameter $\\mu$, {} estimations.".format(
-        nb_of_guesses)
-    plot.fig.suptitle(title, verticalalignment='top', fontsize=15)
-    sous_text = " Parameters : \n \
-    ALPHA {}, \n     BETA {}, \n     NU {}".format(self.ALPHA, self.BETA, self.MU)
-    plot.fig.text(0, 0.1, sous_text, fontsize=10)
-    plt.savefig('estimation_nu.png', dpi=800)
-    return
-
 
 

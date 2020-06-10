@@ -127,7 +127,7 @@ def R_dash(m, n, k, T_t, BETA, end=-10):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if not ((m, n, k - 1) in previous_Rs_dash):
         entries = compute_R_dash(m, n, T_t, BETA, end=end)
-        # TODO OPTIMIZE THIS
+        # optimize-speed
         for i in range(len(entries)): previous_Rs_dash[(m, n, i)] = entries[i]
     return previous_Rs_dash[(m, n, k - 1)]
 
@@ -139,7 +139,7 @@ def R_dash_dash(m, n, k, T_t, BETA, end=-10):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if not ((m, n, k - 1) in previous_Rs_dash_dash):
         entries = compute_R_dash_dash(m, n, T_t, BETA, end=end)
-        # TODO OPTIMIZE THIS
+        # optimize-speed
         for i in range(len(entries)): previous_Rs_dash_dash[(m, n, i)] = entries[i]
     return previous_Rs_dash_dash[(m, n, k - 1)]
 
