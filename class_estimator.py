@@ -23,14 +23,17 @@ class Estimator:
 
     def mean(self, name, separators):
         ## name is the name of a column where the data lies.
+        return self.DF.groupby(separators)[name].mean()
 
-        return self.DF[name].mean()
 
     # it corresponds to S^2. This is the empirical estimator of the variance.
     def estimateur_variance(self, name, ddof = 1 ):
         ## ddof is by how much one normalize the results (usually  / n-1). This gives the unbiased estimator of the variance if the mean is known.
         return self.DF[name].var(ddof = ddof)
 
+    def to_csv(self, path, **kwargs):
+        self.DF.to_csv(path, **kwargs)
+        return
 
 
 

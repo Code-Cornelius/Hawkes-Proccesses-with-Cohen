@@ -113,14 +113,12 @@ if plot:
     plt.show()
 
 
-graph = Graph.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv',
-                        PARAMETERS)
-print(
-    functions_general_for_Hawkes.mean_HP(graph.estimator)
-)
-
-time.sleep(1000)
-
+# graph = Graph.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_test.csv',
+#                         PARAMETERS)
+# print(graph.estimator)
+# print(
+#     functions_general_for_Hawkes.mean_HP(graph.estimator)
+# )
 
 
 
@@ -137,7 +135,7 @@ time.sleep(1000)
 ################################################
 # simulation
 silent = True
-test_mode = False
+test_mode = True
 ################################################
 ################################################
 if test_mode :
@@ -223,9 +221,8 @@ if do:
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
     GRAPH_multi = Graph(estimator_multi, the_update_functions, T, nb_of_guesses)
     GRAPH_multi.histogram_of_realisations_of_estimator()
-    #BIANCA-HERE would it be possible to override the function to_csv inside estimator, in order for it to call to_csv from the DF? You would use kwargs then?
 
-    estimator_multi.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index = False, header=True)
+    estimator_multi.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index = False, header=True)
 
 
 #-----------------------------------------------------------------------------------------------
@@ -262,9 +259,6 @@ if do:
     #                  9, 5, column_for_multi_plot_name='weight function')
 # I might have changed the parameters here in the code, so I come back to original version.
 HAWKSY = Hawkes_process(tt, PARAMETERS)
-
-
-
 
 
 

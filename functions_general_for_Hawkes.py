@@ -21,10 +21,17 @@ def mean_HP(estimator, separator = None):
     separators = ['variable', 'm', 'n']
     if separator is not None:
         for strg in separator: separators.append(strg)
-    intermediate_DF = estimator.DF.groupby(separators)
-    print("I \n", intermediate_DF)
-    print( "II \n",
-        intermediate_DF['value'].mean()
-    )
-    # la dernière expression recupere une série. Juste à mettre la clé genre 'alpha', 0, 0
-    return
+    dict_of_means = estimator.DF.groupby(separators)['value'].mean()
+    key_parameters = ['nu', 'alpha', 'beta']
+    ans_N, ans_A, ans_B = [], [], []
+    M = estimator.DF["m"].max() + 1
+    for i in range(M):
+        ans_N.append(dict_of_means[('nu', i, 0)])
+        for j in range(M):
+            if not j :
+                ans_A.append([])
+                ans_B.append([])
+            ans_A[i].append(dict_of_means[('alpha', i, j)])
+            ans_B[i].append(dict_of_means[('beta', i, j)])
+
+    return [ans_N, ans_A, ans_B]
