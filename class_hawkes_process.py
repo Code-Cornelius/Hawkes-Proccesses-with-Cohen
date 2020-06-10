@@ -50,7 +50,7 @@ class Hawkes_process:
 
 
     def __repr__(self):
-        return 'Hawkes process, with parameters : {}, {}, {}'.format(self.ALPHA, self.BETA, self.NU)
+        return 'Hawkes process, with parameters : {}, {}, {}'.format(self.NU, self.ALPHA, self.BETA)
 
     # if plot bool  then draw the path of the simulation.
     def simulation_Hawkes_exact(self, T_max, nb_of_sim=100000,
