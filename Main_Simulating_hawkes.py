@@ -18,31 +18,10 @@ from class_estimator import *
 from class_graph import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
-
-# a is already divided by t_max, so just put of how much you want to grow
-def linear_growth(time, a, b, T_max):  # ax + b
-    return a / T_max * time + b
+import functions_fct_evol_parameters
 
 
-# when jump should be a %
-def one_jump(time, when_jump, original_value, new_value, T_max):
-    return original_value + new_value * np.heaviside(time - T_max * when_jump, 1)
 
-
-# when jump should be a %
-def moutain_jump(time, when_jump, a, b, base_value, T_max):
-    if time < when_jump * T_max:
-        return linear_growth(time, a, b, T_max)
-    else:
-        return base_value
-
-
-#
-def periodic_stop(time, T_max, a, base_value): # need longer realisation like 80 mini_T
-    if time / T_max * 2 * cmath.pi * 2.25 < 2 * cmath.pi * 1.75:
-        return base_value + a*cmath.cos(time / T_max * 2 * cmath.pi * 2.25) * cmath.cos(time / T_max * 2 * cmath.pi * 2.25)
-    else:
-        return base_value
 
 
 ##########################################
@@ -176,33 +155,33 @@ case = 1
 #########
 if case == 1:
     for i in range(HAWKSY.M):
-        the_update_functions[0][i] = lambda time, T_max: linear_growth(time, 0.1, MU[i], T_max)
+        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 0.1, MU[i], T_max)
         for j in range(HAWKSY.M):
-            the_update_functions[1][i][j] = lambda time, T_max: linear_growth(time, 2, ALPHA[i,j], T_max)
-            the_update_functions[2][i][j] = lambda time, T_max: linear_growth(time, 3, BETA[i,j], T_max)
+            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 2, ALPHA[i,j], T_max)
+            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i,j], T_max)
 
 elif case == 2:
     for i in range(HAWKSY.M):
-        the_update_functions[0][i] = lambda time, T_max: one_jump(time, 0.1, MU[i], 0, T_max)
+        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.1, MU[i], 0, T_max)
         for j in range(HAWKSY.M):
-            the_update_functions[1][i][j] = lambda time, T_max: one_jump(time, 0.7, ALPHA[i, j], ALPHA[i, j], T_max)
-            the_update_functions[2][i][j] = lambda time, T_max: one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max)
+            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.7, ALPHA[i, j], ALPHA[i, j], T_max)
+            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max)
 
 elif case == 3:
     for i in range(HAWKSY.M):
-        the_update_functions[0][i] = lambda time, T_max: moutain_jump(time, 0.7, 0, MU[i], MU[i] * 1.5, T_max)
+        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.7, 0, MU[i], MU[i] * 1.5, T_max)
         for j in range(HAWKSY.M):
-            the_update_functions[1][i][j] = lambda time, T_max: moutain_jump(time, 0.4, 1.4, ALPHA[i, j], ALPHA[i, j] / 2,
+            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.4, 1.4, ALPHA[i, j], ALPHA[i, j] / 2,
                                                                      T_max)
-            the_update_functions[2][i][j] = lambda time, T_max: moutain_jump(time, 0.7, 1.8, BETA[i, j], BETA[i, j] / 1.5,
+            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.7, 1.8, BETA[i, j], BETA[i, j] / 1.5,
                                                                      T_max)
 
 elif case == 4:
     for i in range(HAWKSY.M):
-        the_update_functions[0][i] = lambda time, T_max: periodic_stop(time, T_max, MU[i], 0.2)
+        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, MU[i], 0.2)
         for j in range(HAWKSY.M):
-            the_update_functions[1][i][j] = lambda time, T_max: periodic_stop(time, T_max, ALPHA[i, j], 1)
-            the_update_functions[2][i][j] = lambda time, T_max: periodic_stop(time, T_max, BETA[i, j], 2.5)
+            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, ALPHA[i, j], 1)
+            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5)
 
 
 #######################################################################
