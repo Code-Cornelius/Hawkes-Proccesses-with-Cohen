@@ -28,19 +28,19 @@ def compute_R(m, n, k, T_t, BETA, end=-10):
     if k < 1:
         raise Exception("YOu moRoN")
     if k == 1:
-        if m == n :
+        if m == n:
             return 0
-        else : # end exists and has been given.
+        else:  # end exists and has been given.
             i = 0
             while i < len(T_t[n]) and T_t[n][i] < T_t[m][0]:
                 constant += np.exp(-BETA[m, n] * (T_t[m][0] - T_t[n][i]))
-                i+=1
+                i += 1
             return constant
     # here I compute the value.
     first_coeff = np.exp(-BETA[m, n] * (T_t[m][k - 1] - T_t[m][k - 2]))
 
     if m == n:
-        return first_coeff * ( 1 + R(m, n, k - 1, T_t, BETA) ) #since m = n you don't care about end.
+        return first_coeff * (1 + R(m, n, k - 1, T_t, BETA))  # since m = n you don't care about end.
 
     # if = -10, it means it s the first time I compute R for that m and n.
     if end == -10:
@@ -54,8 +54,6 @@ def compute_R(m, n, k, T_t, BETA, end=-10):
     if end == -1:
         return 0
 
-
-
     # thats the sum on the right. We are above the inequalities so we only check for the lower bound.
     for i in range(end, -1, -1):
         if T_t[m][k - 2] <= T_t[n][i]:
@@ -68,7 +66,7 @@ def compute_R(m, n, k, T_t, BETA, end=-10):
 
 # R, dont forget to put k as k+1 in the loops
 # closed form of R
-def compute_R2(m, n, k, T_t, BETA, end = 10):
+def compute_R2(m, n, k, T_t, BETA, end=10):
     # M AND N STARTS AT 0 AND FINISH AT M-1.
     if k < 1:
         raise Exception("YOu moRoN")
@@ -114,7 +112,7 @@ def R(m, n, k, T_t, BETA, end=-10):
     # here the k go from 1 to the number jumps included
     if not ((m, n, k) in previous_Rs):
         previous_Rs[(m, n, k)] = compute_R(m, n, k, T_t, BETA, end=end)
-        #else :
+        # else :
         #    previous_Rs[(m, n, k)] = compute_R2(m, n, k, T_t, BETA, end=end)
     return previous_Rs[(m, n, k)]
 
@@ -164,7 +162,7 @@ def denomR(m, k, T_t, ALPHA, BETA, MU):
 def del_L_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = - T + np.sum(w[m] * np.reciprocal(vector_denomR) )# in denomR the i is already shifted.
+    ans = - T + np.sum(w[m] * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
@@ -181,7 +179,7 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    #my_time = time.time()
+    # my_time = time.time()
     _, M = np.shape(ALPHA)
 
     my_jumps = T - np.array(T_t[n])
@@ -190,9 +188,10 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    ANS3 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
+    ANS3 = ALPHA[m, n] * np.sum(
+        w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
 
-    #time_computational(my_time, time.time(), title="beta del")
+    # time_computational(my_time, time.time(), title="beta del")
     return ALPHA[m, n] / (BETA[m, n] * BETA[m, n]) * ANS1 - ALPHA[m, n] / (BETA[m, n]) * ANS2 - ANS3
 
 
@@ -226,15 +225,15 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 # second derivatives
 def del_L_mu_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    #my_time = time.time()
+    # my_time = time.time()
     _, M = np.shape(ALPHA)
 
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = -  np.sum(w[m] * np.reciprocal(vector_denomR*vector_denomR)  )  # in denomR the i is already shifted.
+    ans = -  np.sum(w[m] * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
-def del_L_mu_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w):
+def del_L_mu_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
@@ -242,7 +241,8 @@ def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = -  np.sum(w[m] * vector_R * vector_R * np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ans = -  np.sum(w[m] * vector_R * vector_R * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
@@ -251,11 +251,12 @@ def del_L_alpha_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = -  np.sum(w[m] * vector_R * vector_R_dash * np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ans = -  np.sum(w[m] * vector_R * vector_R_dash * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
-def del_L_alpha_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w):
+def del_L_alpha_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
@@ -263,11 +264,12 @@ def del_L_alpha_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = -  np.sum(w[m] * vector_R * np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ans = -  np.sum(
+        w[m] * vector_R * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
-def del_L_alpha_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w):
+def del_L_alpha_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
@@ -275,11 +277,12 @@ def del_L_beta_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ans = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ans = ALPHA[m, n] * np.sum(
+        w[m] * vector_R_dash * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
-def del_L_beta_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w):
+def del_L_beta_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
@@ -289,14 +292,15 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
     ANS1 *= -1 / BETA[m, n]
-    ANS2 = np.sum( w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
+    ANS2 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
     ANS2 *= 1 / BETA[m, n] / BETA[m, n]
 
     vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ANS3 = - np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR) )  # in denomR the i is already shifted.
-    ANS4 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R *  np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ANS3 = - np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
+    ANS4 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS1 + ANS2 + ANS3 + ANS4
 
 
@@ -305,12 +309,14 @@ def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
     vector_R = np.array([R(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))]) # in denomR the i is already shifted.
-    ANS = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R *  np.reciprocal(vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    vector_denomR = np.array(
+        [denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
+    ANS = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS
 
 
-def del_L_beta_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w):
+def del_L_beta_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
@@ -322,25 +328,27 @@ def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS1 *= - 2 * ALPHA[m, n] / (B * B * B)
     ANS2 = np.sum(w[n] * (my_jumps * np.exp(- B * (my_jumps))))
     ANS2 *= 2 * ALPHA[m, n] / (B * B)
-    ANS3 = np.sum(w[n] *(my_jumps * my_jumps * np.exp(- B * (my_jumps))))
+    ANS3 = np.sum(w[n] * (my_jumps * my_jumps * np.exp(- B * (my_jumps))))
     ANS3 *= ALPHA[m, n] / (B)
-
 
     vector_R_dash_dash = np.array([R_dash_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
 
-    ANS4 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash_dash *  np.reciprocal( vector_denomR) )  # in denomR the i is already shifted.
-    ANS4 -= ALPHA[m, n] * ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R_dash *  np.reciprocal( vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ANS4 = ALPHA[m, n] * np.sum(
+        w[m] * vector_R_dash_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
+    ANS4 -= ALPHA[m, n] * ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R_dash * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS1 + ANS2 + ANS3 + ANS4
 
 
-def del_L_beta_beta_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T,w ):
+def del_L_beta_beta_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R_dash_dash = np.array([R_dash(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    ANS = - ALPHA[m, n] * ALPHA[m, n_dash] * np.sum(w[m] * vector_R_dash * vector_R_dash_dash *  np.reciprocal( vector_denomR * vector_denomR) )  # in denomR the i is already shifted.
+    ANS = - ALPHA[m, n] * ALPHA[m, n_dash] * np.sum(w[m] * vector_R_dash * vector_R_dash_dash * np.reciprocal(
+        vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS
 
 
@@ -507,13 +515,13 @@ def first_derivative(T_t, ALPHA, BETA, MU, T, w):
     B = np.array([])
     C = np.array([])
     for i in range(M):
-        A = np.append(A, del_L_mu(i, 0, 0, T_t, ALPHA, BETA, MU, T,w))
+        A = np.append(A, del_L_mu(i, 0, 0, T_t, ALPHA, BETA, MU, T, w))
     for i in range(M):
         for j in range(M):
-            B = np.append(B, del_L_alpha(i, j, 0, T_t, ALPHA, BETA, MU, T,w))
+            B = np.append(B, del_L_alpha(i, j, 0, T_t, ALPHA, BETA, MU, T, w))
     for i in range(M):
         for j in range(M):
-            C = np.append(C, del_L_beta(i, j, 0, T_t, ALPHA, BETA, MU, T,w))
+            C = np.append(C, del_L_beta(i, j, 0, T_t, ALPHA, BETA, MU, T, w))
 
     # return del Mu, del ALPHA, del BETA
     return np.append(np.append(A, B), C)
@@ -529,20 +537,22 @@ def second_derivative(T_t, ALPHA, BETA, MU, T, w):
     # Hessian are symmetric
     diag_matrices = np.zeros(M)
     for i in range(M):
-        diag_matrices[i] = del_L_mu_mu(i, i, 0, T_t, ALPHA, BETA, MU, T,w)
+        diag_matrices[i] = del_L_mu_mu(i, i, 0, T_t, ALPHA, BETA, MU, T, w)
 
     A = np.diag(diag_matrices)
-    B = special_matrix_creator_rect(M, del_L_alpha_mu, del_L_alpha_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w = w)
-    C = special_matrix_creator_rect(M, del_L_beta_mu, del_L_beta_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w = w)
+    B = special_matrix_creator_rect(M, del_L_alpha_mu, del_L_alpha_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
+                                    w=w)
+    C = special_matrix_creator_rect(M, del_L_beta_mu, del_L_beta_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
+                                    w=w)
     D = np.transpose(B)
     E = special_matrix_creator_square(M, del_L_alpha_alpha, del_L_alpha_alpha_dif, del_L_alpha_alpha_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w = w)
+                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
     F = special_matrix_creator_square(M, del_L_beta_alpha, del_L_beta_alpha_dif, del_L_beta_alpha_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w = w)
+                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
     G = np.transpose(C)
     H = np.transpose(F)
     I = special_matrix_creator_square(M, del_L_beta_beta, del_L_beta_beta_dif, del_L_beta_beta_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w = w)
+                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
     ans = np.zeros((M + 2 * M ** 2, M + 2 * M ** 2))
     lim1 = M - 1
     lim2 = M ** 2 + M - 1

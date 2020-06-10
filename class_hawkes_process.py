@@ -13,8 +13,9 @@ import functions_MLE
 from class_kernel import *
 
 # defaut kernel, useful for default argument.
-kernel_plain = Kernel(fct_kernel = fct_plain, name = "flat")
+kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
 INFINITY = float("inf")
+
 
 def CDF_exp(x, LAMBDA):
     return - np.log(1 - x) / LAMBDA
@@ -33,28 +34,25 @@ def step_fun(tt, time_real):
     return y
 
 
-
-
 class Hawkes_process:
     def __init__(self, tt, parameters):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
         self.tt = tt
-        self.parameters = parameters.copy() #without the copy, if I update the parameters inside HP, it also updates the parameters outside of the object.
+        self.parameters = parameters.copy()  # without the copy, if I update the parameters inside HP, it also updates the parameters outside of the object.
         self.ALPHA = self.parameters[1]
         self.BETA = self.parameters[2]
         self.NU = self.parameters[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
         self.M = np.shape(self.ALPHA)[1]
 
-
-
     def __repr__(self):
         return 'Hawkes process, with parameters : {}, {}, {}'.format(self.NU, self.ALPHA, self.BETA)
 
     # if plot bool  then draw the path of the simulation.
     def simulation_Hawkes_exact(self, T_max, nb_of_sim=100000,
-                                plot_bool=True, silent=True): #100 000 is just a safe guard in order to not stuck the computer.
+                                plot_bool=True,
+                                silent=True):  # 100 000 is just a safe guard in order to not stuck the computer.
         if not silent: print("Start of the simulation of the Hawkes process.")
         ########################################################################################
         # alpha and beta same shape. Mu a column vector with the initial intensities.
@@ -67,7 +65,7 @@ class Hawkes_process:
 
         ########################################################################################
         # empty vector for stocking the information (the times at which something happens).
-        T_t = [[] for i in range(self.M)]
+        T_t = [[] for _ in range(self.M)]
 
         # where I evaluate the function of intensity
         intensity = np.zeros((self.M, len(self.tt)))
@@ -245,7 +243,6 @@ class Hawkes_process:
 
         return
 
-
     def update_coef(self, time, fct, **kwargs):
         # fct here is a list of lists of lists; because we want to change each coeff indep.
         # for NU, the functions are on the first column.
@@ -253,9 +250,6 @@ class Hawkes_process:
             self.NU[i] = (fct[0][i])(time, **kwargs)
             for j in range(self.M):
                 self.ALPHA[i, j] = (fct[1][i][j])(time, **kwargs)
-                self.BETA[i, j] =  (fct[2][i][j])(time, **kwargs)
-
+                self.BETA[i, j] = (fct[2][i][j])(time, **kwargs)
 
         return
-
-

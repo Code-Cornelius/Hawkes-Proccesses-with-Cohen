@@ -20,9 +20,7 @@ class Estimator:
         self.DF[name] = self.DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
-    #TODO computation about the estimators. Like compute the mean stuff like that, and return the value.
-
-
+    # TODO computation about the estimators. Like compute the mean stuff like that, and return the value.
 
 
 # it corresponds to S^2. This is the empirical estimator of the variance.
