@@ -215,7 +215,7 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = True ###################################### SIMPLE MULTI
+do = False ###################################### SIMPLE MULTI
 if do:
     estimator_multi = Estimator(estimator)
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
@@ -262,8 +262,6 @@ HAWKSY = Hawkes_process(tt, PARAMETERS)
 
 
 
-
-
 #-----------------------------------------------------------------------------------------------
 do = False ###################################### MSE
 if do :
@@ -290,24 +288,11 @@ if do :
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 #-----------------------------------------------------------------------------------------------
-do = False ######################################
+do = True ######################################
 if do :
-    estimator_CPA = Estimator(estimator)
-
+    functions_change_point_analysis.change_point_plot(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
+                      width = 5, min_size = 5, n_bkps=1, model="l2", column_for_multi_plot_name= 'weight function')
 
 
 
