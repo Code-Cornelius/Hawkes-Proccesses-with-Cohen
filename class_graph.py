@@ -1,13 +1,29 @@
+##### normal libraries
 import numpy as np
+import statistics as stat
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
+import scipy.stats
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time
 
+
+##### my libraries
 import plot_functions
-import useful_functions
+import decorators_functions
+import classical_functions
+import recurrent_functions
 
+##### other files
+import functions_MLE
+import class_kernel
+from class_hawkes_process import *
 from class_estimator import *
 import functions_general_for_Hawkes
+import functions_change_point_analysis
+import functions_fct_evol_parameters
+
 
 
 # batch_estimation is one dataframe with the estimators.
@@ -178,11 +194,11 @@ class Graph:
                 estim_nu.DF["true value"].nunique() != 1:
             raise (
                 "Error because you are estimating different parameters, but still compounding the MSE error together.")
-        estim_alpha.function_upon_separeted_data("value", useful_functions.compute_MSE, "compute_MSE",
+        estim_alpha.function_upon_separeted_data("value", recurrent_functions.compute_MSE, "compute_MSE",
                                                  true_parameter=estim_alpha.DF["true value"].mean())
-        estim_beta.function_upon_separeted_data("value", useful_functions.compute_MSE, "compute_MSE",
+        estim_beta.function_upon_separeted_data("value", recurrent_functions.compute_MSE, "compute_MSE",
                                                 true_parameter=estim_beta.DF["true value"].mean())
-        estim_nu.function_upon_separeted_data("value", useful_functions.compute_MSE, "compute_MSE",
+        estim_nu.function_upon_separeted_data("value", recurrent_functions.compute_MSE, "compute_MSE",
                                               true_parameter=estim_nu.DF["true value"].mean())
 
         DF_MSE = estim_nu.DF.groupby(['T_max'])["compute_MSE"].sum()

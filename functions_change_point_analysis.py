@@ -2,27 +2,33 @@
 # https://github.com/deepcharles/ruptures
 
 
+##### normal libraries
 import numpy as np
 import statistics as stat
 import pandas as pd
-
-import functions_MLE
+import seaborn as sns
+from matplotlib import pyplot as plt
 import scipy.stats
-
-from generic_functions import *
-import plot_functions
-from useful_functions import *
-
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time
+import ruptures as rpt
 
+
+##### my libraries
+import plot_functions
+import decorators_functions
+import classical_functions
+import recurrent_functions
+
+##### other files
+import functions_MLE
 import class_kernel
-
 from class_hawkes_process import *
 from class_estimator import *
 from class_graph import *
-
-import ruptures as rpt
 import functions_general_for_Hawkes
+import functions_fct_evol_parameters
+
 
 
 def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_multi_plot_name=None):

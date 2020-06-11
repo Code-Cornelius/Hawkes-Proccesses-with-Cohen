@@ -1,15 +1,32 @@
+##### normal libraries
 import numpy as np
 import statistics as stat
-import matplotlib.pyplot as plt
-import networkx as nx
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+import scipy.stats
 from inspect import signature
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time
 
-# from sys import path
-# path.append("C:\Users\nie_k\Desktop\travail\EPFL 3eme ANNEE")
-from generic_functions import *
-from plot_functions import *
-from useful_functions import *
-from functions_networkx import *
+
+##### my libraries
+import plot_functions
+import decorators_functions
+import classical_functions
+import recurrent_functions
+
+##### other files
+import functions_MLE
+import class_kernel
+from class_hawkes_process import *
+from class_estimator import *
+from class_graph import *
+import functions_general_for_Hawkes
+import functions_change_point_analysis
+import functions_fct_evol_parameters
+
+
 
 
 def compute_denomR(m, i, T_t, ALPHA, BETA, MU):

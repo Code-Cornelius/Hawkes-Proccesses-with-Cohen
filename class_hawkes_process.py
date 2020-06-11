@@ -1,16 +1,31 @@
+##### normal libraries
 import numpy as np
+import statistics as stat
 import pandas as pd
 import seaborn as sns
-import statistics as stat
 from matplotlib import pyplot as plt
-
-import plot_functions
-from generic_functions import *
-from useful_functions import *
+import scipy.stats
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
 import time
-import functions_MLE
 
+
+##### my libraries
+import plot_functions
+import decorators_functions
+import classical_functions
+import recurrent_functions
+
+##### other files
+import functions_MLE
 from class_kernel import *
+from class_hawkes_process import *
+from class_estimator import *
+from class_graph import *
+import functions_general_for_Hawkes
+import functions_change_point_analysis
+import functions_fct_evol_parameters
+
+
 
 # defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
@@ -29,7 +44,7 @@ def step_fun(tt, time_real):
     # At every index where the jumps occurs and onwards, +1 to the stepfunction.
     y = np.zeros(len(tt))
     for i in range(len(tt)):
-        jumps = find_smallest_rank_leq_to_K(time_real, tt[i])
+        jumps = classical_functions.find_smallest_rank_leq_to_K(time_real, tt[i])
         y[i] = jumps
     return y
 
