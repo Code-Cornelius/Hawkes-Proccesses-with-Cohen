@@ -140,20 +140,20 @@ if plot:
 ################################################
 # simulation
 silent = True
-test_mode = True
+test_mode = False
 ################################################
 ################################################
 if test_mode :
     nb_of_guesses, T = 3, 40 * mini_T
 else:
-    nb_of_guesses, T = 50, 120 * mini_T
+    nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 ################################################
 ################################################
 the_update_functions = functions_general_for_Hawkes.multi_list_generator(HAWKSY.M)
 # choice of case study
 #########
-case = 1
+case = 3
 #########
 if case == 1:
     for i in range(HAWKSY.M):
@@ -171,12 +171,12 @@ elif case == 2:
 
 elif case == 3:
     for i in range(HAWKSY.M):
-        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.7, 0, MU[i], MU[i] * 1.5, T_max)
+        the_update_functions[0][i] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump = 0.7, a = 0, b = MU[i], base_value =  MU[i] * 1.5, T_max = T_max)
         for j in range(HAWKSY.M):
-            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.4, 1.4, ALPHA[i, j], ALPHA[i, j] / 2,
-                                                                     T_max)
-            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, 0.7, 1.8, BETA[i, j], BETA[i, j] / 1.5,
-                                                                     T_max)
+            the_update_functions[1][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump = 0.4, a =1.4, b =ALPHA[i, j], base_value = ALPHA[i, j] / 2,
+                                                                     T_max =T_max)
+            the_update_functions[2][i][j] = lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump = 0.7, a = 1.8, b =BETA[i, j], base_value = BETA[i, j] / 1.5,
+                                                                     T_max =T_max)
 
 elif case == 4:
     for i in range(HAWKSY.M):
@@ -231,8 +231,8 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
-nb_of_times = 4 #50
+do = True ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
+nb_of_times = 50
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
     #I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
@@ -240,7 +240,9 @@ if do:
 
     # Here I change the parameters over time.
     estimator_kernel = Estimator(estimator)
-    list_of_kernels = [ Kernel(fct_truncnorm, name = "high truncnorm", a = -350, b = 350, sigma = 300)]
+    list_of_kernels = [ Kernel(fct_truncnorm, name = "my truncnorm", a = -350, b = 350, sigma = 300),
+                        Kernel(fct_truncnorm, name = "large truncnorm", a = -500, b = 500, sigma = 300),
+                        Kernel(fct_truncnorm, name = "large, high truncnorm", a = -500, b = 500, sigma = 450)]
     Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
     count_kernels = 0 ; count_times = 0
@@ -260,8 +262,6 @@ if do:
     estimator_kernel.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                               header=True)
 
-    #functions_change_point_analysis.hange_point_plot('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\RESEARCH COHEN\\estimators_kernel_sin_long.csv',
-    #                  9, 5, column_for_multi_plot_name='weight function')
 # I might have changed the parameters here in the code, so I come back to original version.
 HAWKSY = Hawkes_process(tt, PARAMETERS)
 
@@ -294,9 +294,9 @@ if do :
 
 
 #-----------------------------------------------------------------------------------------------
-do = True ######################################
+do = False ######################################
 if do :
-    functions_change_point_analysis.change_point_plot(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
+    functions_change_point_analysis.change_point_plot(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv',
                       width = 5, min_size = 5, n_bkps=1, model="l2", column_for_multi_plot_name= 'weight function')
 
 

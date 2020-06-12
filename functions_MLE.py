@@ -70,7 +70,8 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # compute the shift
         hessian = ddf(ALPHA, BETA, MU)
         # if not invertible you re do the simulations. Solve is also more effective than computing the inverse
-        if not is_invertible(hessian):
+        #BIANCA (**)
+        if not classical_functions.is_invertible(hessian):
             return False, 1, 1, 1
         direction = np.linalg.solve(hessian, derivative)
 
@@ -246,7 +247,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight = kernel_pl
     # BIANCA-HERE (*) BIANCA a better way to do that?
     ## the kwargs is any additionnal parameter I need to give to the dataframe.
     flag_success_convergence = False
-    while not flag_success_convergence:
+    while not flag_success_convergence: # BIANCA try catch and stuff ? (**)
         intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
         w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
         flag_success_convergence, alpha_hat, beta_hat, mu_hat = functions_MLE.call_newton_raph_MLE_opt(time_real, T_max,
