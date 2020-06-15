@@ -50,11 +50,11 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 
     # this is to know if we reached a point where there is huge movement, so starting from that index, we re initialize the multi coefficient.
     reset_index = 0
-    derivative = df(ALPHA, BETA, MU)
+    derivative = df(MU, ALPHA, BETA)
     while np.linalg.norm(derivative, 2) > e and step > tol or number_of_step_crash == 0:  # I use norm 2 as criterea
         # Printing
         if not silent:
-            if number_of_step_crash % 10 == 0:
+            if number_of_step_crash % 1 == 0:
                 print("Step Newton {} result {}, change in norm {}.".format(number_of_step_crash,
                                                                             np.linalg.norm(derivative, 2), step))
                 print(
@@ -68,7 +68,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         old_x0 = np.append(np.append(MU, np.ravel(ALPHA)), np.ravel(BETA))  # the ravel flattens the matrix
 
         # compute the shift
-        hessian = ddf(ALPHA, BETA, MU)
+        hessian = ddf(MU, ALPHA, BETA)
         # if not invertible you re do the simulations. Solve is also more effective than computing the inverse
         #BIANCA (**)
         if not classical_functions.is_invertible(hessian):
@@ -92,7 +92,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         elif number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
             multi = 0.05 / M ** 3
         elif number_of_step_crash < 1200:
-            variable_in_armijo = ALPHA, BETA, MU
+            variable_in_armijo = MU, ALPHA, BETA
             multi, changed = armijo_rule(df, ddf, variable_in_armijo, direction, a=multi, sigma=0.5, b=b)
         # else :
         # the else is already handled at the beginning.    break
@@ -151,10 +151,10 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
             reset_index = number_of_step_crash
 
         # reduces some computations to put it here
-        derivative = df(ALPHA, BETA, MU)
+        derivative = df(MU, ALPHA, BETA)
 
     # True because it was successful.
-    return True, ALPHA, BETA, MU
+    return True, MU, ALPHA, BETA
 
 
 
@@ -190,27 +190,35 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
     if abs(b) >= 1:
         raise Exception("b has to be smaller than 1.")
 
-    ALPHA, BETA, MU = x0
+    MU, ALPHA, BETA = x0
     M = len(ALPHA)
 
     changed = False
-    vector_limit_sup = np.matmul(df(ALPHA, BETA, MU), direction)
-    condition = (f(ALPHA + a * direction[:M], BETA + a * direction[M:2 * M],
-                   MU + a * direction[2 * M:]) - f(ALPHA, BETA, MU) <= sigma * a * vector_limit_sup)
+    dir1 = np.reshape(direction[M:M * M + M], (M, M))  # matrix shape
+    dir2 = np.reshape(direction[M * M + M:], (M, M))
+    vector_limit_sup = np.matmul(df(MU, ALPHA, BETA), direction)
+    condition = (f(MU + a * direction[:M],
+                   ALPHA + a * dir1,
+                   BETA + a * dir2)
+                 - f(MU, ALPHA, BETA)
+                 <= sigma * a * vector_limit_sup)
 
     # I put .all, I only update if every dimension helps improving.
     # a > 10e-1O in order to not have a too small step.
     while not condition.all() and a > 10e-10:
         a *= b
         changed = True
-        condition = (f(ALPHA + a * direction[:M], BETA + a * direction[M:2 * M],
-                       MU + a * direction[2 * M:]) - f(ALPHA, BETA, MU) <= sigma * a * vector_limit_sup)
+        condition = (f(MU + a * direction[:M],
+                       ALPHA + a * dir1,
+                       BETA + a * dir2)
+                     - f(MU, ALPHA, BETA)
+                     <= sigma * a * vector_limit_sup)
 
     # print( "limit : ",  sigma * a * vector_limit_sup )
     # print( "value : ", f(ALPHA + a * direction[:M], BETA + a * direction[M:2 * M], MU + a * direction[2 * M:]) - f(ALPHA, BETA, MU)  )
     print("we are in ARMIJO condition because too many steps, the ok directions and step :" + str(
         condition) + " and " + str(a))
-    print("derivatives value : ", f(ALPHA, BETA, MU))
+    print("derivatives value : ", f(MU, ALPHA, BETA))
     return a, changed
 
 
@@ -226,15 +234,15 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     ALPHA = np.full((M,M), 0.7)
     BETA = 0.2 + 1.1 * M*M * ALPHA
 
-    #ALPHA = np.array([[10, 0], [0, 10]]) *0.9
-    #BETA = np.array([[50, 10], [30, 30]]) * 0.9
-    #MU = np.array([1, 1]) * 0.9
+    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) *0.9
+    BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.9
+    MU = np.array([0.2, 0.2]) * 0.9
 
-    df = lambda ALPHA, BETA, MU: first_derivative(T_t, ALPHA, BETA, MU, T, w)
-    ddf = lambda ALPHA, BETA, MU: second_derivative(T_t, ALPHA, BETA, MU, T, w)
+    df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
+    ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
 
 
-    flag, ALPHA, BETA, MU = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent = silent)
+    flag, MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent = silent)
     return flag, ALPHA, BETA, MU
 
 

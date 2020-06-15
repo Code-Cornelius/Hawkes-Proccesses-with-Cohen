@@ -34,14 +34,15 @@ import functions_fct_evol_parameters
 ##########################################
 
 # timing
+# 1D
 T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
+# 2D
+T0, mini_T = 0, 21
 
 # so here I should have around 500 jumps.
 #T = 10 * mini_T
 # 2000 JUMPS
 T = 200 * mini_T
-T = 5 * mini_T
-
 
 ####################################################################### TIME
 # number of max jump
@@ -75,17 +76,20 @@ BETA = [[100, 5, 5, 0, 0, 0],
         [0, 0, 0, 0, 3, 3]]
 MU = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 '''
-'''
-ALPHA = [[2, 0], [0, 3]]
-BETA = [[20, 20], [10, 10]]
-MU = [0.7, 0.3]
+#'''
+ALPHA = [[0.4, 0.1], [0.1, 0.4]]
+BETA = [[1.2, 0.8], [0.8, 1.2]]
+MU = [0.2, 0.2]
 
+# ALPHA = [[2, 0], [0, 3]]
+# BETA = [[20, 20], [10, 10]]
+# MU = [0.7, 0.3]
 #'''
-#'''
+'''
 ALPHA = [[1.75]]
 BETA = [[2]]
 MU = [0.2]
-# '''
+#'''
 '''
 ALPHA = [[0.6]]
 BETA = [[1.2]]
@@ -94,9 +98,9 @@ MU = [1.2]
 ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU, dtype=np.float) # I precise the type because he might think the np.array is int type.
 PARAMETERS = [MU.copy(), ALPHA.copy(), BETA.copy()]
 
-print("ALPHA : \n ", ALPHA)
-print("BETA : \n ", BETA)
-print('MU : \n ', MU)
+print("ALPHA : \n", ALPHA)
+print("BETA : \n", BETA)
+print('MU : \n', MU)
 print("=" * 78)
 print("=" * 78)
 print("=" * 78)
@@ -113,12 +117,7 @@ estimator_multi = Estimator(estimator)
 plot = False
 ################################################
 if plot:
-    T = 20 * mini_T
-    tt = np.linspace(T0, T, M_PREC, endpoint=True)
-    HAWKSY = Hawkes_process(tt, PARAMETERS)
-
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = True, silent = True)
-    print(len(time_real[0]))
     HAWKSY.plot_hawkes(time_real, intensity, name = "EXACT_HAWKES")
     plt.show()
 
@@ -149,7 +148,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 1, 70 * mini_T
+    nb_of_guesses, T = 1, 50 * mini_T
 else:
     nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -217,7 +216,7 @@ elif case == 4:
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-do = False ###################################### SIMPLE UNIQUE
+do = True ###################################### SIMPLE UNIQUE
 if do:
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
     print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
