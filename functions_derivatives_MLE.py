@@ -8,7 +8,7 @@ import scipy.stats
 from inspect import signature
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
 import time
-
+import bisect
 
 ##### my libraries
 import plot_functions

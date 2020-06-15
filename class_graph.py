@@ -27,7 +27,7 @@ import functions_fct_evol_parameters
 
 
 # batch_estimation is one dataframe with the estimators.
-class Graph:
+class Graph :
     def __init__(self, estimator, fct_parameters, T_max, nb_of_guesses):
         # parameters is a list of lists of lists of functions
         self.estimator = estimator
