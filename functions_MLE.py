@@ -249,9 +249,6 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     w = Kernel(fct_plain, "plain").eval(T_t, 0)
     print("debug")
 
-    print("A : ", del_L_beta_alpha_dif(0, 0, 1, T_t, ALPHA, BETA, MU, T, w) )
-    print("B : ", del_L_beta_alpha_dif(0, 1, 0, T_t, ALPHA, BETA, MU, T, w) )
-
 
 
     df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
