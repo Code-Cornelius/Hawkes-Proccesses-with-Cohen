@@ -51,6 +51,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
     # this is to know if we reached a point where there is huge movement, so starting from that index, we re initialize the multi coefficient.
     reset_index = 0
     derivative = df(MU, ALPHA, BETA)
+
     while np.linalg.norm(derivative, 2) > e and step > tol or number_of_step_crash == 0:  # I use norm 2 as criterea
         # Printing
         if not silent:
@@ -97,7 +98,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # else :
         # the else is already handled at the beginning.    break
 
-        # new position
+        #new position
         x0 = old_x0 - multi * direction
 
         # if the coefficient given by armijo is too small I change it.
@@ -224,7 +225,6 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
 def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
-    # T_t = [[6,7,8],[3,7.5,9]]
 
     if w is None:
         w = Kernel(fct_plain, "plain").eval(T_t, 0) # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
@@ -234,9 +234,25 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     ALPHA = np.full((M,M), 0.7)
     BETA = 0.2 + 1.1 * M*M * ALPHA
 
-    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) *0.9
-    BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.9
-    MU = np.array([0.2, 0.2]) * 0.9
+    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) *0.99
+    BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.99
+    MU = np.array([0.2, 0.2]) * 0.99
+
+    ALPHA = np.array([[1, 2], [1, 2]])
+    BETA = np.array([[5, 10], [5, 10]])
+    MU = np.array([1, 1])
+
+    print("debug")
+    T = 20
+    print(T_t)
+    T_t = [[17,18,19], [16,19]]
+    w = Kernel(fct_plain, "plain").eval(T_t, 0)
+    print("debug")
+
+    print("A : ", del_L_beta_alpha_dif(0, 0, 1, T_t, ALPHA, BETA, MU, T, w) )
+    print("B : ", del_L_beta_alpha_dif(0, 1, 0, T_t, ALPHA, BETA, MU, T, w) )
+
+
 
     df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
     ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
@@ -253,7 +269,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight = kernel_pl
     ## the flag notes if the convergence was a success. If yes, function hands in the results
 
     # BIANCA-HERE (*) BIANCA a better way to do that?
-    ## the kwargs is any additionnal parameter I need to give to the dataframe.
+    ## maybe there are too many parameters
     flag_success_convergence = False
     while not flag_success_convergence: # BIANCA try catch and stuff ? (**)
         intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)

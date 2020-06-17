@@ -97,7 +97,7 @@ def compute_R2(m, n, k, T_t, BETA, end=10):
             break
     return constant
 
-
+#optimize R_dash and R_dashdash computed together?
 def compute_R_dash(m, n, T_t, BETA, end=-10):
     # I make the choice of computing all the R_dash at the same time because it is essentially faster. Also, I use outer instead of broadcasting as it seems to be faster for longer arrays.
     # the first choice was : np.subtract.outer(np.array(T_t[m])
@@ -123,8 +123,6 @@ def compute_R_dash_dash(m, n, T_t, BETA, end=0):
 
 
 previous_Rs = {}
-
-
 def R(m, n, k, T_t, BETA, end=-10):
     # here the k go from 1 to the number jumps included
     if not ((m, n, k) in previous_Rs):
@@ -149,7 +147,7 @@ def R_dash(m, n, k, T_t, BETA, end=-10):
 
 previous_Rs_dash_dash = {}
 
-
+# here the k has to be shifted
 def R_dash_dash(m, n, k, T_t, BETA, end=-10):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if not ((m, n, k - 1) in previous_Rs_dash_dash):
@@ -309,7 +307,9 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
     ANS1 *= -1 / BETA[m, n]
-    ANS2 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
+    ANS2 = np.sum(w[n] *
+                  (1 - np.exp(- BETA[m, n] * (my_jumps)))
+                  )
     ANS2 *= 1 / BETA[m, n] / BETA[m, n]
 
     vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
