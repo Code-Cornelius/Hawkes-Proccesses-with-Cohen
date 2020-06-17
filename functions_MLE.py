@@ -71,7 +71,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # compute the shift
         hessian = ddf(MU, ALPHA, BETA)
         # if not invertible you re do the simulations. Solve is also more effective than computing the inverse
-        #BIANCA (**)
+        # BIANCA (**)
         if not classical_functions.is_invertible(hessian):
             return False, 1, 1, 1
         direction = np.linalg.solve(hessian, derivative)
@@ -98,7 +98,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # else :
         # the else is already handled at the beginning.    break
 
-        #new position
+        # new position
         x0 = old_x0 - multi * direction
 
         # if the coefficient given by armijo is too small I change it.
@@ -106,7 +106,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
             changed = False
             multi = 10e-3
 
-        #IF armijo was applied,
+        # IF armijo was applied,
         # in order to still got some loose when moving on the derivatives, I divide by the coef
         if changed:
             multi /= b
@@ -187,7 +187,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 # also which direction has to change.
 # finally whether the coefficient has been changed.
 def armijo_rule(f, df, x0, direction, a, sigma, b):
-    #TODO ARMIJO RULE IS DONE FOR CASES WHERE ALPHA BETAM U ARE SCALARS, MULTIVARIATE CASE!!!
+    # TODO ARMIJO RULE IS DONE FOR CASES WHERE ALPHA BETAM U ARE SCALARS, MULTIVARIATE CASE!!!
     if abs(b) >= 1:
         raise Exception("b has to be smaller than 1.")
 
@@ -225,16 +225,16 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
 def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
-
     if w is None:
-        w = Kernel(fct_plain, "plain").eval(T_t, 0) # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
+        w = Kernel(fct_plain, "plain").eval(T_t,
+                                            0)  # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
 
     M = len(T_t)
     MU = np.full(M, 0.1)
-    ALPHA = np.full((M,M), 0.7)
-    BETA = 0.2 + 1.1 * M*M * ALPHA
+    ALPHA = np.full((M, M), 0.7)
+    BETA = 0.2 + 1.1 * M * M * ALPHA
 
-    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) *0.99
+    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) * 0.99
     BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.99
     MU = np.array([0.2, 0.2]) * 0.99
 
@@ -245,22 +245,19 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     print("debug")
     T = 20
     print(T_t)
-    T_t = [[17,18,19], [16,19]]
+    T_t = [[17, 18, 19], [16, 19]]
     w = Kernel(fct_plain, "plain").eval(T_t, 0)
     print("debug")
-
-
 
     df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
     ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
 
-
-    flag, MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent = silent)
+    flag, MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
     return flag, ALPHA, BETA, MU
 
 
-
-def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight = kernel_plain, time_estimation=0, silent = True): #BIANCA-HERE (*) BIANCA a better way to do that?
+def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
+                  silent=True):  # BIANCA-HERE (*) BIANCA a better way to do that?
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
     ## the flag notes if the convergence was a success. If yes, function hands in the results
@@ -268,7 +265,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight = kernel_pl
     # BIANCA-HERE (*) BIANCA a better way to do that?
     ## maybe there are too many parameters
     flag_success_convergence = False
-    while not flag_success_convergence: # BIANCA try catch and stuff ? (**)
+    while not flag_success_convergence:  # BIANCA try catch and stuff ? (**)
         intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
         w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
         flag_success_convergence, alpha_hat, beta_hat, mu_hat = functions_MLE.call_newton_raph_MLE_opt(time_real, T_max,

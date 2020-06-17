@@ -12,7 +12,6 @@ def one_jump(time, when_jump, original_value, new_value, T_max):
     return original_value + new_value * np.heaviside(time - T_max * when_jump, 1)
 
 
-
 # when jump should be a %
 # ax+b until the when_jump, where it comes down to base value.
 def moutain_jump(time, when_jump, a, b, base_value, T_max):

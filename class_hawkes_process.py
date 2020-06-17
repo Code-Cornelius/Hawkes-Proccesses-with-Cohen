@@ -8,7 +8,6 @@ import scipy.stats
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
 import time
 
-
 ##### my libraries
 import plot_functions
 import decorators_functions
@@ -24,8 +23,6 @@ from class_graph import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters
-
-
 
 # defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
