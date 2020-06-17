@@ -440,7 +440,10 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
             for jj in range(size):
                 if ii == jj:
                     matrix[ii, jj] = function_diag(n=i + ii, n_dash=j, **kwargs) # no need for n_dash in that case...
-                elif ii < jj:
+                #work-in-progress
+                #elif ii < jj:
+                # work-in-progress
+                else :
                     matrix[ii, jj] = function_sides(n=i + ii, n_dash=j + jj, **kwargs)
         return matrix
 
@@ -463,11 +466,14 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
                             matrix[size * ii + iii, size * ii + size * jj + jjj] = function_wings(jj, jjj,
                                                                                                   n_dash=ii * size + iii,
                                                                                                   **kwargs)
+    # work-in-progress:
+    # I DONT WANT TO COPY BC APART FROM DIAG, ELEMENTS ARE NOT EQUAL
     # copy upper and lower part
-    for ii in range(size * size):
-        for jj in range(size * size):
-            if jj < ii:
-                matrix[ii, jj] = matrix[jj, ii]
+    # for ii in range(size * size):
+    #     for jj in range(size * size):
+    #         if jj < ii:
+    #             matrix[ii, jj] = matrix[jj, ii]
+    # work-in-progress:
 
     return matrix
 
