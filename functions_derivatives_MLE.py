@@ -101,6 +101,7 @@ def compute_R2(m, n, k, T_t, BETA, end=10):
     return constant
 
 #optimize R_dash and R_dashdash computed together?
+@Memoization(key_names=['m', 'n'])
 def compute_R_dash(m, n, T_t, BETA, end=-10):
     # I make the choice of computing all the R_dash at the same time because it is essentially faster. Also, I use outer instead of broadcasting as it seems to be faster for longer arrays.
     # the first choice was : np.subtract.outer(np.array(T_t[m])
@@ -115,6 +116,7 @@ def compute_R_dash(m, n, T_t, BETA, end=-10):
 
 
 # R, dont forget to put k as k+1 in the loops
+@Memoization(key_names=['m', 'n'])
 def compute_R_dash_dash(m, n, T_t, BETA, end=0):
     matrix_diff = np.maximum(np.subtract.outer(np.array(T_t[m])
                                                , np.array(T_t[n])),
@@ -125,29 +127,14 @@ def compute_R_dash_dash(m, n, T_t, BETA, end=0):
     return ans
 
 
-previous_Rs_dash = {}
+# here the k has to be shifted
+def get_R_dash(m, n, k, T_t, BETA, end=-10):
+    return compute_R_dash(m=m, n=n, T_t=T_t, BETA=BETA)[k-1]
 
 
 # here the k has to be shifted
-def R_dash(m, n, k, T_t, BETA, end=-10):
-    # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
-    if not ((m, n, k - 1) in previous_Rs_dash):
-        entries = compute_R_dash(m, n, T_t, BETA, end=end)
-        # optimize-speed
-        for i in range(len(entries)): previous_Rs_dash[(m, n, i)] = entries[i]
-    return previous_Rs_dash[(m, n, k - 1)]
-
-
-previous_Rs_dash_dash = {}
-
-# here the k has to be shifted
-def R_dash_dash(m, n, k, T_t, BETA, end=-10):
-    # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
-    if not ((m, n, k - 1) in previous_Rs_dash_dash):
-        entries = compute_R_dash_dash(m, n, T_t, BETA, end=end)
-        # optimize-speed
-        for i in range(len(entries)): previous_Rs_dash_dash[(m, n, i)] = entries[i]
-    return previous_Rs_dash_dash[(m, n, k - 1)]
+def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
+    return compute_R_dash_dash(m=m, n=n, T_t=T_t, BETA=BETA)[k-1]
 
 
 # first derivative
@@ -179,7 +166,7 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS2 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
 
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     ANS3 = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
 
@@ -267,7 +254,7 @@ def del_L_alpha_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_beta_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -290,7 +277,7 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS2 *= 1 / BETA[m, n] / BETA[m, n]
 
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ANS3 = - np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     ANS4 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
@@ -302,7 +289,7 @@ def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
 
     vector_R = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array(
         [denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
     ANS = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
@@ -325,8 +312,8 @@ def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS3 = np.sum(w[n] * (my_jumps * my_jumps * np.exp(- B * (my_jumps))))
     ANS3 *= ALPHA[m, n] / (B)
 
-    vector_R_dash_dash = np.array([R_dash_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash_dash = np.array([get_R_dash_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
 
     ANS4 = ALPHA[m, n] * np.sum(
@@ -338,8 +325,8 @@ def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_beta_beta_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_R_dash_dash = np.array([R_dash(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash_dash = np.array([get_R_dash(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ANS = - ALPHA[m, n] * ALPHA[m, n_dash] * np.sum(w[m] * vector_R_dash * vector_R_dash_dash * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -475,8 +462,8 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
 # function usef inside first_derivative for clearing all memoization's dict.
 def dict_clear():
     R.clear()
-    previous_Rs_dash.clear()
-    previous_Rs_dash_dash.clear()
+    compute_R_dash.clear()
+    compute_R_dash_dash.clear()
     denomR.clear()
     return
 
