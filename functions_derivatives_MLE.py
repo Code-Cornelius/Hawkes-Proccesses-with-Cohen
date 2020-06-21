@@ -85,6 +85,7 @@ def R(m, n, k, T_t, BETA, end=-10):
 
 # R, dont forget to put k as k+1 in the loops
 # closed form of R
+@Memoization(key_names=['m', 'n', 'k'])
 def compute_R2(m, n, k, T_t, BETA, end=10):
     # M AND N STARTS AT 0 AND FINISH AT M-1.
     if k < 1:
