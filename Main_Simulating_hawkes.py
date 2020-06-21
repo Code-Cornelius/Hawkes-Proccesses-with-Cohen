@@ -222,7 +222,7 @@ if do:
     for j in range(50):
         intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
         print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
-    print(time.time() - my_time)
+    print(time.time() - my_time )
 
 
 #-----------------------------------------------------------------------------------------------
