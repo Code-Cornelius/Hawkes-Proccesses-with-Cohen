@@ -76,7 +76,7 @@ BETA = [[100, 5, 5, 0, 0, 0],
         [0, 0, 0, 0, 3, 3]]
 MU = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 '''
-#'''
+'''
 ALPHA = [[0.4, 0.1], [0.1, 0.4]]
 BETA = [[1.2, 0.8], [0.8, 1.2]]
 MU = [0.2, 0.2]
@@ -85,7 +85,7 @@ MU = [0.2, 0.2]
 # BETA = [[20, 20], [10, 10]]
 # MU = [0.7, 0.3]
 #'''
-'''
+#'''
 ALPHA = [[1.75]]
 BETA = [[2]]
 MU = [0.2]
@@ -148,7 +148,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 1, 100 * mini_T
+    nb_of_guesses, T = 1, 30 * mini_T
 else:
     nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -218,9 +218,11 @@ elif case == 4:
 print("\n~~~~~Computations.~~~~~\n")
 do = True ###################################### SIMPLE UNIQUE
 if do:
-    intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
-    print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
-
+    my_time = time.time()
+    for j in range(50):
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
+        print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
+    print(time.time() - my_time )
 
 
 #-----------------------------------------------------------------------------------------------

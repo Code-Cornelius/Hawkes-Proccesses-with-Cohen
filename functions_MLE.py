@@ -239,20 +239,20 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     ALPHA = np.full((M, M), 0.7)
     BETA = 0.2 + 1.1 * M * M * ALPHA
 
-    ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) * 0.99
-    BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.99
-    MU = np.array([0.2, 0.2]) * 0.99
+    # ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) * 0.99
+    # BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.99
+    # MU = np.array([0.2, 0.2]) * 0.99
 
-    ALPHA = np.array([[1, 2], [1, 2]])
-    BETA = np.array([[5, 10], [5, 10]])
-    MU = np.array([1, 1])
+    # ALPHA = np.array([[1, 2], [1, 2]])
+    # BETA = np.array([[5, 10], [5, 10]])
+    # MU = np.array([1, 1])
 
-    print("debug")
-    T = 20
-    print(T_t)
-    T_t = [[17, 18, 19], [16, 19]]
-    w = Kernel(fct_plain, "plain").eval(T_t, 0)
-    print("debug")
+    # print("debug")
+    # T = 20
+    # print(T_t)
+    # T_t = [[17, 18, 19], [16, 19]]
+    # w = Kernel(fct_plain, "plain").eval(T_t, 0)
+    # print("debug")
 
     df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
     ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
