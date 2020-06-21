@@ -29,12 +29,12 @@ import functions_fct_evol_parameters
 
 
 
-
-def compute_denomR(m, i, T_t, ALPHA, BETA, MU):
+@Memoization(key_names=["m", "k"])
+def denomR(m, k, T_t, ALPHA, BETA, MU):
     constant = 0
     _, M = np.shape(ALPHA)
     for j in range(M):
-        constant += ALPHA[m, j] * R(m=m, n=j, k=i + 1, T_t=T_t, BETA=BETA)  # +1 for i, starts at 1.
+        constant += ALPHA[m, j] * R(m=m, n=j, k=k + 1, T_t=T_t, BETA=BETA)  # +1 for i, starts at 1.
     return (MU[m] + constant)
 
 
@@ -149,26 +149,10 @@ def R_dash_dash(m, n, k, T_t, BETA, end=-10):
     return previous_Rs_dash_dash[(m, n, k - 1)]
 
 
-
-
-
-previous_denomR = {}
-# in Denom R the index k is already shifted. So no need to worry anymore about the not intuitive place of k in R!
-def denomR(m, k, T_t, ALPHA, BETA, MU):
-    if not ((m, k) in previous_denomR):
-        previous_denomR[(m, k)] = compute_denomR(m, k, T_t, ALPHA, BETA, MU)
-    return previous_denomR[(m, k)]
-
-
-
-
-
-
-
 # first derivative
 def del_L_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = - T + np.sum(w[m] * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     return ans
 
@@ -179,7 +163,7 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     my_jumps = np.array(T_t[n])
     ans1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (T - my_jumps))))
     # 2
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     ans2 = np.sum(w[m] * vector_R * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     return -1 / BETA[m, n] * ans1 + ans2
@@ -193,7 +177,7 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
     ANS2 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
 
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     ANS3 = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
@@ -235,7 +219,7 @@ def del_L_mu_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     # my_time = time.time()
     _, M = np.shape(ALPHA)
 
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
 
@@ -247,7 +231,7 @@ def del_L_mu_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * vector_R * vector_R * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
@@ -257,7 +241,7 @@ def del_L_alpha_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * vector_R * vector_R_dash * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
@@ -270,7 +254,7 @@ def del_L_alpha_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 def del_L_alpha_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(
         w[m] * vector_R * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
@@ -283,7 +267,7 @@ def del_L_alpha_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 def del_L_beta_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
@@ -306,7 +290,7 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ANS3 = - np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     ANS4 = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -319,7 +303,7 @@ def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     vector_R = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array(
-        [denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
+        [denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
     ANS = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS
@@ -342,7 +326,7 @@ def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
     vector_R_dash_dash = np.array([R_dash_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
 
     ANS4 = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
@@ -355,7 +339,7 @@ def del_L_beta_beta_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
     vector_R_dash_dash = np.array([R_dash(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
+    vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ANS = - ALPHA[m, n] * ALPHA[m, n_dash] * np.sum(w[m] * vector_R_dash * vector_R_dash_dash * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS
@@ -492,7 +476,7 @@ def dict_clear():
     R.clear()
     previous_Rs_dash.clear()
     previous_Rs_dash_dash.clear()
-    previous_denomR.clear()
+    denomR.clear()
     return
 
 
