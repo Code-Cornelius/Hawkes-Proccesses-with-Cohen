@@ -15,6 +15,7 @@ import plot_functions
 import decorators_functions
 import classical_functions
 import recurrent_functions
+from decorators_functions import Memoization
 
 ##### other files
 import functions_MLE
@@ -33,13 +34,14 @@ def compute_denomR(m, i, T_t, ALPHA, BETA, MU):
     constant = 0
     _, M = np.shape(ALPHA)
     for j in range(M):
-        constant += ALPHA[m, j] * R(m, j, i + 1, T_t, BETA)  # +1 for i, starts at 1.
+        constant += ALPHA[m, j] * R(m=m, n=j, k=i + 1, T_t=T_t, BETA=BETA)  # +1 for i, starts at 1.
     return (MU[m] + constant)
 
 
 # R, dont forget to put k as k+1 in the loops
 # recursive, memoization
-def compute_R(m, n, k, T_t, BETA, end=-10):
+@Memoization(key_names=['m', 'n', 'k'])
+def R(m, n, k, T_t, BETA, end=-10):
     constant = 0
     # M AND N STARTS AT 0 AND FINISH AT M-1.
     if k < 1:
@@ -57,7 +59,7 @@ def compute_R(m, n, k, T_t, BETA, end=-10):
     first_coeff = np.exp(-BETA[m, n] * (T_t[m][k - 1] - T_t[m][k - 2]))
 
     if m == n:
-        return first_coeff * (1 + R(m, n, k - 1, T_t, BETA))  # since m = n you don't care about end.
+        return first_coeff * (1 + R(m=m, n=n, k=k - 1, T_t=T_t, BETA=BETA))  # since m = n you don't care about end.
 
     # if = -10, it means it s the first time I compute R for that m and n.
     if end == -10:
@@ -78,7 +80,7 @@ def compute_R(m, n, k, T_t, BETA, end=-10):
         else:
             # end of vector
             break
-    return first_coeff * R(m, n, k - 1, T_t, BETA, end=i) + constant
+    return first_coeff * R(m=m, n=n, k=k - 1, T_t=T_t, BETA=BETA, end=i) + constant
 
 
 # R, dont forget to put k as k+1 in the loops
@@ -120,16 +122,6 @@ def compute_R_dash_dash(m, n, T_t, BETA, end=0):
     # np.power is not efficient for scalars, but good looking.
     ans = matrix_diff.sum(axis=1)
     return ans
-
-
-previous_Rs = {}
-def R(m, n, k, T_t, BETA, end=-10):
-    # here the k go from 1 to the number jumps included
-    if not ((m, n, k) in previous_Rs):
-        previous_Rs[(m, n, k)] = compute_R(m, n, k, T_t, BETA, end=end)
-        # else :
-        #    previous_Rs[(m, n, k)] = compute_R2(m, n, k, T_t, BETA, end=end)
-    return previous_Rs[(m, n, k)]
 
 
 previous_Rs_dash = {}
@@ -188,7 +180,7 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ans1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (T - my_jumps))))
     # 2
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
-    vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     ans2 = np.sum(w[m] * vector_R * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     return -1 / BETA[m, n] * ans1 + ans2
 
@@ -254,7 +246,7 @@ def del_L_mu_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * vector_R * vector_R * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -263,8 +255,8 @@ def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_alpha_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
-    vector_R_dash = np.array([R(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
+    vector_R_dash = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * vector_R * vector_R_dash * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -277,7 +269,7 @@ def del_L_alpha_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_alpha_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
-    vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(
         w[m] * vector_R * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
@@ -312,7 +304,7 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
                   )
     ANS2 *= 1 / BETA[m, n] / BETA[m, n]
 
-    vector_R = np.array([R(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])
     ANS3 = - np.sum(w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
@@ -324,7 +316,7 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     _, M = np.shape(ALPHA)
 
-    vector_R = np.array([R(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
+    vector_R = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array(
         [denomR(m, i, T_t, ALPHA, BETA, MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
@@ -497,7 +489,7 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
 
 # function usef inside first_derivative for clearing all memoization's dict.
 def dict_clear():
-    previous_Rs.clear()
+    R.clear()
     previous_Rs_dash.clear()
     previous_Rs_dash_dash.clear()
     previous_denomR.clear()
@@ -523,7 +515,7 @@ def likelihood(T_t, ALPHA, BETA, MU, T):
         for k in range(len(T_t[i])):
             inside_big_third_sum = MU[i]
             for j in range(M):
-                inside_big_third_sum += ALPHA[i, j] * R(i, j, k + 1, T_t, BETA)
+                inside_big_third_sum += ALPHA[i, j] * R(m=i, n=j, k=k + 1, T_t=T_t, BETA=BETA)
         value_i += np.log(inside_big_third_sum)
         ans += value_i
     return ans
