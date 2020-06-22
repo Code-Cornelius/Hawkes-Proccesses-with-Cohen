@@ -29,11 +29,11 @@ import functions_fct_evol_parameters
 
 
 
-@Memoization(key_names=["m", "k"])
+@Memoization(key_names=['m', 'k'])
 def denomR(m, k, T_t, ALPHA, BETA, MU):
     constant = 0
     _, M = np.shape(ALPHA)
-    for j in range(M):
+    for j in range(M): # no need to optimise because M is small
         constant += ALPHA[m, j] * R(m=m, n=j, k=k + 1, T_t=T_t, BETA=BETA)  # +1 for i, starts at 1.
     return (MU[m] + constant)
 
@@ -112,7 +112,7 @@ def compute_R_dash(m, n, T_t, BETA, end=-10):
                              0)
     matrix_diff = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
     ans = matrix_diff.sum(axis=1)
-    return ans
+    return list(ans)
 
 
 # R, dont forget to put k as k+1 in the loops
@@ -124,7 +124,7 @@ def compute_R_dash_dash(m, n, T_t, BETA, end=0):
     matrix_diff = matrix_diff * matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
     # np.power is not efficient for scalars, but good looking.
     ans = matrix_diff.sum(axis=1)
-    return ans
+    return list(ans)
 
 
 # here the k has to be shifted
