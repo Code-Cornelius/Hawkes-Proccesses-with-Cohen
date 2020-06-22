@@ -1,4 +1,4 @@
-from class_estimator import *
+from class_estimator_hawkes import *
 import time
 
 M = 1000
@@ -75,9 +75,7 @@ time.sleep(100)
 
 
 
-est = Estimator(pd.DataFrame(columns=['variable', 'n', 'm',
-                                  'time estimation', 'weight function',
-                                  'value', 'T_max', 'true value']))
+est = Estimator_Hawkes()
 
 def f(estimator):
     estimator.DF = (estimator.DF).append(pd.DataFrame(

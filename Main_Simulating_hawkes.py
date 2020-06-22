@@ -19,7 +19,7 @@ import recurrent_functions
 import functions_MLE
 import class_kernel
 from class_hawkes_process import *
-from class_estimator import *
+from class_estimator_hawkes import *
 from class_graph import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
@@ -107,11 +107,8 @@ print("=" * 78)
 np.random.seed(124)
 
 HAWKSY = Hawkes_process(tt, PARAMETERS)
-estimator = pd.DataFrame(columns=['variable', 'n', 'm',
-                                  'time estimation', 'weight function',
-                                  'value', 'T_max', 'true value', 'number of guesses'])
 
-estimator_multi = Estimator(estimator)
+estimator_multi = Estimator_Hawkes()
 ################################################
 # plot
 plot = False
@@ -216,19 +213,17 @@ elif case == 4:
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-do = True ###################################### SIMPLE UNIQUE
+do = False ###################################### SIMPLE UNIQUE
 if do:
-    my_time = time.time()
-    for j in range(10):
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
-        print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
-    print(time.time() - my_time )
+    intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
+    print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
+
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ###################################### SIMPLE MULTI
+do = True ###################################### SIMPLE MULTI
 if do:
-    estimator_multi = Estimator(estimator)
+    estimator_multi = Estimator_Hawkes()
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
     GRAPH_multi = Graph(estimator_multi, the_update_functions, T, nb_of_guesses)
     GRAPH_multi.histogram_of_realisations_of_estimator()
@@ -244,7 +239,7 @@ if do:
     # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
 
     # Here I change the parameters over time.
-    estimator_kernel = Estimator(estimator)
+    estimator_kernel = Estimator_Hawkes()
     list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
                        Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
                        Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
@@ -277,7 +272,7 @@ HAWKSY = Hawkes_process(tt, PARAMETERS)
 #-----------------------------------------------------------------------------------------------
 do = False ###################################### MSE
 if do:
-    estimator_MSE = Estimator(estimator)
+    estimator_MSE = Estimator_Hawkes()
     TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
              50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T, 130 * mini_T,
              140 * mini_T, 150 * mini_T]

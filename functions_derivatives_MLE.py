@@ -21,7 +21,7 @@ from decorators_functions import Memoization
 import functions_MLE
 import class_kernel
 from class_hawkes_process import *
-from class_estimator import *
+from class_estimator_hawkes import *
 from class_graph import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis

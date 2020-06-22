@@ -19,7 +19,7 @@ import recurrent_functions
 import functions_MLE
 import class_kernel
 from class_hawkes_process import *
-from class_estimator import *
+from class_estimator_hawkes import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters
@@ -44,7 +44,8 @@ class Graph :
     @classmethod
     def from_path(cls, path, parameters):
         # path has to be raw. with \\
-        estimator = Estimator(pd.read_csv(path))
+        estimator = Estimator_Hawkes()
+        estimator.append(pd.read_csv(path))
         # get the max value which is M-1
         T_max = estimator.DF["T_max"].max()
         nb_of_guesses = estimator.DF['number of guesses'].max()
@@ -184,9 +185,12 @@ class Graph :
         #  I did that in the function written in "functions_change_point_analysis", which could be put in class graph.
         #  The problem is that my functions in plot_functions take arrays, not dictionnaries. How to convert efficiently ?
 
-        estim_alpha = Estimator(self.estimator.DF.loc[self.estimator.DF['variable'] == "alpha"].copy())
-        estim_beta = Estimator(self.estimator.DF.loc[self.estimator.DF['variable'] == "beta"].copy())
-        estim_nu = Estimator(self.estimator.DF.loc[self.estimator.DF['variable'] == "nu"].copy())
+        estim_alpha = Estimator_Hawkes()
+        estim_alpha.append(self.estimator.DF.loc[self.estimator.DF['variable'] == "alpha"].copy())
+        estim_beta = Estimator_Hawkes()
+        estim_beta.append(self.estimator.DF.loc[self.estimator.DF['variable'] == "beta"].copy())
+        estim_nu = Estimator_Hawkes()
+        estim_nu.append(self.estimator.DF.loc[self.estimator.DF['variable'] == "nu"].copy())
 
         # test si MEAN est ok
         if estim_alpha.DF["true value"].nunique() != 1 or \
