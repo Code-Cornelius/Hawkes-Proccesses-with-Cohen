@@ -100,41 +100,37 @@ def compute_R2(m, n, k, T_t, BETA, end=10):
             break
     return constant
 
-#optimize R_dash and R_dashdash computed together?
-@Memoization(key_names=['m', 'n'])
-def compute_R_dash(m, n, T_t, BETA, end=-10):
-    # I make the choice of computing all the R_dash at the same time because it is essentially faster. Also, I use outer instead of broadcasting as it seems to be faster for longer arrays.
-    # the first choice was : np.subtract.outer(np.array(T_t[m])
-    #                                                   , np.array(T_t[n])   ),
-    # the second was : np.array(T_t[m])[:, np.newaxis] - np.array(T_t[n])
+
+def compute_R_dashes(m, n, T_t, BETA, end=0):
     matrix_diff = np.maximum(np.subtract.outer(np.array(T_t[m])
                                                , np.array(T_t[n])),
                              0)
-    matrix_diff = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
-    ans = matrix_diff.sum(axis=1)
-    return list(ans)
-
-
-# R, dont forget to put k as k+1 in the loops
-@Memoization(key_names=['m', 'n'])
-def compute_R_dash_dash(m, n, T_t, BETA, end=0):
-    matrix_diff = np.maximum(np.subtract.outer(np.array(T_t[m])
-                                               , np.array(T_t[n])),
-                             0)
-    matrix_diff = matrix_diff * matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
+    dashes = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
+    dash_dashes = dashes * matrix_diff
     # np.power is not efficient for scalars, but good looking.
-    ans = matrix_diff.sum(axis=1)
-    return list(ans)
+    previous_Rs_dash[(m, n)] = list(dashes.sum(axis=1))
+
+    previous_Rs_dash_dash[(m, n)] = list(dash_dashes.sum(axis=1))
 
 
+previous_Rs_dash = {}
 # here the k has to be shifted
 def get_R_dash(m, n, k, T_t, BETA, end=-10):
-    return compute_R_dash(m=m, n=n, T_t=T_t, BETA=BETA)[k-1]
+    # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
+    if (m, n) not in previous_Rs_dash:
+        compute_R_dashes(m, n, T_t, BETA, end=end)
+
+    return previous_Rs_dash[(m, n)][k-1]
 
 
+previous_Rs_dash_dash = {}
 # here the k has to be shifted
 def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
-    return compute_R_dash_dash(m=m, n=n, T_t=T_t, BETA=BETA)[k-1]
+    # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
+    if (m, n) not in previous_Rs_dash_dash:
+        compute_R_dashes(m, n, T_t, BETA, end=end)
+    return previous_Rs_dash_dash[(m, n)][k - 1]
+
 
 
 # first derivative
@@ -462,8 +458,8 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
 # function usef inside first_derivative for clearing all memoization's dict.
 def dict_clear():
     R.clear()
-    compute_R_dash.clear()
-    compute_R_dash_dash.clear()
+    previous_Rs_dash.clear()
+    previous_Rs_dash_dash.clear()
     denomR.clear()
     return
 
