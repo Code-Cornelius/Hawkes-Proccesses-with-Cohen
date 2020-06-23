@@ -14,6 +14,7 @@ import plot_functions
 import decorators_functions
 import classical_functions
 import recurrent_functions
+from class_graph import Graph
 
 ##### other files
 import functions_MLE
@@ -27,17 +28,19 @@ import functions_fct_evol_parameters
 
 
 # batch_estimation is one dataframe with the estimators.
-class Graph :
-    def __init__(self, estimator, fct_parameters, T_max, nb_of_guesses):
+class Graph_Hawkes(Graph):
+    def __init__(self, estimator, fct_parameters):
+        # Initialise the Graph with the estimator
+        super().__init__(estimator, ['variable', 'm', 'n'])
+
         # parameters is a list of lists of lists of functions
-        self.estimator = estimator
         self.ALPHA = fct_parameters[1]
         self.BETA = fct_parameters[2]  # makes the file more readable.
         self.NU = fct_parameters[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
-        self.T_max = T_max
+        self.T_max = estimator.DF["T_max"].max()
         self.M = np.shape(self.ALPHA)[1]
-        self.nb_of_guesses = nb_of_guesses
+        self.nb_of_guesses = estimator.DF['number of guesses'].max()
 
     #### create another init that takes the same parameter, with the diff that it takes the path.
     # another constructor :
@@ -47,56 +50,33 @@ class Graph :
         estimator = Estimator_Hawkes()
         estimator.append(pd.read_csv(path))
         # get the max value which is M-1
-        T_max = estimator.DF["T_max"].max()
-        nb_of_guesses = estimator.DF['number of guesses'].max()
-        return cls(estimator, parameters, T_max, nb_of_guesses)
+        return cls(estimator, parameters)
 
-    # work-in-progress
-    def histogram_of_realisations_of_estimator(self):
-        # here parameters are constant.
-        # TODO ADAPT FOR MULTI DIMENSIONAL CASE
+    # TODO: make more general -- don't assume that the name will always be the first
+    def get_range(self, key, mean):
+        variable = key[0]
+        if variable == "nu":
+            return (0, 2 * mean)
+        else:
+            return (0.5 * mean, 1.5 * mean)
 
-        # BIANCA-HERE you see, using dict is a good trick for upgrading to multi dimensional case.
-        #  I did that in the function written in "functions_change_point_analysis", which could be put in class graph.
-        #  The problem is that my functions in plot_functions take arrays, not dictionnaries. How to convert efficiently ?
-        estim_alpha = self.estimator.DF[self.estimator.DF['variable'] == "alpha"].copy()
-        estim_beta = self.estimator.DF[self.estimator.DF['variable'] == "beta"].copy()
-        estim_nu = self.estimator.DF[self.estimator.DF['variable'] == "nu"].copy()
+    def get_param_info(self, key, mean):
+        range = self.get_range(key, mean)
+        param_dict = {'bins': 30,
+                      'label': 'Histogram',
+                      'color': 'green',
+                      'range': range,
+                      'cumulative': True
+                      }
+        return param_dict
 
-        list_of_succesive_coefficients = np.zeros(
-            (self.nb_of_guesses, self.M + 2 * self.M * self.M))  # each line is one guess. So it's like "simul i ; x0"
-        for i in range(self.nb_of_guesses):
-            for j in range(self.M):
-                list_of_succesive_coefficients[i][j] = estim_nu.iloc[i]["value"]
-            for j in range(self.M * self.M):
-                list_of_succesive_coefficients[i][j + self.M] = estim_alpha.iloc[i]["value"]
-                list_of_succesive_coefficients[i][j + self.M + self.M * self.M] = estim_beta.iloc[i]["value"]
+    def get_fig_dict(self, separators, key):
+        title = self.generate_title(separators, key)
+        fig_dict = {'title': title,
+                    'xlabel': 'value',
+                    'ylabel': "Nb of realisation inside a bin."}
+        return fig_dict
 
-        for i in range(len(list_of_succesive_coefficients[0, :])):
-            if i < self.M:
-                title = " Histogram, estimator (time = {}) of the parameter NU, {} tries, {}th value, true value = {}.".format(
-                    self.T_max,
-                    self.nb_of_guesses, i + 1, self.NU[i])
-                range_coef = (0, 2)
-                ecart_plot = tuple(inner * self.NU[i](0, 1) for inner in range_coef)
-            elif i < self.M + self.M * self.M:
-                title = " Histogram, estimator (time = {}) of the parameter ALPHA, {} tries, {}th value, true value = {}.".format(
-                    self.T_max,
-                    self.nb_of_guesses, i + 1 - self.M, np.ravel(self.ALPHA)[i - self.M](0, 1))
-                range_coef = (0.5, 1.5)
-                ecart_plot = tuple(inner * np.ravel(self.ALPHA)[i - self.M](0, 1) for inner in range_coef)
-            else:
-                title = " Histogram, estimator (time = {}) of the parameter BETA, {} tries, {}th value, true value = {}.".format(
-                    self.T_max,
-                    self.nb_of_guesses, i + 1 - self.M - self.M * self.M,
-                    np.ravel(self.BETA)[i - self.M * self.M - self.M](0, 1))
-                range_coef = (0.5, 1.5)
-                ecart_plot = tuple(
-                    inner * np.ravel(self.BETA)[i - self.M - self.M * self.M](0, 1) for inner in range_coef)
-
-            plot_functions.hist(list_of_succesive_coefficients[:, i], 30, title, "value", range=ecart_plot,
-                                total_number_of_simulations=self.nb_of_guesses)
-        return
 
     # function estimation over time:
     def estimation_hawkes_parameter_over_time(self, **kwargs):
@@ -118,6 +98,8 @@ class Graph :
         estim_nu = self.estimator.DF[self.estimator.DF['variable'] == "nu"].copy()
         estim_nu_extr = (estim_nu.groupby(['time estimation'])['value'].min(),
                          estim_nu.groupby(['time estimation'])['value'].max())
+
+
 
         extrem_time_estimation = estim_alpha['time estimation'].unique()  # list of times where I have data to plot.
 
@@ -180,7 +162,7 @@ class Graph :
         return
 
     # work-in-progress
-    def MSE_convergence_estimators_limit_time(self, mini_T):
+    def MSE_convergence_estimators_limit_time(self, mini_T, times):
         # BIANCA-HERE you see, using dict is a good trick for upgrading to multi dimensional case.
         #  I did that in the function written in "functions_change_point_analysis", which could be put in class graph.
         #  The problem is that my functions in plot_functions take arrays, not dictionnaries. How to convert efficiently ?
@@ -207,11 +189,11 @@ class Graph :
 
         DF_MSE = estim_nu.DF.groupby(['T_max'])["compute_MSE"].sum()
 
-        MSE_reals = np.zeros(len(self.T_max))
-        TIMES_plot = [self.T_max[i] // mini_T * 50 for i in range(len(self.T_max))]
+        MSE_reals = np.zeros(len(times))
+        TIMES_plot = [times[i] // mini_T * 50 for i in range(len(times))]
         i = 0
-        for times in self.T_max:
-            MSE_reals[i] = DF_MSE[times] / self.nb_of_guesses
+        for time in times:
+            MSE_reals[i] = DF_MSE[time] / self.nb_of_guesses
             i += 1
 
         plot_functions.plot_graph(TIMES_plot, MSE_reals, title=[

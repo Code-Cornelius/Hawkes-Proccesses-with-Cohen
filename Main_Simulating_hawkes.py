@@ -20,7 +20,7 @@ import functions_MLE
 import class_kernel
 from class_hawkes_process import *
 from class_estimator_hawkes import *
-from class_graph import *
+from class_graph_hawkes import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters
@@ -145,7 +145,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 1, 60 * mini_T
+    nb_of_guesses, T = 10, 30 * mini_T
 else:
     nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -225,15 +225,15 @@ do = True ###################################### SIMPLE MULTI
 if do:
     estimator_multi = Estimator_Hawkes()
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
-    GRAPH_multi = Graph(estimator_multi, the_update_functions, T, nb_of_guesses)
+    GRAPH_multi = Graph_Hawkes(estimator_multi, the_update_functions)
     GRAPH_multi.histogram_of_realisations_of_estimator()
 
-    estimator_multi.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
+    estimator_multi.to_csv(r'/home/bianca/est/estimators.csv', index=False,
                            header=True)
 
 # -----------------------------------------------------------------------------------------------
 do = False  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
-nb_of_times = 50
+nb_of_times = 3
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
     # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
@@ -241,8 +241,8 @@ if do:
     # Here I change the parameters over time.
     estimator_kernel = Estimator_Hawkes()
     list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                       Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
-                       Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
+                       Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300)]
+                       # Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
     Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
     count_kernels = 0;
@@ -259,9 +259,9 @@ if do:
                                                                            len(list_of_kernels)))
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T, nb_of_guesses=nb_of_guesses,
                                                         kernel_weight=kernel, time_estimation=time, silent=silent)
-    GRAPH_kernels = Graph(estimator_kernel, the_update_functions, T, nb_of_guesses)
+    GRAPH_kernels = Graph_Hawkes(estimator_kernel, the_update_functions)
     GRAPH_kernels.estimation_hawkes_parameter_over_time(T_max=T)
-    estimator_kernel.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
+    estimator_kernel.DF.to_csv(r'/home/bianca/est/estimators.csv', index=False,
                                header=True)
 
 # I might have changed the parameters here in the code, so I come back to original version.
@@ -285,8 +285,8 @@ if do:
             "Time : {} out of : {}.".format(count_times, len(TIMES)))
         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                     times, nb_of_guesses, silent=silent)
-    GRAPH_MSE = Graph(estimator_MSE, the_update_functions, TIMES, nb_of_guesses)
-    GRAPH_MSE.MSE_convergence_estimators_limit_time(mini_T)
+    GRAPH_MSE = Graph_Hawkes(estimator_MSE, the_update_functions)
+    GRAPH_MSE.MSE_convergence_estimators_limit_time(mini_T, TIMES)
 
 
 
@@ -296,9 +296,9 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ######################################
+do = False  ######################################
 if do :
-    functions_change_point_analysis.change_point_plot(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
+    functions_change_point_analysis.change_point_plot(r'/home/bianca/est/estimators_new.csv',
                       width = 5, min_size = 5, n_bkps=1, model="l2", column_for_multi_plot_name= 'weight function')
 
 

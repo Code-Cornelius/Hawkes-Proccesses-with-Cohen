@@ -19,7 +19,7 @@ import functions_MLE
 from class_kernel import *
 from class_hawkes_process import *
 from class_estimator_hawkes import *
-from class_graph import *
+from class_graph_hawkes import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters
