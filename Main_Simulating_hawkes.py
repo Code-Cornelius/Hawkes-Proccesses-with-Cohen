@@ -221,7 +221,7 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = True ###################################### SIMPLE MULTI
+do = False ###################################### SIMPLE MULTI
 if do:
     estimator_multi = Estimator_Hawkes()
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
@@ -232,7 +232,7 @@ if do:
                            header=True)
 
 # -----------------------------------------------------------------------------------------------
-do = False  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
+do = True  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
 nb_of_times = 3
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
@@ -240,27 +240,28 @@ if do:
 
     # Here I change the parameters over time.
     estimator_kernel = Estimator_Hawkes()
-    list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                       Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300)]
-                       # Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
-    Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
-
-    count_kernels = 0;
-    count_times = 0
-    for time in Times:
-        count_kernels = 0
-        count_times += 1
-        HAWKSY.update_coef(time, the_update_functions, T_max=T)
-        print(HAWKSY)
-        for kernel in list_of_kernels:
-            count_kernels += 1
-            print("=" * 78)
-            print("Time : {} out of : {}. Kernel : {} out of : {}.".format(count_times, len(Times), count_kernels,
-                                                                           len(list_of_kernels)))
-            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T, nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=kernel, time_estimation=time, silent=silent)
+    estimator_kernel.append(pd.read_csv(r'/home/bianca/est/estimators_new.csv'))
+    # list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
+    #                    Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300)]
+    #                    # Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
+    # Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+    #
+    # count_kernels = 0;
+    # count_times = 0
+    # for time in Times:
+    #     count_kernels = 0
+    #     count_times += 1
+    #     HAWKSY.update_coef(time, the_update_functions, T_max=T)
+    #     print(HAWKSY)
+    #     for kernel in list_of_kernels:
+    #         count_kernels += 1
+    #         print("=" * 78)
+    #         print("Time : {} out of : {}. Kernel : {} out of : {}.".format(count_times, len(Times), count_kernels,
+    #                                                                        len(list_of_kernels)))
+    #         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T, nb_of_guesses=nb_of_guesses,
+    #                                                     kernel_weight=kernel, time_estimation=time, silent=silent)
     GRAPH_kernels = Graph_Hawkes(estimator_kernel, the_update_functions)
-    GRAPH_kernels.estimation_hawkes_parameter_over_time(T_max=T)
+    GRAPH_kernels.estimation_hawkes_parameter_over_time(separator_colour='weight function')
     estimator_kernel.DF.to_csv(r'/home/bianca/est/estimators.csv', index=False,
                                header=True)
 

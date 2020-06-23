@@ -42,8 +42,6 @@ class Graph_Hawkes(Graph):
         self.M = np.shape(self.ALPHA)[1]
         self.nb_of_guesses = estimator.DF['number of guesses'].max()
 
-    #### create another init that takes the same parameter, with the diff that it takes the path.
-    # another constructor :
     @classmethod
     def from_path(cls, path, parameters):
         # path has to be raw. with \\
@@ -52,7 +50,6 @@ class Graph_Hawkes(Graph):
         # get the max value which is M-1
         return cls(estimator, parameters)
 
-    # TODO: make more general -- don't assume that the name will always be the first
     def get_range(self, key, mean):
         variable = key[0]
         if variable == "nu":
@@ -60,6 +57,7 @@ class Graph_Hawkes(Graph):
         else:
             return (0.5 * mean, 1.5 * mean)
 
+    # TODO: make more general -- don't assume that the name will always be the first
     def get_param_info(self, key, mean):
         range = self.get_range(key, mean)
         param_dict = {'bins': 30,
@@ -70,96 +68,36 @@ class Graph_Hawkes(Graph):
                       }
         return param_dict
 
-    def get_fig_dict(self, separators, key):
+    def get_fig_dict_hist(self, separators, key):
         title = self.generate_title(separators, key)
-        fig_dict = {'title': title,
+        fig_dict = {'title': "Histogram" + title,
                     'xlabel': 'value',
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
 
-
-    # function estimation over time:
-    def estimation_hawkes_parameter_over_time(self, **kwargs):
-        # the list of func allows me to plot the line of true parameters.
-        # the kwargs are for the functions used in the parameters.
-
-        # isolating estimation of each type
-        # BIANCA-HERE you see, using dict is a good trick for upgrading to multi dimensional case.
-        #  I did that in the function written in "functions_change_point_analysis", which could be put in class graph.
-        #  The problem is that my functions in plot_functions take arrays, not dictionnaries. How to convert efficiently ?
-        estim_alpha = self.estimator.DF[self.estimator.DF['variable'] == "alpha"].copy()
-        estim_alpha_extr = (estim_alpha.groupby(['time estimation'])['value'].min(),
-                            estim_alpha.groupby(['time estimation'])['value'].max())
-
-        estim_beta = self.estimator.DF[self.estimator.DF['variable'] == "beta"].copy()
-        estim_beta_extr = (estim_beta.groupby(['time estimation'])['value'].min(),
-                           estim_beta.groupby(['time estimation'])['value'].max())
-
-        estim_nu = self.estimator.DF[self.estimator.DF['variable'] == "nu"].copy()
-        estim_nu_extr = (estim_nu.groupby(['time estimation'])['value'].min(),
-                         estim_nu.groupby(['time estimation'])['value'].max())
+    def get_fig_dict_plot(self, separators, key):
+        title = self.generate_title(separators, key,
+                                    "Only 10-90% of the interval is shown (boundary effect), starting from 0 until {}.",
+                                    [self.nb_of_guesses, self.T_max])
+        fig_dict = {'title': "Evolution of the estimation" + title,
+                    'xlabel': 'Time',
+                    'ylabel': 'Value'}
+        return fig_dict
 
 
 
-        extrem_time_estimation = estim_alpha['time estimation'].unique()  # list of times where I have data to plot.
+    def get_extremes(self, data):
+        estimation = data['time estimation'].unique()
+        values = data.groupby(['time estimation'])['value']
+        return (values.min(), values.max(), estimation)
+    #### create another init that takes the same parameter, with the diff that it takes the path.
+    # another constructor :
 
-        plot = sns.relplot(data=estim_alpha, x="time estimation", y="value",
-                           hue='weight function',  # style="weight function",
-                           # markers=True, dashes=False,
-                           kind="line", sort=True, ci=None)
-        title = " Evolution of the estimation of the estimator of the parameter $\\alpha$, \
-\nused {} estimations of the parameter. \
-\nOnly 10-90% of the interval is shown (boundary effect), starting from 0 until {}.". \
-            format(self.nb_of_guesses, self.T_max)
-        plot.fig.suptitle(title, verticalalignment='top', fontsize=12)
-        plt.plot(extrem_time_estimation, estim_alpha_extr[0],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        plt.plot(extrem_time_estimation, estim_alpha_extr[1],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        # TODO EXTREM CAREFUL TO LIST_OF_FUNC IN MULTI DIMENSIONAL
-        plt.plot(extrem_time_estimation,
-                 [(self.ALPHA[0][0])(time, **kwargs) for time in extrem_time_estimation],
-                 linestyle="solid", linewidth=0.4, color="r")
-        plt.savefig('estimation_alpha.png', dpi=800)
+    def get_true_values(self, data):
+        return data.groupby(['time estimation'])['true value'].mean().values
 
-        plot = sns.relplot(data=estim_beta, x="time estimation", y="value",
-                           hue='weight function',  # style="weight function",
-                           # markers=True, dashes=False,
-                           kind="line", sort=True, ci=None)
-        title = " Evolution of the estimation of the estimator of the parameter $\\beta$, \
-\nused {} estimations of the parameter. \
-\nOnly 10-90% of the interval is shown (boundary effect), starting from 0 until {}.". \
-            format(self.nb_of_guesses, self.T_max)
-        plot.fig.suptitle(title, verticalalignment='top', fontsize=12)
-        plt.plot(extrem_time_estimation, estim_beta_extr[0],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        plt.plot(extrem_time_estimation, estim_beta_extr[1],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        # TODO EXTREM CAREFUL TO LIST_OF_FUNC IN MULTI DIMENSIONAL
-        plt.plot(extrem_time_estimation,
-                 [(self.BETA[0][0])(time, **kwargs) for time in extrem_time_estimation],
-                 linestyle="solid", linewidth=0.4, color="r")
-        plt.savefig('estimation_beta.png', dpi=800)
-
-        plot = sns.relplot(data=estim_nu, x="time estimation", y="value",
-                           hue='weight function',  # style="weight function",
-                           # markers=True, dashes=False,
-                           kind="line", sort=True, ci=None)
-        title = " Evolution of the estimation of the estimator of the parameter $\\nu$, \
-\nused {} estimations of the parameter. \
-\nOnly 10-90% of the interval is shown (boundary effect), starting from 0 until {}.". \
-            format(self.nb_of_guesses, self.T_max)
-        plot.fig.suptitle(title, verticalalignment='top', fontsize=12)
-        plt.plot(extrem_time_estimation, estim_nu_extr[0],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        plt.plot(extrem_time_estimation, estim_nu_extr[1],
-                 linestyle="dashdot", linewidth=0.5, color="r")
-        # TODO EXTREM CAREFUL TO LIST_OF_FUNC IN MULTI DIMENSIONAL
-        plt.plot(extrem_time_estimation,
-                 [(self.NU[0])(time, **kwargs) for time in extrem_time_estimation],
-                 linestyle="solid", linewidth=0.4, color="r")
-        plt.savefig('estimation_nu.png', dpi=800)
-        return
+    def get_plot_data(self, data):
+        return data.groupby(['time estimation'])['value'].mean().values
 
     # work-in-progress
     def MSE_convergence_estimators_limit_time(self, mini_T, times):
