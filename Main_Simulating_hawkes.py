@@ -215,7 +215,7 @@ elif case == 4:
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-do = True ###################################### SIMPLE UNIQUE
+do = False ###################################### SIMPLE UNIQUE
 if do:
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
     print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
@@ -295,9 +295,10 @@ if do:
         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                     times, nb_of_guesses, silent=silent)
     GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
-    GRAPH_MSE.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
     estimator_MSE.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                                header=True)
+    GRAPH_MSE.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
+
 
 
 
