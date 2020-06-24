@@ -1,18 +1,23 @@
 ##### normal libraries
-import numpy as np
-import statistics as stat
-import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
-import scipy.stats
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time
+import numpy as np #maths library and arrays
+import statistics as stat
+import pandas as pd #dataframes
+import seaborn as sns #envrionement for plots
+from matplotlib import pyplot as plt #ploting
+import scipy.stats #functions of statistics
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time #allows to time event
+import warnings
+import math #quick math functions
+import cmath  #complex functions
 
 ##### my libraries
 import plot_functions
 import decorators_functions
 import classical_functions
 import recurrent_functions
+np.random.seed(124)
 
 ##### other files
 import functions_MLE
@@ -23,6 +28,7 @@ from class_graph import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters
+
 
 # defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
@@ -111,17 +117,23 @@ class Hawkes_process:
                     U = np.random.rand(1)
                     if i_where_from == 0:
                         aa[m_dims, i_where_from] = CDF_exp(U, self.NU[m_dims])
+                    # cases where the other processes can have an impact. If not big enough, it can't: ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
+                    # cases where it is big enough:
                     else:
                         aa[m_dims, i_where_from] = CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
                                                            self.BETA[i_where_from - 1, m_dims])
-            next_a_value = np.amin(aa)
             # next_a_index indicates the dimension in which the jump happens.
             if self.M > 1:
+                # it is tricky : first find where the min is (index) but it is flatten. So I recover coordinates with unravel index.
+                # I take [0] bc I only care about where the excitation comes from.
                 next_a_index = np.unravel_index(np.argmin(aa, axis=None), aa.shape)[0]
+            #otherwise, excitation always from 0 dim.
             else:
                 next_a_index = 0
+            # min value.
+            next_a_value = np.amin(aa)
             previous_jump = last_jump
             last_jump += next_a_value
 
@@ -138,7 +150,7 @@ class Hawkes_process:
             # previous lambda gives the lambda for simulation.
             # small lambda is the lambda in every dimension for plotting.
             for ii in range(self.M):
-                previous_lambda[next_a_index, ii] = previous_lambda[next_a_index, ii] * np.exp(
+                previous_lambda[next_a_index, ii] = previous_lambda[next_a_index, ii] * math.exp(
                     - self.BETA[next_a_index, ii] * next_a_value) + \
                                                     self.ALPHA[next_a_index, ii]
 
