@@ -288,7 +288,7 @@ if do:
         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                     times, nb_of_guesses, silent=silent)
     GRAPH_MSE = Graph_Hawkes(estimator_MSE, the_update_functions)
-    GRAPH_MSE.MSE_convergence_estimators_limit_time(mini_T, TIMES)
+    GRAPH_MSE.convergence_estimators_limit_time(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
 
 
 
