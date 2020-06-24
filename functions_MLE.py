@@ -25,8 +25,8 @@ import recurrent_functions
 from class_kernel import *
 from class_hawkes_process import *
 import class_hawkes_process
+from class_Estimator_Hawkes import *
 from class_Graph_Estimator_Hawkes import *
-from class_graph_hawkes import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
 import functions_fct_evol_parameters

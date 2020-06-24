@@ -21,8 +21,8 @@ import classical_functions
 import recurrent_functions
 
 ##### other files
+from class_Estimator_Hawkes import *
 from class_Graph_Estimator_Hawkes import *
-from class_graph_hawkes import *
 from class_hawkes_process import *
 from class_kernel import *
 import functions_fct_evol_parameters
