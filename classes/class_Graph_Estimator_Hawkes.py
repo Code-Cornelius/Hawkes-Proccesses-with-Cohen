@@ -49,7 +49,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                       }
         return dict_param
 
-    def get_fig_dict_hist(self, separators, key):
+    def get_dict_fig_hist(self, separators, key):
         title = self.generate_title(separators, key)
         fig_dict = {'title': "Histogram" + title,
                     'xlabel': 'value',

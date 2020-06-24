@@ -4,7 +4,7 @@
 
 ##### other files
 from functions_derivatives_MLE import *
-
+from classes.class_hawkes_process import *
 
 
 

@@ -1,9 +1,9 @@
 import numpy as np
 import statistics as stat
 
-from generic_functions import *
+from classical_functions import *
 import plot_functions
-from useful_functions import *
+from recurrent_functions import *
 
 
 import functions_MLE
