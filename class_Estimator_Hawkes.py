@@ -18,12 +18,8 @@ from classes.class_estimator import *
 from classes.class_graph_estimator import *
 
 ##### other files
-from class_Graph_Estimator_Hawkes import *
 from class_hawkes_process import *
 from class_kernel import *
-import functions_change_point_analysis
-import functions_fct_evol_parameters
-import functions_general_for_Hawkes
 
 
 class Estimator_Hawkes(Estimator):

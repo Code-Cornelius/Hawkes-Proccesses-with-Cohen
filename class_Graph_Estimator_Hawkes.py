@@ -76,7 +76,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return fig_dict
 
     def get_fig_dict_plot(self, separators, key):
-        title = self.generate_title(separators, key,
+        title = self.generate_title(separators, key, "",
                                     "Only 10-90% of the interval is shown (boundary effect), starting from 0 until {}.",
                                     [self.nb_of_guesses, self.T_max])
         fig_dict = {'title': "Evolution of the estimation" + title,
@@ -91,10 +91,10 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     #### create another init that takes the same parameter, with the diff that it takes the path.
     # another constructor :
     def get_true_values(self, data):
-        return self.get_specific_data(self, data, 'true value')
+        return self.get_specific_data(data, 'true value')
 
     def get_plot_data(self, data):
-        return self.get_specific_data(self, data, 'value')
+        return self.get_specific_data(data, 'value')
 
     # BIANCA 'time estimation' outside.
     def get_specific_data(self, data, str):

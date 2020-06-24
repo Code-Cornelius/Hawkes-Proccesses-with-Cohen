@@ -23,10 +23,7 @@ np.random.seed(124)
 
 ##### other files
 from class_Estimator_Hawkes import *
-from class_Graph_Estimator_Hawkes import *
 from class_kernel import *
-import functions_change_point_analysis
-import functions_fct_evol_parameters
 import functions_general_for_Hawkes
 
 

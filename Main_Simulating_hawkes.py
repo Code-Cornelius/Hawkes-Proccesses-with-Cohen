@@ -222,8 +222,12 @@ if do:
 
 do = True ###################################### TEST FROM CSV
 if do:
-    Graph_Estimator_Hawkes.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv', the_update_functions)
-
+    graph_test = Graph_Estimator_Hawkes.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv', the_update_functions)
+    graph_test.draw_evolution_parameter_over_time(separator_colour='weight function')
+    graph_test.draw_histogram()
+    TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+    graph_test = Graph_Estimator_Hawkes.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', the_update_functions)
+    graph_test.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
 #-----------------------------------------------------------------------------------------------
 do = False ###################################### SIMPLE MULTI
 if do:
@@ -249,7 +253,7 @@ if do:
                        Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
     Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
-    count_kernels = 0;
+    count_kernels = 0
     count_times = 0
     for time in Times:
         count_kernels = 0
@@ -291,7 +295,7 @@ if do:
         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                     times, nb_of_guesses, silent=silent)
     GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
-    GRAPH_MSE.convergence_estimators_limit_time(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
+    GRAPH_MSE.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
     estimator_MSE.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                                header=True)
 
