@@ -232,7 +232,7 @@ if do:
                            header=True)
 
 # -----------------------------------------------------------------------------------------------
-do = True  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
+do = False  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
 nb_of_times = 3
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
@@ -271,13 +271,14 @@ HAWKSY = Hawkes_process(tt, PARAMETERS)
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ###################################### MSE
+do = True ###################################### MSE
 if do:
     estimator_MSE = Estimator_Hawkes()
     TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
              50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T, 130 * mini_T,
              140 * mini_T, 150 * mini_T]
-    TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+    TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T]
+    # , 20 * mini_T, 25 * mini_T, 30 * mini_T]
     count_times = 0
     for times in TIMES:
         count_times += 1
