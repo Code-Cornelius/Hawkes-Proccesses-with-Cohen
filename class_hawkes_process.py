@@ -17,17 +17,17 @@ import plot_functions
 import decorators_functions
 import classical_functions
 import recurrent_functions
+from classes.class_estimator import *
+from classes.class_graph_estimator import *
 np.random.seed(124)
 
 ##### other files
-import functions_MLE
-from class_kernel import *
-from class_hawkes_process import *
 from class_estimator_hawkes import *
 from class_graph_hawkes import *
-import functions_general_for_Hawkes
+from class_kernel import *
 import functions_change_point_analysis
 import functions_fct_evol_parameters
+import functions_general_for_Hawkes
 
 
 # defaut kernel, useful for default argument.

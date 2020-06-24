@@ -14,44 +14,23 @@ import plot_functions
 import decorators_functions
 import classical_functions
 import recurrent_functions
+from classes.class_estimator import *
+from classes.class_graph_estimator import *
 
 ##### other files
-import functions_MLE
-import class_kernel
+from class_estimator_hawkes import *
+from class_graph_hawkes import *
 from class_hawkes_process import *
-from class_estimator import *
-from class_graph import *
-import functions_general_for_Hawkes
+from class_kernel import *
 import functions_change_point_analysis
+import functions_MLE
 import functions_fct_evol_parameters
+import functions_general_for_Hawkes
 
 
 
 
 
-##########################################
-################parameters################
-##########################################
-
-# timing
-# 1D
-T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
-# 2D
-T0, mini_T = 0, 120
-
-# so here I should have around 500 jumps.
-#T = 10 * mini_T
-# 2000 JUMPS
-T = 200 * mini_T
-
-####################################################################### TIME
-# number of max jump
-nb_of_sim, M_PREC = 50000,200000
-M_PREC += 1
-# a good precision is 500*(T-T0)
-
-
-tt = np.linspace(T0, T, M_PREC, endpoint=True)
 '''
 ALPHA = [[0.5, 0.3, 0.3],
          [0.3, 0.5, 0.3],
@@ -105,6 +84,29 @@ print("=" * 78)
 print("=" * 78)
 print("=" * 78)
 np.random.seed(124)
+##########################################
+################parameters################
+##########################################
+
+# timing
+# 1D
+#T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
+# 2D
+T0, mini_T = 0, 120
+
+# so here I should have around 500 jumps.
+#T = 10 * mini_T
+# 2000 JUMPS
+T = 200 * mini_T
+
+####################################################################### TIME
+# number of max jump
+nb_of_sim, M_PREC = 50000,200000
+M_PREC += 1
+# a good precision is 500*(T-T0)
+
+
+tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
 HAWKSY = Hawkes_process(tt, PARAMETERS)
 
@@ -145,7 +147,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 1, 60 * mini_T
+    nb_of_guesses, T = 3, 70 * mini_T
 else:
     nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -213,7 +215,7 @@ elif case == 4:
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-do = False ###################################### SIMPLE UNIQUE
+do = True ###################################### SIMPLE UNIQUE
 if do:
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
     print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
@@ -233,7 +235,7 @@ if do:
 
 # -----------------------------------------------------------------------------------------------
 do = False  ###################################### OVER THE TIME ESTIMATION, DIFFERENT KERNELS
-nb_of_times = 50
+nb_of_times = 10
 if do:
     HAWKSY = Hawkes_process(tt, PARAMETERS)
     # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
@@ -288,7 +290,8 @@ if do:
                                                     times, nb_of_guesses, silent=silent)
     GRAPH_MSE = Graph_Hawkes(estimator_MSE, the_update_functions)
     GRAPH_MSE.convergence_estimators_limit_time(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
-
+    estimator_MSE.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
+                               header=True)
 
 
 

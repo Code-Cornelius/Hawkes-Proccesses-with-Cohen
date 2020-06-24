@@ -1,4 +1,4 @@
-import cmath
+import math
 import numpy as np
 
 
@@ -23,8 +23,8 @@ def moutain_jump(time, when_jump, a, b, base_value, T_max):
 
 #
 def periodic_stop(time, T_max, a, base_value):  # need longer realisation like 80 mini_T
-    if time / T_max * 2 * cmath.pi * 2.25 < 2 * cmath.pi * 1.75:
-        return base_value + a * cmath.cos(time / T_max * 2 * cmath.pi * 2.25) * cmath.cos(
-            time / T_max * 2 * cmath.pi * 2.25)
+    if time / T_max * 2 * math.pi * 2.25 < 2 * math.pi * 1.75:
+        return base_value + a * math.cos(time / T_max * 2 * math.pi * 2.25) * math.cos(
+            time / T_max * 2 * math.pi * 2.25)
     else:
         return base_value

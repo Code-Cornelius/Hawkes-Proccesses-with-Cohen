@@ -1,11 +1,34 @@
-import numpy as np
-import scipy.stats
-
+##### normal libraries
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import numpy as np #maths library and arrays
+import statistics as stat
+import pandas as pd #dataframes
+import seaborn as sns #envrionement for plots
+from matplotlib import pyplot as plt #ploting
+import scipy.stats #functions of statistics
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time #allows to time event
+import warnings
+import math #quick math functions
+import cmath  #complex functions
 from inspect import signature #used in the method eval of the class
 
+##### my libraries
+import plot_functions
+import decorators_functions
+import classical_functions
+import recurrent_functions
+from classes.class_estimator import *
+from classes.class_graph_estimator import *
+np.random.seed(124)
+
+##### other files
 
 
 
+
+
+#-------------------------------------------------------------------------------------------------------
 # list of the possible kernels:
             # fct_top_hat
             # fct_plain
@@ -20,7 +43,7 @@ from inspect import signature #used in the method eval of the class
 #                    Kernel(fct_top_hat, name="normal top hat", a=-200, b=200),
 #                    Kernel(fct_truncnorm, name="wide truncnorm", a=-500, b=500, sigma=350),
 #                    Kernel(fct_truncnorm, name="normal truncnorm", a=-350, b=350, sigma=250)]
-
+#-------------------------------------------------------------------------------------------------------
 class Kernel:
     # kernel is a class of objects, where using eval evaluates the function given as parameter
     # the evaluation gives back a list of np.array

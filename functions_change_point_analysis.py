@@ -21,13 +21,12 @@ import classical_functions
 import recurrent_functions
 
 ##### other files
-import functions_MLE
-import class_kernel
-from class_hawkes_process import *
 from class_estimator_hawkes import *
 from class_graph_hawkes import *
-import functions_general_for_Hawkes
+from class_hawkes_process import *
+from class_kernel import *
 import functions_fct_evol_parameters
+import functions_general_for_Hawkes
 
 
 

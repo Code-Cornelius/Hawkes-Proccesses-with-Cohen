@@ -24,6 +24,7 @@ import recurrent_functions
 ##### other files
 from class_kernel import *
 from class_hawkes_process import *
+import class_hawkes_process
 from class_estimator_hawkes import *
 from class_graph_hawkes import *
 import functions_general_for_Hawkes
@@ -260,8 +261,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     flag, MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
     return flag, ALPHA, BETA, MU
 
-
-def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
+def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
                   silent=True):  # BIANCA-HERE (*) BIANCA a better way to do that?
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
