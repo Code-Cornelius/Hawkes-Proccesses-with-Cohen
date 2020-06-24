@@ -20,7 +20,7 @@ from classes.class_estimator import *
 from classes.class_graph_estimator import *
 
 ##### other files
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 from class_graph_hawkes import *
 from class_hawkes_process import *
 from class_kernel import *

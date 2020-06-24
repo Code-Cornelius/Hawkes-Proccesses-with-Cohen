@@ -18,7 +18,7 @@ from classes.class_estimator import *
 from classes.class_graph_estimator import *
 
 ##### other files
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 from class_graph_hawkes import *
 from class_hawkes_process import *
 from class_kernel import *
@@ -55,7 +55,7 @@ BETA = [[100, 5, 5, 0, 0, 0],
         [0, 0, 0, 0, 3, 3]]
 MU = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 '''
-#'''
+'''
 ALPHA = [[0.4, 0.1], [0.1, 0.4]]
 BETA = [[1.2, 0.6], [0.6, 1.2]]
 MU = [0.2, 0.2]
@@ -64,7 +64,7 @@ MU = [0.2, 0.2]
 # BETA = [[20, 20], [10, 10]]
 # MU = [0.7, 0.3]
 #'''
-'''
+#'''
 ALPHA = [[1.75]]
 BETA = [[2]]
 MU = [0.2]
@@ -90,9 +90,9 @@ np.random.seed(124)
 
 # timing
 # 1D
-#T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
+T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
 # 2D
-T0, mini_T = 0, 120
+#T0, mini_T = 0, 120
 
 # so here I should have around 500 jumps.
 #T = 10 * mini_T
@@ -147,7 +147,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 3, 70 * mini_T
+    nb_of_guesses, T = 3, 30 * mini_T
 else:
     nb_of_guesses, T = 50, 100 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -220,15 +220,17 @@ if do:
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
     print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
 
-
+do = True ###################################### TEST FROM CSV
+if do:
+    Graph_Estimator_Hawkes.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv', the_update_functions)
 
 #-----------------------------------------------------------------------------------------------
 do = False ###################################### SIMPLE MULTI
 if do:
     estimator_multi = Estimator_Hawkes()
     functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent = silent)
-    GRAPH_multi = Graph_Hawkes(estimator_multi, the_update_functions)
-    GRAPH_multi.histogram_of_realisations_of_estimator()
+    GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, the_update_functions)
+    GRAPH_multi.draw_histogram()
 
     estimator_multi.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                            header=True)
@@ -261,8 +263,8 @@ if do:
                                                                            len(list_of_kernels)))
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T, nb_of_guesses=nb_of_guesses,
                                                         kernel_weight=kernel, time_estimation=time, silent=silent)
-    GRAPH_kernels = Graph_Hawkes(estimator_kernel, the_update_functions)
-    GRAPH_kernels.estimation_hawkes_parameter_over_time(separator_colour='weight function')
+    GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
+    GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
     estimator_kernel.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                                header=True)
 
@@ -288,7 +290,7 @@ if do:
             "Time : {} out of : {}.".format(count_times, len(TIMES)))
         functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                     times, nb_of_guesses, silent=silent)
-    GRAPH_MSE = Graph_Hawkes(estimator_MSE, the_update_functions)
+    GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
     GRAPH_MSE.convergence_estimators_limit_time(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
     estimator_MSE.DF.to_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators.csv', index=False,
                                header=True)

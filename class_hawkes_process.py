@@ -22,7 +22,7 @@ from classes.class_graph_estimator import *
 np.random.seed(124)
 
 ##### other files
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 from class_graph_hawkes import *
 from class_kernel import *
 import functions_change_point_analysis

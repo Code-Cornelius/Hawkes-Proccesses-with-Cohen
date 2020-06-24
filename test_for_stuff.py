@@ -1,4 +1,4 @@
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 import time
 
 M = 1000

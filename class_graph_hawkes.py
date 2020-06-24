@@ -18,7 +18,7 @@ from classes.class_estimator import *
 from classes.class_graph_estimator import *
 
 ##### other files
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 from class_hawkes_process import *
 from class_kernel import *
 import functions_change_point_analysis
@@ -28,7 +28,7 @@ import functions_general_for_Hawkes
 
 
 # batch_estimation is one dataframe with the estimators.
-class Graph_Hawkes(Graph):
+class Graph_Estimator_Hawkes(Graph_Estimator):
     def __init__(self, estimator, fct_parameters):
         # Initialise the Graph with the estimator
         super().__init__(estimator, ['variable', 'm', 'n'])
@@ -50,7 +50,7 @@ class Graph_Hawkes(Graph):
         # get the max value which is M-1
         return cls(estimator, parameters)
 
-    def get_range(self, key, mean):
+    def get_optimal_range_histogram(self, key, mean):
         variable = key[0]
         if variable == "nu":
             return (0, 2 * mean)
@@ -58,15 +58,15 @@ class Graph_Hawkes(Graph):
             return (0.5 * mean, 1.5 * mean)
 
     # TODO: make more general -- don't assume that the name will always be the first
-    def get_param_info(self, key, mean):
-        range = self.get_range(key, mean)
-        param_dict = {'bins': 30,
+    def get_dict_param_for_plot(self, key, mean):
+        range = self.get_optimal_range_histogram(key, mean)
+        dict_param = {'bins': 30,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': range,
                       'cumulative': True
                       }
-        return param_dict
+        return dict_param
 
     def get_fig_dict_hist(self, separators, key):
         title = self.generate_title(separators, key)
@@ -83,19 +83,30 @@ class Graph_Hawkes(Graph):
                     'xlabel': 'Time',
                     'ylabel': 'Value'}
         return fig_dict
-
+    # BIANCA estimation in another file
     def get_extremes(self, data):
         estimation = data['time estimation'].unique()
         values = data.groupby(['time estimation'])['value']
         return (values.min(), values.max(), estimation)
     #### create another init that takes the same parameter, with the diff that it takes the path.
     # another constructor :
-
     def get_true_values(self, data):
-        return data.groupby(['time estimation'])['true value'].mean().values
+        return self.get_specific_data(self, data, 'true value')
 
     def get_plot_data(self, data):
-        return data.groupby(['time estimation'])['value'].mean().values
+        return self.get_specific_data(self, data, 'value')
+
+    # BIANCA 'time estimation' outside.
+    def get_specific_data(self, data, str):
+        '''
+        returns the data grouped by the particular attribute,
+        and we focus on data given by column str, computing the means and returning an array.
+
+        :param data:
+        :param str:
+        :return:
+        '''
+        return data.groupby(['time estimation'])[str].mean().values
 
     def get_computation_plot_fig_dict(self):
         fig_dict = {

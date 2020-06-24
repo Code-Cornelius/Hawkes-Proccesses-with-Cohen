@@ -25,7 +25,7 @@ import recurrent_functions
 from class_kernel import *
 from class_hawkes_process import *
 import class_hawkes_process
-from class_estimator_hawkes import *
+from class_Graph_Estimator_Hawkes import *
 from class_graph_hawkes import *
 import functions_general_for_Hawkes
 import functions_change_point_analysis
@@ -90,14 +90,14 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # 3. nb of explosions, if there are explosions it means I need to be more gentle to find the objective
         if number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
                                                                       2) > 50 * M * M and nb_of_explosions < 2:
-            multi = 1 / M ** 3
+            multi = 1 / M ** 4
         elif number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
                                                                         2) > 2 * M * M and nb_of_explosions < 5:
-            multi = 0.6 / M ** 3
+            multi = 0.6 / M ** 4
         elif number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
-            multi = 0.2 / M ** 3
+            multi = 0.2 / M ** 4
         elif number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
-            multi = 0.05 / M ** 3
+            multi = 0.05 / M ** 4
         elif number_of_step_crash < 1200:
             variable_in_armijo = MU, ALPHA, BETA
             multi, changed = armijo_rule(df, ddf, variable_in_armijo, direction, a=multi, sigma=0.5, b=b)
@@ -241,7 +241,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     BETA = 0.2 + 1.1 * M * M * ALPHA
 
     # ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) * 0.99
-    # BETA = np.array([[1.2, 0.8], [0.8, 1.2]]) * 0.99
+    # BETA = np.array([[1.2, 0.6], [0.6, 1.2]]) * 0.99
     # MU = np.array([0.2, 0.2]) * 0.99
 
     # ALPHA = np.array([[1, 2], [1, 2]])
