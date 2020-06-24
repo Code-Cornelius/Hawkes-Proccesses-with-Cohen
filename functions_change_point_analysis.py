@@ -24,8 +24,8 @@ import recurrent_functions
 import functions_MLE
 import class_kernel
 from class_hawkes_process import *
-from class_estimator import *
-from class_graph import *
+from class_estimator_hawkes import *
+from class_graph_hawkes import *
 import functions_general_for_Hawkes
 import functions_fct_evol_parameters
 
@@ -36,7 +36,8 @@ def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_mu
     # path should be with \\
     # path is where the file is located
     # column_for_multi_plot_name a string
-    estimator = Estimator(pd.read_csv(path))
+    estimator = Estimator_Hawkes()
+    estimator.append(pd.read_csv(path))
     # get the max value which is M-1
     M = estimator.DF["m"].max() + 1
 
