@@ -150,9 +150,15 @@ class Hawkes_process:
             # previous lambda gives the lambda for simulation.
             # small lambda is the lambda in every dimension for plotting.
             for ii in range(self.M):
-                previous_lambda[next_a_index, ii] = previous_lambda[next_a_index, ii] * math.exp(
-                    - self.BETA[next_a_index, ii] * next_a_value) + \
-                                                    self.ALPHA[next_a_index, ii]
+                for jj in range(self.M):
+                    if jj == next_a_index:
+                        previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
+                            - self.BETA[jj, ii] * next_a_value) + \
+                                                            self.ALPHA[jj, ii]
+                    else :
+                        previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
+                            - self.BETA[jj, ii] * next_a_value)
+
 
             if plot_bool:
                 # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
