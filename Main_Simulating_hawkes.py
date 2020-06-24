@@ -1,27 +1,12 @@
 ##### normal libraries
-import numpy as np
-import statistics as stat
-import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
-import scipy.stats
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time
 
 
 ##### my libraries
-import plot_functions
-import decorators_functions
-import classical_functions
-import recurrent_functions
-from classes.class_estimator import *
-from classes.class_graph_estimator import *
 
 ##### other files
-from class_Estimator_Hawkes import *
-from class_Graph_Estimator_Hawkes import *
-from class_hawkes_process import *
-from class_kernel import *
+from classes.class_Graph_Estimator_Hawkes import *
+from classes.class_hawkes_process import *
+from classes.class_kernel import *
 import functions_change_point_analysis
 import functions_MLE
 import functions_fct_evol_parameters

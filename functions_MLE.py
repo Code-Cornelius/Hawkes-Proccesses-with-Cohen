@@ -1,35 +1,8 @@
 # normal libraries
-import numpy as np #maths library and arrays
-import statistics as stat
-import pandas as pd #dataframes
-import seaborn as sns #envrionement for plots
-from matplotlib import pyplot as plt #ploting
-import scipy.stats #functions of statistics
-import scipy.integrate  # for quad
-import scipy.integrate  # for the method quad allows integration
-import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time #allows to time event
-from inspect import signature
-import warnings
-import math #quick math functions
-import cmath  #complex functions
 
 ##### my libraries
-import plot_functions
-import decorators_functions
-import classical_functions
-import recurrent_functions
 
 ##### other files
-from class_kernel import *
-from class_hawkes_process import *
-import class_hawkes_process
-from class_Estimator_Hawkes import *
-from class_Graph_Estimator_Hawkes import *
-import functions_general_for_Hawkes
-import functions_change_point_analysis
-import functions_fct_evol_parameters
 from functions_derivatives_MLE import *
 
 

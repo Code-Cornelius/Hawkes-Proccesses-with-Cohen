@@ -1,4 +1,4 @@
-from class_Estimator_Hawkes import *
+from classes.class_Estimator_Hawkes import *
 import time
 
 M = 1000
