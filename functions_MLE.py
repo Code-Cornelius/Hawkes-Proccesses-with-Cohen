@@ -61,17 +61,17 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # 1. if we are at the beg of the iterations and convergence
         # 2. if we are not too close yet of the objective, the derivative equal to 0. One scale by M bc more coeff implies bigger derivative
         # 3. nb of explosions, if there are explosions it means I need to be more gentle to find the objective
-        if number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+        if number_of_step_crash - reset_index < 10*M and np.linalg.norm(derivative,
                                                                       2) > 50 * M * M and nb_of_explosions < 2:
             multi = 1 / M ** 4
-        elif number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+        elif number_of_step_crash - reset_index < 10*M and np.linalg.norm(derivative,
                                                                         2) > 2 * M * M and nb_of_explosions < 5:
             multi = 0.6 / M ** 4
-        elif number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
+        elif number_of_step_crash - reset_index < 100*M and np.linalg.norm(derivative, 2) > 0.01 * M * M:
             multi = 0.2 / M ** 4
-        elif number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
+        elif number_of_step_crash < 500*M:  # and np.linalg.norm(derivative, 2) > 0.1*M:
             multi = 0.05 / M ** 4
-        elif number_of_step_crash < 1200:
+        elif number_of_step_crash < 1200* M:
             variable_in_armijo = MU, ALPHA, BETA
             multi, changed = armijo_rule(df, ddf, variable_in_armijo, direction, a=multi, sigma=0.5, b=b)
         # else :
@@ -213,9 +213,9 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     ALPHA = np.full((M, M), 0.7)
     BETA = 0.2 + 1.1 * M * M * ALPHA
 
-    # ALPHA = np.array([[0.4, 0.1], [0.1, 0.4]]) * 0.99
-    # BETA = np.array([[1.2, 0.6], [0.6, 1.2]]) * 0.99
-    # MU = np.array([0.2, 0.2]) * 0.99
+    ALPHA = np.array([[2, 1], [1, 2]]) * 0.99
+    BETA = np.array([[5, 3], [3, 5]]) * 0.99
+    MU = np.array([0.2, 0.2]) * 0.99
 
     # ALPHA = np.array([[1, 2], [1, 2]])
     # BETA = np.array([[5, 10], [5, 10]])
@@ -246,7 +246,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
     while not flag_success_convergence:  # BIANCA try catch and stuff ? (**)
         intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
         w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
-        flag_success_convergence, alpha_hat, beta_hat, mu_hat = functions_MLE.call_newton_raph_MLE_opt(time_real, T_max,
+        flag_success_convergence, alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max,
                                                                                                        w, silent=silent)
     _, M = np.shape(alpha_hat)
     for s in range(M):

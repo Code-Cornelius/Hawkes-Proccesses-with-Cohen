@@ -40,16 +40,18 @@ BETA = [[100, 5, 5, 0, 0, 0],
         [0, 0, 0, 0, 3, 3]]
 MU = [0.3, 0.3, 0.3, 0.3, 0.3, 0.3]
 '''
-'''
-ALPHA = [[0.4, 0.1], [0.1, 0.4]]
-BETA = [[1.2, 0.6], [0.6, 1.2]]
+#'''
+ALPHA = [[2, 1],
+         [1, 2]]
+BETA = [[5, 3],
+        [3, 5]]
 MU = [0.2, 0.2]
 
 # ALPHA = [[2, 0], [0, 3]]
 # BETA = [[20, 20], [10, 10]]
 # MU = [0.7, 0.3]
 #'''
-#'''
+'''
 ALPHA = [[1.75]]
 BETA = [[2]]
 MU = [0.2]
@@ -75,9 +77,9 @@ np.random.seed(124)
 
 # timing
 # 1D
-T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
+#T0, mini_T = 0, 35 # 50 jumps for my uni variate stuff
 # 2D
-#T0, mini_T = 0, 120
+T0, mini_T = 0, 120
 
 # so here I should have around 500 jumps.
 #T = 10 * mini_T
@@ -132,9 +134,9 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 3, 30 * mini_T
+    nb_of_guesses, T = 3, 130 * mini_T
 else:
-    nb_of_guesses, T = 50, 100 * mini_T
+    nb_of_guesses, T = 50, 120 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 ################################################
 ################################################
