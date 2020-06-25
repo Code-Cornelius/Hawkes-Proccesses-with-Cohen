@@ -32,16 +32,24 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return cls(estimator, parameters)
 
     def get_optimal_range_histogram(self, key, mean):
+        '''
+        by experience, the best range for parameters is the following.
+        It is then scaled up depending on the mean value.
+
+        :param key:
+        :param mean:
+        :return:
+        '''
         variable = key[0]
         if variable == "nu":
-            return (0, 2 * mean)
+            return (0.1, 2 * mean)
         else:
             return (0.5 * mean, 1.5 * mean)
 
     # TODO: make more general -- don't assume that the name will always be the first
-    def get_dict_param_for_plot(self, key, mean):
+    def get_dict_plot_param_for_hist(self, key, mean):
         range = self.get_optimal_range_histogram(key, mean)
-        dict_param = {'bins': 30,
+        dict_param = {'bins': 35,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': range,
@@ -56,7 +64,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
 
-    def get_fig_dict_plot(self, separators, key):
+    def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         title = self.generate_title(separators, key, "",
                                     "Only 10-90% of the interval is shown (boundary effect), starting from 0 until {}.",
                                     [self.nb_of_guesses, self.T_max])
@@ -64,21 +72,23 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                     'xlabel': 'Time',
                     'ylabel': 'Value'}
         return fig_dict
-    # BIANCA estimation in another file
-    def get_extremes(self, data):
-        estimation = data['time estimation'].unique()
-        values = data.groupby(['time estimation'])['value']
-        return (values.min(), values.max(), estimation)
+
+    evolution_name = 'time estimation'
+    def get_evolution_parameter(self,data):
+        return data[Graph_Estimator_Hawkes.evolution_name].unique()
+
+    def get_evolution_extremes(self, data):
+        values = data.groupby([Graph_Estimator_Hawkes.evolution_name])['value']
+        return (values.min(), values.max())
     #### create another init that takes the same parameter, with the diff that it takes the path.
     # another constructor :
-    def get_true_values(self, data):
-        return self.get_specific_data(data, 'true value')
+    def get_evolution_true_value(self, data):
+        return self.get_evolution_specific_data(data, 'true value')
 
-    def get_plot_data(self, data):
-        return self.get_specific_data(data, 'value')
+    def get_evolution_plot_data(self, data):
+        return self.get_evolution_specific_data(data, 'value')
 
-    # BIANCA 'time estimation' outside.
-    def get_specific_data(self, data, str):
+    def get_evolution_specific_data(self, data, str):
         '''
         returns the data grouped by the particular attribute,
         and we focus on data given by column str, computing the means and returning an array.
@@ -87,7 +97,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         :param str:
         :return:
         '''
-        return data.groupby(['time estimation'])[str].mean().values
+        return data.groupby([Graph_Estimator_Hawkes.evolution_name])[str].mean().values
 
     def get_computation_plot_fig_dict(self):
         fig_dict = {
@@ -98,8 +108,16 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         }
         return fig_dict
 
-    def get_times_plot(self, mini_T, times):
-        return [times[i] // mini_T * 50 for i in range(len(times))]
+    def rescale_time_plot(self, rescale_factor, times):
+        # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.
+        return [times[i] // rescale_factor * 50 for i in range(len(times))]
 
     def rescale_sum(self, sum, times):
+        '''
+        rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
+
+        :param sum:
+        :param times:
+        :return:
+        '''
         return sum / self.nb_of_guesses
