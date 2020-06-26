@@ -14,24 +14,3 @@ def multi_list_generator(size):
                 break
         ans.append(medium_list)  # no copy because recreated every j
     return ans
-
-#BIANCA-HERE if we create a ESTIM-HP then we can put that function inside of the class.
-def mean_HP(estimator, separator = None):
-    ## separators is a list, of the estimators to gather together.
-    separators = ['variable', 'm', 'n']
-    if separator is not None:
-        for strg in separator: separators.append(strg)
-    dict_of_means = estimator.DF.groupby(separators)['value'].mean()
-    key_parameters = ['nu', 'alpha', 'beta']
-    ans_N, ans_A, ans_B = [], [], []
-    M = estimator.DF["m"].max() + 1
-    for i in range(M):
-        ans_N.append(dict_of_means[('nu', i, 0)])
-        for j in range(M):
-            if not j :
-                ans_A.append([])
-                ans_B.append([])
-            ans_A[i].append(dict_of_means[('alpha', i, j)])
-            ans_B[i].append(dict_of_means[('beta', i, j)])
-
-    return [ans_N, ans_A, ans_B]
