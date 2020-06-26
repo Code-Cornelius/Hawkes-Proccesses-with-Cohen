@@ -1,5 +1,5 @@
 import classical_functions
-import numpy
+import numpy as np
 
 
 # e is the error.
