@@ -1,6 +1,7 @@
 import classical_functions
 import numpy as np
 
+from Errors.Error_convergence import Error_convergence
 
 # e is the error.
 # tol is the each step tolerance
@@ -44,9 +45,8 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # compute the shift
         hessian = ddf(MU, ALPHA, BETA)
         # if not invertible you re do the simulations. Solve is also more effective than computing the inverse
-        # BIANCA (**)
         if not classical_functions.is_invertible(hessian):
-            return False, 1, 1, 1
+            raise Error_convergence("Hessian is not invertible")
         direction = np.linalg.solve(hessian, derivative)
 
         # test :print(previous_Rs);;print(previous_Rs_dash_dash);print(previous_denomR)
@@ -108,10 +108,9 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
                     x0[i] = 0.1
             elif x0[i] < -0.01:
                 x0[i] = - x0[i]
-
         # In order to avoid infinite loops, I check if there was too many blow ups. If there are too many, I return flag as false.
         if nb_of_explosions > 10:
-            return False, 1, 1, 1
+            raise Error_convergence("algorithms fails to find a starting point")
 
         # normally step won't be used. It is a dummy variable "moved or not". (under Armijo)
         step = np.linalg.norm(x0 - old_x0, 2)
@@ -128,7 +127,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         derivative = df(MU, ALPHA, BETA)
 
     # True because it was successful.
-    return True, MU, ALPHA, BETA
+    return MU, ALPHA, BETA
 
 #return 3 things, first the coefficient by which to multiply the stepest descent.
 # also which direction has to change.

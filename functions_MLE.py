@@ -1,6 +1,8 @@
 # normal libraries
+import warnings
 
 ##### my libraries
+from Errors.Error_convergence import *
 
 ##### other files
 from functions_MLE_algo import newtons_method_multi_MLE
@@ -18,10 +20,10 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     MU = np.full(M, 0.1)
     ALPHA = np.full((M, M), 0.7)
     BETA = 0.2 + 1.1 * M * M * ALPHA
-
-    ALPHA = np.array([[2, 1], [1, 2]]) * 0.99
-    BETA = np.array([[5, 3], [3, 5]]) * 0.99
-    MU = np.array([0.2, 0.2]) * 0.99
+    
+    # ALPHA = np.array([[2, 1], [1, 2]]) * 0.99
+    # BETA = np.array([[5, 3], [3, 5]]) * 0.99
+    # MU = np.array([0.2, 0.2]) * 0.99
 
     # ALPHA = np.array([[1, 2], [1, 2]])
     # BETA = np.array([[5, 10], [5, 10]])
@@ -37,23 +39,17 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
     ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
 
-    flag, MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
-    return flag, ALPHA, BETA, MU
+    MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
+    return ALPHA, BETA, MU
 
 def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
-                  silent=True):  # BIANCA-HERE (*) BIANCA a better way to do that?
+                  silent=True):
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
     ## the flag notes if the convergence was a success. If yes, function hands in the results
 
-    # BIANCA-HERE (*) BIANCA a better way to do that?
-    ## maybe there are too many parameters
-    flag_success_convergence = False
-    while not flag_success_convergence:  # BIANCA try catch and stuff ? (**)
-        intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
-        w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
-        flag_success_convergence, alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max,
-                                                                                                       w, silent=silent)
+    alpha_hat, beta_hat, mu_hat = simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+
     _, M = np.shape(alpha_hat)
     for s in range(M):
         estimator.DF = (estimator.DF).append(pd.DataFrame(
@@ -65,7 +61,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
              "value": [mu_hat[s]],
              'T_max': [T_max],
              'true value': [hp.NU[s]],
-             'number of guesses': [nb_of_guesses]  # BIANCA-HERE (*) BIANCA a better way to do that?
+             'number of guesses': [nb_of_guesses]
              }), sort=True
         )
         for t in range(M):
@@ -78,7 +74,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
                  'true value': [hp.ALPHA[s, t]],
-                 'number of guesses': [nb_of_guesses]  # BIANCA-HERE (*) BIANCA a better way to do that?
+                 'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
             estimator.DF = (estimator.DF).append(pd.DataFrame(
@@ -90,10 +86,23 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
                  'true value': [hp.BETA[s, t]],
-                 'number of guesses': [nb_of_guesses]  # BIANCA-HERE (*) BIANCA a better way to do that?
+                 'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
     return  # no need to return the estimator.
+
+
+def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
+
+    intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
+    print(time_real)
+    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
+    try:
+        alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
+    except Error_convergence as err:
+        warnings.warn(err.message)
+        return simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+    return alpha_hat, beta_hat, mu_hat
 
 
 # we want to run the same simulations a few number of times and estimate the Hawkes processes' parameters every time.
@@ -107,7 +116,6 @@ def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_we
         else:
             if i % 20 == 0:
                 print("estimation {} out of {} estimations.".format(i, nb_of_guesses))
-        # BIANCA-HERE (*) BIANCA a better way to do that?
         estimation_hp(hp, estimator, T_max, kernel_weight=kernel_weight, time_estimation=time_estimation, silent=silent,
                       nb_of_guesses=nb_of_guesses)
 
