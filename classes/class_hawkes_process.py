@@ -190,7 +190,6 @@ class Hawkes_process:
         # T_t = [np.array(aa) for aa in T_t]
         return intensity, T_t
 
-    # BIANCA-HERE this guy shouldn't be here... one has to move it to graphs.
     def plot_hawkes(self, time_real, intensity, name=None):
         # I need alpha and beta in order for me to plot them.
         shape_intensity = np.shape(intensity)

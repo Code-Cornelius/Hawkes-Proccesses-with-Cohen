@@ -134,6 +134,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 # finally whether the coefficient has been changed.
 def armijo_rule(f, df, x0, direction, a, sigma, b):
     # TODO ARMIJO RULE IS DONE FOR CASES WHERE ALPHA BETAM U ARE SCALARS, MULTIVARIATE CASE!!!
+    #  DONE NOW?
     if abs(b) >= 1:
         raise Exception("b has to be smaller than 1.")
 
