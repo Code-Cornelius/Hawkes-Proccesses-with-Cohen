@@ -134,7 +134,7 @@ test_mode = True
 ################################################
 ################################################
 if test_mode :
-    nb_of_guesses, T = 3, 130 * mini_T
+    nb_of_guesses, T = 3, 100 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
@@ -207,7 +207,7 @@ if do:
     intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool = False, silent = silent)
     print( functions_MLE.call_newton_raph_MLE_opt(time_real, T, silent = silent) )
 
-do = True ###################################### TEST FROM CSV
+do = False ###################################### TEST FROM CSV
 if do:
     graph_test = Graph_Estimator_Hawkes.from_path(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv', the_update_functions)
     graph_test.draw_evolution_parameter_over_time(separator_colour='weight function')
@@ -294,7 +294,7 @@ if do:
 
 
 #-----------------------------------------------------------------------------------------------
-do = False ######################################
+do = True ######################################
 if do :
     functions_change_point_analysis.change_point_plot(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
                       width = 5, min_size = 5, n_bkps=1, model="l2", column_for_multi_plot_name= 'weight function')
