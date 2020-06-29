@@ -78,7 +78,7 @@ class Hawkes_process:
         small_lambdas = np.zeros((self.M, self.M, len(self.tt)))
 
         def CDF_LEE(U, lambda_value, delta):
-            if np.asscalar(U) > 1 - np.exp(- lambda_value / delta):
+            if U.item() > 1 - np.exp(- lambda_value / delta):
                 return INFINITY
             else:
                 return -1 / delta * np.log(1 + delta / lambda_value * np.log(1 - U))

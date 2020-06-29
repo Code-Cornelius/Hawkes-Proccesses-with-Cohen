@@ -95,7 +95,6 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
 def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
 
     intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
-    print(time_real)
     w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
