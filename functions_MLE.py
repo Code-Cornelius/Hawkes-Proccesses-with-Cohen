@@ -2,7 +2,7 @@
 import warnings
 
 ##### my libraries
-from Errors.Error_convergence import *
+from errors.error_convergence import *
 
 ##### other files
 from functions_MLE_algo import newtons_method_multi_MLE
