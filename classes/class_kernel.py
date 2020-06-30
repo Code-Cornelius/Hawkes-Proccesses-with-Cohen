@@ -74,8 +74,10 @@ class Kernel:
         # then I want to scale every vector.
         # The total integral should be T_max, so I multiply by T_max
 
-        for i in range(len(length_elements_T_t)):
-            ans[i] = ans[i] * T_max  # *= do not work correctly since the vectors are not the same type (int/float).
+        #If it isn't fct plain, then I have to scale.
+        if self.fct_kernel.__name__ != 'fct_plain':
+            for i in range(len(length_elements_T_t)):
+                ans[i] = ans[i] * T_max  # *= do not work correctly since the vectors are not the same type (int/float).
         return ans
 
 
@@ -89,9 +91,9 @@ def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
     return output
 
 
-def fct_plain(T_t, length_elements_T_t, eval_point, T_max):
+def fct_plain(T_t, length_elements_T_t, eval_point):
     return [
-        np.full(length_elements_T_t[i], 1/T_max)
+        np.full(length_elements_T_t[i], 1)
         for i in range(len(length_elements_T_t))
     ]
 

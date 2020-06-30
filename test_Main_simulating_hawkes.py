@@ -156,7 +156,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 0)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 100, 70 * mini_T
+    nb_of_guesses, T = 5, 30 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -184,20 +184,18 @@ class Test_Simulation_Hawkes(unittest.TestCase):
 
     def test_from_csv(self):
         graph_test = Graph_Estimator_Hawkes.from_path(
-            trash_path,
+            r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
             self.the_update_functions)
         graph_test.draw_evolution_parameter_over_time(separator_colour='weight function')
         graph_test.draw_histogram()
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         graph_test = Graph_Estimator_Hawkes.from_path(
-            trash_path, self.the_update_functions)
+            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_test.csv', self.the_update_functions)
         graph_test.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
 
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
-        functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent,
-                                                    kernel_weight = Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450),
-                                                    time_estimation=1000)
+        functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent)
         GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, self.the_update_functions)
         GRAPH_multi.draw_histogram()
 
