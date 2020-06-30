@@ -78,6 +78,11 @@ def choice_parameter(dim, styl):
         MU = [0.2]
         T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
 
+        ALPHA = [[2.]]
+        BETA = [[2.4]]
+        MU = [0.2]
+        T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
+
     if dim == 2:
         ALPHA = [[2, 1],
                  [1, 2]]
@@ -120,8 +125,8 @@ M_PREC += 1
 #######################################################################
 #######################################################################
 # simulation
-silent = False
-test_mode = False
+silent = True
+test_mode = True
 #######################################################################
 #######################################################################
 #######################################################################
@@ -151,7 +156,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 0)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 3, 30 * mini_T
+    nb_of_guesses, T = 100, 70 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -190,7 +195,9 @@ class Test_Simulation_Hawkes(unittest.TestCase):
 
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
-        functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent)
+        functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent,
+                                                    kernel_weight = Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450),
+                                                    time_estimation=1000)
         GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, self.the_update_functions)
         GRAPH_multi.draw_histogram()
 

@@ -11,10 +11,12 @@ from classes.class_hawkes_process import *
 
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
+# now there is an error raised.
 def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
+    # w shouldn't be None, however as a safety measure, just before doing the computations !
     if w is None:
-        w = Kernel(fct_plain, "plain").eval(T_t,
-                                            0)  # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
+        w = Kernel(fct_plain, "plain", T_max =  T).eval(T_t, 0, T_max = T)
+        # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
 
     M = len(T_t)
     MU = np.full(M, 0.1)
@@ -95,12 +97,13 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
 def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
 
     intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
-    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation)
+    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
     except Error_convergence as err:
         warnings.warn(err.message)
         return simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+    # One shouldn't get an infinite loop here. It's probability.
     return alpha_hat, beta_hat, mu_hat
 
 

@@ -63,17 +63,19 @@ class Kernel:
     def __repr__(self):
         return repr(self.fct_kernel)
 
-    def eval(self, T_t, eval_point):
+    def eval(self, T_t, eval_point, T_max):
         # optimize cool to optimize using numpy and vectorize.
         length_elements_T_t = [len(T_t[i]) for i in range(len(T_t))]
+        # ans is the kernel evaluated on the jumps
         ans = self.fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
                               **{k: self.__dict__[k] for k in self.__dict__ if
                                  k in signature(self.fct_kernel).parameters})
+        # ans is a list of np arrays.
+        # then I want to scale every vector.
+        # The total integral should be T_max, so I multiply by T_max
+
         for i in range(len(length_elements_T_t)):
-            value = np.sum(ans[i])
-            scale_factor = length_elements_T_t[i]
-            factor = scale_factor / value
-            ans[i] = ans[i] * factor  # *= do not work correctly since the vectors are not the same type.
+            ans[i] = ans[i] * T_max  # *= do not work correctly since the vectors are not the same type (int/float).
         return ans
 
 
@@ -87,9 +89,9 @@ def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
     return output
 
 
-def fct_plain(T_t, length_elements_T_t, eval_point):
+def fct_plain(T_t, length_elements_T_t, eval_point, T_max):
     return [
-        np.full(length_elements_T_t[i], 1)
+        np.full(length_elements_T_t[i], 1/T_max)
         for i in range(len(length_elements_T_t))
     ]
 
