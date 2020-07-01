@@ -109,9 +109,10 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-100, b=100, sigma=20)
 
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
-def fct_biweight(T_t, length_elements_T_t, eval_point):
+def fct_biweight(T_t, length_elements_T_t, eval_point, a = -100, b = 100):
     output = []
     for i in range(len(length_elements_T_t)):
         xx = T_t[i] - eval_point
+        xx[(xx < 1) & (xx > 1)] = 0
         output.append( 15/16 * np.power(1 - xx * xx,2) )
     return output

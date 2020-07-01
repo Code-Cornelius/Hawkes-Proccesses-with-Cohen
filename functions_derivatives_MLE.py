@@ -81,9 +81,11 @@ def compute_R2(m, n, k, T_t, BETA, end=10):
 
 
 def compute_R_dashes(m, n, T_t, BETA, end=0):
-    matrix_diff = np.maximum(np.subtract.outer(np.array(T_t[m])
-                                               , np.array(T_t[n])),
-                             0)
+    matrix_diff = np.subtract.outer(np.array(T_t[m]), np.array(T_t[n]))
+    matrix_diff[matrix_diff < 0] = 0
+    # my way is faster
+    # matrix_diff = np.maximum(,0)
+
     dashes = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
     dash_dashes = dashes * matrix_diff
     # np.power is not efficient for scalars, but good looking.
