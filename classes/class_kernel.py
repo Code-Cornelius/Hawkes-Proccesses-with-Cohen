@@ -33,7 +33,7 @@ np.random.seed(124)
             # fct_top_hat
             # fct_plain
             # fct_truncnorm
-            #
+            # fct_biweight
             #
             #
 
@@ -97,7 +97,7 @@ def fct_plain(T_t, length_elements_T_t, eval_point):
     return [
         np.full(length_elements_T_t[i], 1)
         for i in range(len(length_elements_T_t))
-    ]
+            ]
 
 
 def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-100, b=100, sigma=20):
@@ -109,10 +109,23 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-100, b=100, sigma=20)
 
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
-def fct_biweight(T_t, length_elements_T_t, eval_point, a = -100, b = 100):
+def fct_biweight(T_t, length_elements_T_t, eval_point, a = -300, b = 100):
     output = []
     for i in range(len(length_elements_T_t)):
-        xx = T_t[i] - eval_point
-        xx[(xx < 1) & (xx > 1)] = 0
-        output.append( 15/16 * np.power(1 - xx * xx,2) )
+        xx = (eval_point - T_t[i] - (a + b)/2 ) * 2 / (b-a)
+        # the correct order is eval_point - T_t,
+        # bc we evaluate at eval_point but translated by T_t,
+        # if kernel not symmetric a != b, then we also need to translate by the mid of them.
+        xx[(xx < -1) | (xx > 1)] = 1
+        output.append( 15/16 * np.power(1 - xx * xx,2) *2 / (b-a)) # kernel * scaling ; delta in my formulas
     return output
+
+
+############ test
+# T_t = [np.linspace(-1000,1000,1000)]
+# length_elements_T_t = [1000]
+# eval_point = [-200,0,1000]
+# for i in eval_point:
+#     res = fct_truncnorm(T_t, length_elements_T_t, i, a=-100, b=400, sigma=300)
+#     aplot = APlot(datax = T_t, datay = res)
+# plt.show()
