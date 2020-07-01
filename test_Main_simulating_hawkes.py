@@ -156,7 +156,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 0)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 5, 30 * mini_T
+    nb_of_guesses, T = 1, 100 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -201,8 +201,8 @@ class Test_Simulation_Hawkes(unittest.TestCase):
 
         estimator_multi.to_csv(trash_path, index=False, header=True)
 
-    def test_over_the_time(self):
-        nb_of_times = 10
+    def test_over_the_time_simple(self):
+        nb_of_times = 50
         HAWKSY = Hawkes_process(tt, PARAMETERS)
         # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
 
@@ -213,7 +213,6 @@ class Test_Simulation_Hawkes(unittest.TestCase):
                            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
         Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
-        count_kernels = 0
         count_times = 0
         for time in Times:
             count_kernels = 0
@@ -233,6 +232,72 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         estimator_kernel.DF.to_csv(trash_path,
                                    index=False,
                                    header=True)
+
+
+
+
+    def test_over_the_time_adaptive_simul(self):
+        nb_of_times = 50
+        HAWKSY = Hawkes_process(tt, PARAMETERS)
+        # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
+
+        # Here I change the parameters over time.
+        estimator_kernel = Estimator_Hawkes()
+        list_of_kernels = [Kernel(fct_biweight, name="BiWeight", a=-350, b=350)]
+        Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+
+        count_times = 0
+        for time in Times:
+            count_kernels = 0
+            count_times += 1
+            HAWKSY.update_coef(time, self.the_update_functions, T_max=T)
+            print(HAWKSY)
+            for kernel in list_of_kernels:
+                count_kernels += 1
+                print("=" * 78)
+                print("Time : {} out of : {}. Kernel : {} out of : {}.".format(count_times, len(Times), count_kernels,
+                                                                               len(list_of_kernels)))
+                functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                            nb_of_guesses=nb_of_guesses,
+                                                            kernel_weight=kernel, time_estimation=time, silent=silent)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
+        estimator_kernel.DF.to_csv(trash_path,
+                                   index=False,
+                                   header=True)
+
+        def test_over_the_time_adaptive_conv(self):
+            nb_of_times = 50
+            HAWKSY = Hawkes_process(tt, PARAMETERS)
+            # I create here the array. It is quite hard because I want a list of size size*size*3 where all elements can be change however I want. Other ways lead dependant vectors.
+
+            # Here I change the parameters over time.
+            estimator_kernel = Estimator_Hawkes()
+            list_of_kernels = [Kernel(fct_biweight, name="BiWeight", a=-350, b=350)]
+            Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+
+            count_kernels = 0
+            count_times = 0
+            for time in Times:
+                count_kernels = 0
+                count_times += 1
+                HAWKSY.update_coef(time, self.the_update_functions, T_max=T)
+                print(HAWKSY)
+                for kernel in list_of_kernels:
+                    count_kernels += 1
+                    print("=" * 78)
+                    print(
+                        "Time : {} out of : {}. Kernel : {} out of : {}.".format(count_times, len(Times), count_kernels,
+                                                                                 len(list_of_kernels)))
+                    functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                                nb_of_guesses=nb_of_guesses,
+                                                                kernel_weight=kernel, time_estimation=time,
+                                                                silent=silent)
+            GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
+            estimator_kernel.DF.to_csv(trash_path,
+                                       index=False,
+                                       header=True)
 
     def test_MSE(self):
         estimator_MSE = Estimator_Hawkes()

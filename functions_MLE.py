@@ -12,6 +12,18 @@ from classes.class_hawkes_process import *
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
 # now there is an error raised.
+def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
+
+    intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
+    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
+    try:
+        alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
+    except Error_convergence as err:
+        warnings.warn(err.message)
+        return simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+    # One shouldn't get an infinite loop here. It's probability.
+    return alpha_hat, beta_hat, mu_hat
+
 def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     # w shouldn't be None, however as a safety measure, just before doing the computations !
     if w is None:
@@ -22,7 +34,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     MU = np.full(M, 0.1)
     ALPHA = np.full((M, M), 0.7)
     BETA = 0.2 + 1.1 * M * M * ALPHA
-    
+
     # ALPHA = np.array([[2, 1], [1, 2]]) * 0.99
     # BETA = np.array([[5, 3], [3, 5]]) * 0.99
     # MU = np.array([0.2, 0.2]) * 0.99
@@ -43,6 +55,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
 
     MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
     return ALPHA, BETA, MU
+
 
 def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
                   silent=True):
@@ -92,19 +105,6 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
                  }), sort=True
             )
     return  # no need to return the estimator.
-
-
-def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
-
-    intensity, time_real = hp.simulation_Hawkes_exact(T_max=T_max, plot_bool=False, silent=True)
-    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
-    try:
-        alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
-    except Error_convergence as err:
-        warnings.warn(err.message)
-        return simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
-    # One shouldn't get an infinite loop here. It's probability.
-    return alpha_hat, beta_hat, mu_hat
 
 
 # we want to run the same simulations a few number of times and estimate the Hawkes processes' parameters every time.

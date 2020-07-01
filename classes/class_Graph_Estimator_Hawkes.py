@@ -31,6 +31,8 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         # get the max value which is M-1
         return cls(estimator, parameters)
 
+    #############################" hist
+
     def get_optimal_range_histogram(self, key, mean):
         '''
         by experience, the best range for parameters is the following.
@@ -64,6 +66,8 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
 
+################################ hist
+
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         title = self.generate_title(separators, key, "",
                                     "Only 10-90% of the interval is shown (boundary effect), starting from 0 until {}.",
@@ -80,13 +84,6 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     def get_evolution_extremes(self, data):
         values = data.groupby([Graph_Estimator_Hawkes.evolution_name])['value']
         return (values.min(), values.max())
-    #### create another init that takes the same parameter, with the diff that it takes the path.
-    # another constructor :
-    def get_evolution_true_value(self, data):
-        return self.get_evolution_specific_data(data, 'true value')
-
-    def get_evolution_plot_data(self, data):
-        return self.get_evolution_specific_data(data, 'value')
 
     def get_evolution_specific_data(self, data, str):
         '''
@@ -98,6 +95,14 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         :return:
         '''
         return data.groupby([Graph_Estimator_Hawkes.evolution_name])[str].mean().values
+
+    #### create another init that takes the same parameter, with the diff that it takes the path.
+    # another constructor :
+    def get_evolution_true_value(self, data):
+        return self.get_evolution_specific_data(data, 'true value')
+
+    def get_evolution_plot_data(self, data):
+        return self.get_evolution_specific_data(data, 'value')
 
     def get_computation_plot_fig_dict(self):
         fig_dict = {

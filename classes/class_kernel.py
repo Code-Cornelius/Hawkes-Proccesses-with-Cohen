@@ -82,6 +82,15 @@ class Kernel:
         return ans
 
 
+
+
+
+
+
+
+
+
+
 def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
     output = []
     for i in range(len(length_elements_T_t)):
