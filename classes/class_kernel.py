@@ -48,6 +48,7 @@ class Kernel:
     # kernel is a class of objects, where using eval evaluates the function given as parameter
     # the evaluation gives back a list of np.array
     # the function should hand in the list of np.arrays non scaled.
+    # list of arrays allow me to perform computations on each faster.
 
     # I also chose to not give T_t to the kernel in order to make it a function of the T_t (and of where one evaluates the kernel),
     # this allows me to fix the parameters kwargs of the kernel upfront.
@@ -82,12 +83,13 @@ class Kernel:
 
 
 def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
-    output = [[] for _ in range(len(length_elements_T_t))]
+    output = []
     for i in range(len(length_elements_T_t)):
         vector = np.array(T_t[i])
-        output[i] = 1 / (2 * b - 2 * a) * \
+        output.append(1 / (2 * b - 2 * a) * \
                     (np.sign(vector - eval_point - a) +
                      np.sign(b - vector + eval_point))
+                      )
     return output
 
 
@@ -99,8 +101,17 @@ def fct_plain(T_t, length_elements_T_t, eval_point):
 
 
 def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-100, b=100, sigma=20):
-    output = [[] for _ in range(len(length_elements_T_t))]
+    output = []
     for i in range(len(length_elements_T_t)):
-        vector = np.array(T_t[i])
-        output[i] = scipy.stats.truncnorm.pdf(T_t[i], (a) / sigma, (b) / sigma, loc=eval_point, scale=sigma)
+        output.append(scipy.stats.truncnorm.pdf(T_t[i], (a) / sigma, (b) / sigma,
+                                                loc=eval_point, scale=sigma))
+    return output
+
+#  if important, I can generalize biweight with function beta.
+#  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
+def fct_biweight(T_t, length_elements_T_t, eval_point):
+    output = []
+    for i in range(len(length_elements_T_t)):
+        xx = T_t[i] - eval_point
+        output.append( 15/16 * np.power(1 - xx * xx,2) )
     return output
