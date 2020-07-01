@@ -12,7 +12,7 @@ from classes.class_kernel import *
 class Graph_Estimator_Hawkes(Graph_Estimator):
     def __init__(self, estimator, fct_parameters):
         # Initialise the Graph with the estimator
-        super().__init__(estimator, ['variable', 'm', 'n'])
+        Graph_Estimator.__init__(self, estimator, ['variable', 'm', 'n'])
 
         # parameters is a list of lists of lists of functions
         self.ALPHA = fct_parameters[1]
