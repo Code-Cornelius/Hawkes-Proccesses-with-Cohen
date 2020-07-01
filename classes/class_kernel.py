@@ -169,19 +169,17 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
             # if kernel not symmetric a != b, then we also need to translate by the mid of them.
                 if xx < 1 or xx > 1 :
                     xx = 1
-                output[i][j].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
+                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
             output[i] = np.array(output[i])
     return output
 
 
-# ############ test
-T_t = [np.linspace(-1000,1000,1000)]
-length_elements_T_t = [1000]
-eval_point = [-200,0,1000]
-for i in eval_point:
-    res = fct_truncnorm(T_t, length_elements_T_t, i, a=-100, b=400, sigma=300)
-    #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
-    aplot = APlot(datax = T_t[0], datay = res[0])
-plt.show()
-
+# # ############ test
+# T_t = [np.linspace(-1000,1000,1000)]
+# length_elements_T_t = [1000]
+# eval_point = [-200,0,1000]
+# for i in eval_point:
+#     res = fct_truncnorm(T_t, length_elements_T_t, i, a=-100, b=400, sigma=300)
+#     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
+#     aplot = APlot(datax = T_t[0], datay = res[0])
 

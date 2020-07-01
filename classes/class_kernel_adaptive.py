@@ -63,14 +63,21 @@ class Kernel_adaptive(Kernel):
 
 
 ########### test
-T_t = [np.linspace(-1000,1000,1000)]
-length_elements_T_t = [1000]
-scaling_vect = [[ 1 for x in list(range(1000))]]
-eval_point = [-200,0,1000]
-my_kernel = Kernel_adaptive( fct_truncnorm ,scaling_vect,  a=-100, b=400, sigma=300 )
-yy = my_kernel.eval( T_t, eval_point, 1000)
+M = 1000
+T_t = [np.linspace(-2000,2000,M)]
+eval_point = [-200,0,400]
+my_kernel = Kernel( fct_truncnorm,  a=-100, b=100, sigma=300 )
 for i in eval_point:
-    res = my_kernel.eval( T_t, i, 1000)
+    res = my_kernel.eval( T_t, i, 2000)
+    #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
+    aplot = APlot(datax = T_t[0], datay = res[0])
+
+T_t = [np.linspace(-2000,2000,M)]
+scaling_vect = [[ (2000+x)/500 for x in list(range(M))]]
+eval_point = [-200,0,400]
+my_kernel = Kernel_adaptive( fct_truncnorm ,scaling_vect,  a=-100, b=100, sigma=300 )
+for i in eval_point:
+    res = my_kernel.eval( T_t, i, 2000)
     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
     aplot = APlot(datax = T_t[0], datay = res[0])
 plt.show()
