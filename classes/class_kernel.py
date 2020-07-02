@@ -110,8 +110,8 @@ def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vec
         for i in range(len(length_elements_T_t)):
             vector = T_t[i]
             for j in range(length_elements_T_t[i]):
-                a_scaled = a / scaling_vect[i][j]
-                b_scaled = b / scaling_vect[i][j]
+                a_scaled = a * scaling_vect[i][j]
+                b_scaled = b * scaling_vect[i][j]
                 output[i].append(1 / (2 * (b_scaled - a_scaled)) * \
                               (np.sign(vector[j] - eval_point - a_scaled) +
                                np.sign(b_scaled - vector[j] + eval_point))
@@ -139,9 +139,10 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200
         output = [[] for _ in range(len(length_elements_T_t))]
         for i in range(len(length_elements_T_t)):
             for j in range(length_elements_T_t[i]):
-                output[i].append(1 / scaling_vect[i][j] * scipy.stats.truncnorm.pdf(T_t[i][j] / scaling_vect[i][j],
-                                                                                 (a) / sigma, (b) / sigma,
-                                                                                 loc=eval_point, scale=sigma))
+                output[i].append( scipy.stats.truncnorm.pdf(T_t[i][j] / scaling_vect[i][j], (a) / sigma, (b) / sigma,
+                                                                                 loc=eval_point,
+                                                            scale=sigma) / scaling_vect[i][j]
+                                  )
             output[i] = np.array(output[i])
     return output
 
@@ -163,13 +164,13 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
         output = [[] for _ in range(len(length_elements_T_t))]
         for i in range(len(length_elements_T_t)):
             for j in range(length_elements_T_t[i]):
-                xx = (T_t[i][j]/scaling_vect[i][j] - (a + b) / 2 - eval_point) * 2 / (b - a) / scaling_vect[i][j]
+                xx = (T_t[i][j] - (a + b) / 2 - eval_point) * 2 / (b - a) / scaling_vect[i][j]
             # the correct order is eval_point - T_t,
             # bc we evaluate at eval_point but translated by T_t,
             # if kernel not symmetric a != b, then we also need to translate by the mid of them.
-                if xx < 1 or xx > 1 :
+                if xx < -1 or xx > 1 :
                     xx = 1
-                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
+                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a)/ scaling_vect[i][j])  # kernel * scaling ; delta in my formulas
             output[i] = np.array(output[i])
     return output
 
