@@ -106,7 +106,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     def get_computation_plot_fig_dict(self):
         fig_dict = {
-            'title': "Convergence in compute_MSE of the estimators, batches of {} realisations.".format(self.nb_of_guesses),
+            'title': f"Convergence in compute_MSE of the estimators, batches of {self.nb_of_guesses} realisations.",
             'labels': ["Nb of Events", "compute_MSE of the Estimator"],
             'parameters': [self.ALPHA[0][0](0, 1), self.BETA[0][0](0, 1), self.NU[0](0, 1)],
             'name_parameters':["ALPHA", "BETA", "NU"]

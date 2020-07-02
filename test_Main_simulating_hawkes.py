@@ -9,6 +9,7 @@ import unittest
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_hawkes_process import *
 from classes.class_kernel import *
+from classes.class_kernel_adaptive import *
 import functions_change_point_analysis
 import functions_MLE
 import functions_fct_evol_parameters
@@ -220,8 +221,8 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             for kernel in list_of_kernels:
                 count_kernels += 1
                 print("=" * 78)
-                print("Time : {} out of : {}. Kernel : {} out of : {}.".format(count_times, len(Times), count_kernels,
-                                                                               len(list_of_kernels)))
+                print(
+                    f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
                 functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=kernel, time_estimation=time, silent=silent)
@@ -242,7 +243,33 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         #  put optimal kernel here
         my_kernel = Kernel(fct_biweight, name="BiWeight", a=-350, b=350)
         Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+        ############################## first step
+        count_times = 0
+        for time in Times:
+            count_times += 1
+            HAWKSY.update_coef(time, self.the_update_functions, T_max=T)
+            print(HAWKSY)
+            print("=" * 78)
+            print(f"Time : {count_times} out of : {len(Times)}.")
 
+            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                        nb_of_guesses=nb_of_guesses,
+                                                        kernel_weight=my_kernel, time_estimation=time,
+                                                        silent=silent)
+        estimator_kernel.DF.to_csv(trash_path,
+                                   index=False,
+                                   header=True)
+
+
+        # work-in-progress
+        #  I got the first estimates. I can potentially already draw the evolution of parameters.
+        #  do adaptive here
+
+        # on regarde le estimator_kernel et on en déduit l'optimal bandwidth.
+
+        adaptive_estimator_kernel = Estimator_Hawkes()
+        my_adapt_kernel = Kernel_adaptive(fct_biweight, pilot_function_vector = scalings, name="BiWeight", a=-350, b=350)
+        ############################## second step
         count_times = 0
         for time in Times:
             count_times += 1
@@ -250,7 +277,7 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             print(HAWKSY)
             print("=" * 78)
             print(
-                "Time : {} out of : {}.".format(count_times, len(Times))
+                f"Time : {count_times} out of : {len(Times)}."
                 )
 
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
@@ -258,13 +285,9 @@ class Test_Simulation_Hawkes(unittest.TestCase):
                                                         kernel_weight=my_kernel, time_estimation=time,
                                                         silent=silent)
 
-
-        # work-in-progress
-        #  I got the first estimates. I can potentially already draw the evolution of parameters.
-        #  do adaptive here
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
-        estimator_kernel.DF.to_csv(trash_path,
+        adaptive_estimator_kernel.DF.to_csv('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_adapt.csv',
                                    index=False,
                                    header=True)
 
@@ -281,7 +304,7 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             count_times += 1
             print("=" * 78)
             print(
-                "Time : {} out of : {}.".format(count_times, len(TIMES)))
+                f"Time : {count_times} out of : {len(TIMES)}.")
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                         times, nb_of_guesses, silent=silent)
         GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, self.the_update_functions)

@@ -114,10 +114,10 @@ def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_we
     for i in range(nb_of_guesses):
         if not silent:
             if i % 1 == 0:
-                print("estimation {} out of {} estimations.".format(i, nb_of_guesses))
+                print(f"estimation {i} out of {nb_of_guesses} estimations.")
         else:
             if i % 20 == 0:
-                print("estimation {} out of {} estimations.".format(i, nb_of_guesses))
+                print(f"estimation {i} out of {nb_of_guesses} estimations.")
         estimation_hp(hp, estimator, T_max, kernel_weight=kernel_weight, time_estimation=time_estimation, silent=silent,
                       nb_of_guesses=nb_of_guesses)
 

@@ -43,7 +43,7 @@ class Hawkes_process:
         self.M = np.shape(self.ALPHA)[1]
 
     def __repr__(self):
-        return 'Hawkes process, with parameters : {}, {}, {}'.format(self.NU, self.ALPHA, self.BETA)
+        return f'Hawkes process, with parameters : {self.NU}, {self.ALPHA}, {self.BETA}'
 
     # if plot bool  then draw the path of the simulation.
     def simulation_Hawkes_exact(self, T_max, nb_of_sim=100000,
@@ -166,7 +166,7 @@ class Hawkes_process:
                         print("Beginning of the simulation.")
                 if counter % 5000 == 0:
                     if not silent:
-                        print("Jump {} out of total number of jumps {}.".format(counter, nb_of_sim))
+                        print(f"Jump {counter} out of total number of jumps {nb_of_sim}.")
                 # condition :
                 if not (counter < nb_of_sim - 1):
                     condition = False
@@ -176,7 +176,7 @@ class Hawkes_process:
                 if round(last_jump, -1) % 500 == 0 and round(last_jump, -1) != last_print:
                     last_print = round(last_jump, -1)
                     if not silent:
-                        print("Time {} out of total time : {}.".format(round(last_jump, -1), T_max))
+                        print(f"Time {round(last_jump, -1)} out of total time : {T_max}.")
                 if not (last_jump < T_max):
                     condition = False
         # will be an empty list if not for plot purpose.

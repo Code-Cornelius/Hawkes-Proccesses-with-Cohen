@@ -28,13 +28,9 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 
     while np.linalg.norm(derivative, 2) > e and step > tol or number_of_step_crash == 0:  # I use norm 2 as criterea
         # Printing
-        if not silent:
-            if number_of_step_crash % 1 == 0:
-                print("Step Newton {} result {}, change in norm {}.".format(number_of_step_crash,
-                                                                            np.linalg.norm(derivative, 2), step))
-                print(
-                    "                                             GUESSES : \n ALPHA : \n {}  \n BETA : \n {} \n NU : \n {}".format(
-                        ALPHA, BETA, MU))
+        if not silent and number_of_step_crash % 1 == 0:
+            print(f"Step Newton {number_of_step_crash} result {np.linalg.norm(derivative, 2)}, change in norm {step}.")
+            print(f"GUESSES : \n ALPHA : \n {ALPHA}  \n BETA : \n {BETA} \n NU : \n {MU}")
         if number_of_step_crash > 1500:
             raise Exception("Is the function flat enough ?")
         number_of_step_crash += 1
