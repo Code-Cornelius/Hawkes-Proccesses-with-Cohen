@@ -1,11 +1,10 @@
 ##### normal libraries
+import unittest
 
 
 ##### my libraries
 
 ##### other files
-import unittest
-
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_hawkes_process import *
 from classes.class_kernel import *
@@ -318,4 +317,4 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
 
 
-plt.show()
+
