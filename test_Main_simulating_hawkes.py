@@ -324,9 +324,11 @@ class Test_images(unittest.TestCase):
         plt.show()
 
     def test_image_different_kernel_vision(self):
-        xx = np.linspace( -15,15, 1000)
-        mesh = 30. /1000
-        zz = np.zeros(1000)
+        nb_of_points = 50000
+        ############################## 1
+        xx = np.linspace( -15,15, nb_of_points)
+        mesh = 30. /nb_of_points
+        zz = np.zeros(nb_of_points)
         my_plot = plot_functions.APlot(how=(1, 1))
         points = np.array([-7.,-6.,1.,2.,5.])
         for f in points:
@@ -341,8 +343,8 @@ class Test_images(unittest.TestCase):
         my_plot.set_dict_fig(0, {'xlabel' : '' , 'ylabel' : 'Probability' , 'title': 'KDE estimation, fixed size kernel'})
         my_plot.show_legend()
 
-
-        zz = np.zeros(1000)
+        ############################## 2
+        zz = np.zeros(nb_of_points)
         my_plot = plot_functions.APlot(how=(1, 1))
         points = np.array([-7.,-6.,1.,2.,5.])
         for f in points:
@@ -359,18 +361,50 @@ class Test_images(unittest.TestCase):
         print(np.sum(zz * mesh))
 
 
-        my_plot = plot_functions.APlot(how=(1, 2))
+        ############################## 3
+        ############### left
+        zz = np.zeros(nb_of_points)
+        max_x = 0.15
+        my_plot = plot_functions.APlot(how=(1, 2), sharey = True)
         my_plot.uni_plot(0,[0 for _ in xx],
-                         np.linspace(-0.01,0.2, len(xx) ),
-                         dict_plot_param= {'color':'g', 'label':'Estimation', 'linestyle':'--', 'markersize': 0})
-        plt.show()
-
-        points = np.array([-7.,-6.,1.,2.,5.])
+                         np.linspace(-0.01,max_x, len(xx) ),
+                         dict_plot_param= {'color':'g', 'label':'Estimation point',
+                                           'linestyle':'--', 'linewidth' : 2,
+                                           'markersize': 0, 'label':None})
+        points = np.array([-1.1,0.5,5.])
         for f in points:
+            my_plot.uni_plot(0, [f for _ in xx],
+                             np.linspace(-0.01, max_x, len(xx)),
+                             dict_plot_param={'color': 'k', 'linestyle': '--', 'linewidth': 0.7,
+                                              'markersize': 0,
+                                              'label':None})
             yy = recurrent_functions.phi_numpy(xx, f, 2)/len(points)
             my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            my_plot.uni_plot(0,xx[nb_of_points//2],yy[nb_of_points//2],
+                             dict_plot_param= {'color':'r',
+                                           'markersize': 8, 'marker':'*', 'label':None})
             zz += yy
         my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
+        print("value : ", zz[nb_of_points //2])
+
+        ############### right
+        zz = recurrent_functions.phi_numpy(xx,0,2)/3
+        z= 0
+        print(np.sum(zz * mesh))
+        for f in points:
+            my_plot.uni_plot(1, [f for _ in xx],
+                             np.linspace(-0.01, recurrent_functions.phi_numpy(f,0,2)/3, len(xx)),
+                             dict_plot_param={'color': 'm', 'linestyle': '--', 'linewidth': 0.7,
+                                              'markersize': 0,
+                                              'label': f'Value kernel at {f}'})
+            my_plot.uni_plot(1,f, recurrent_functions.phi_numpy(f,0,2)/3,
+                             dict_plot_param= {'color':'g',
+                                           'markersize': 8, 'marker':'*', 'label':None})
+            z += recurrent_functions.phi_numpy(f,0,2)
+            print("total", z/3)
+
+
+        my_plot.uni_plot(1, xx, zz, dict_plot_param= {'color':'r', 'label':'Kernel for $t = 0$'})
         my_plot.show_legend()
 
 
