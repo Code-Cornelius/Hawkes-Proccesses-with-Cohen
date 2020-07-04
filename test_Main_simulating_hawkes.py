@@ -1,6 +1,6 @@
 ##### normal libraries
 import unittest
-
+from sklearn.neighbors import KernelDensity
 
 ##### my libraries
 
@@ -315,6 +315,63 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         functions_change_point_analysis.change_point_plot(
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
             width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
+
+
+
+class Test_images(unittest.TestCase):
+
+    def tearDown(self):
+        plt.show()
+
+    def test_image_different_kernel_vision(self):
+        xx = np.linspace( -15,15, 1000)
+        mesh = 30. /1000
+        zz = np.zeros(1000)
+        my_plot = plot_functions.APlot(how=(1, 1))
+        points = np.array([-7.,-6.,1.,2.,5.])
+        for f in points:
+            yy = recurrent_functions.phi_numpy(xx,f,2)/len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            zz += yy
+
+        print(np.sum(zz * mesh))
+
+
+        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
+        my_plot.set_dict_fig(0, {'xlabel' : '' , 'ylabel' : 'Probability' , 'title': 'KDE estimation, fixed size kernel'})
+        my_plot.show_legend()
+
+
+        zz = np.zeros(1000)
+        my_plot = plot_functions.APlot(how=(1, 1))
+        points = np.array([-7.,-6.,1.,2.,5.])
+        for f in points:
+            yy = recurrent_functions.phi_numpy(xx,f,2*(1+math.fabs(f)/10))/len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            zz += yy
+
+
+
+        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
+        my_plot.set_dict_fig(0, {'xlabel' : '' , 'ylabel' : 'Probability' , 'title': 'KDE estimation, adaptive size kernel'})
+        my_plot.show_legend()
+
+        print(np.sum(zz * mesh))
+
+
+        my_plot = plot_functions.APlot(how=(1, 2))
+        my_plot.uni_plot(0,[0 for _ in xx],
+                         np.linspace(-0.01,0.2, len(xx) ),
+                         dict_plot_param= {'color':'g', 'label':'Estimation', 'linestyle':'--', 'markersize': 0})
+        plt.show()
+
+        points = np.array([-7.,-6.,1.,2.,5.])
+        for f in points:
+            yy = recurrent_functions.phi_numpy(xx, f, 2)/len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            zz += yy
+        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
+        my_plot.show_legend()
 
 
 

@@ -31,20 +31,4 @@ np.random.seed(124)
 print("hello biatch")
 
 print("bouhouhou")
-class Test_images(unittest.TestCase):
 
-    def tearDown(self):
-        plt.show()
-
-    def test_image_different_kernel_vision(self):
-        xx = np.linspace( -10,10, 1000)
-        for f in [-7,-6,3,4,5]:
-            print(f)
-            yy = recurrent_functions.phi_numpy(xx, f,2)
-            print(yy)
-            plot_functions.APlot(datax = xx, datay = yy)
-            plt.show()
-
-
-    def test_test(self):
-        print(42)
