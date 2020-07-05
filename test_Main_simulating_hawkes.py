@@ -393,18 +393,41 @@ class Test_images(unittest.TestCase):
         print(np.sum(zz * mesh))
         for f in points:
             my_plot.uni_plot(1, [f for _ in xx],
-                             np.linspace(-0.01, recurrent_functions.phi_numpy(f,0,2)/3, len(xx)),
+                             np.linspace(-0.004, recurrent_functions.phi_numpy(f,0,2)/3, len(xx)),
                              dict_plot_param={'color': 'm', 'linestyle': '--', 'linewidth': 0.7,
                                               'markersize': 0,
                                               'label': f'Value kernel at {f}'})
             my_plot.uni_plot(1,f, recurrent_functions.phi_numpy(f,0,2)/3,
                              dict_plot_param= {'color':'g',
                                            'markersize': 8, 'marker':'*', 'label':None})
-            z += recurrent_functions.phi_numpy(f,0,2)
-            print("total", z/3)
-
 
         my_plot.uni_plot(1, xx, zz, dict_plot_param= {'color':'r', 'label':'Kernel for $t = 0$'})
+
+
+
+
+
+
+
+        ### sum
+        previous_f = 0
+        for i,f in enumerate(zip(points,['b','c','k'])):
+            c = f[1]
+            f = f[0]
+            my_plot.uni_plot(1, -15, previous_f + recurrent_functions.phi_numpy(f, 0, 2) / 3,
+                             dict_plot_param={'color': c,
+                                              'markersize': 8, 'marker': '*', 'label': f'cumsum leading to true result {i}'})
+            my_plot.uni_plot(1, [-15 for _ in xx],
+                             np.linspace(previous_f, previous_f + recurrent_functions.phi_numpy(f, 0, 2) / 3, len(xx)),
+                             dict_plot_param={'color': c, 'linestyle': '--', 'linewidth': 0.7,
+                                              'markersize': 0,
+                                              'label': None})
+            previous_f += recurrent_functions.phi_numpy(f, 0, 2) / 3
+
+        my_plot.set_dict_fig(0,
+                             {'xlabel': '', 'ylabel': 'Probability', 'title': 'Kernels represented as functions of the events'})
+        my_plot.set_dict_fig(1,
+                             {'xlabel': '', 'ylabel': '', 'title': 'Kernels represented as functions of the time'})
         my_plot.show_legend()
 
 
