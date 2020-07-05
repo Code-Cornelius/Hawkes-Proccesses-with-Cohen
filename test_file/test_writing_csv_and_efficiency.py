@@ -1,16 +1,9 @@
-import numpy as np
-import statistics as stat
-
 from classical_functions import *
-import plot_functions
-from recurrent_functions import *
-
 
 import functions_MLE
 
 import csv
 
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
 from functions_networkx import *
 
 '''
@@ -117,7 +110,7 @@ for row in reader:
 # normal estimation
 #'''
 my_time = time.time()
-print( functions_MLE.call_newton_raph_MLE_opt(time_real, T) )
+print(functions_MLE.call_newton_raph_MLE_opt(time_real, T))
 time_computational(my_time, time.time(), "my function")
 #'''
 
