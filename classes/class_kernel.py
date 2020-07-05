@@ -1,17 +1,17 @@
 ##### normal libraries
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import numpy as np #maths library and arrays
+import numpy as np  # maths library and arrays
 import statistics as stat
-import pandas as pd #dataframes
-import seaborn as sns #envrionement for plots
-from matplotlib import pyplot as plt #ploting
-import scipy.stats #functions of statistics
+import pandas as pd  # dataframes
+import seaborn as sns  # envrionement for plots
+from matplotlib import pyplot as plt  # ploting
+import scipy.stats  # functions of statistics
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time #allows to time event
+import time  # allows to time event
 import warnings
-import math #quick math functions
-import cmath  #complex functions
-from inspect import signature #used in the method eval of the class
+import math  # quick math functions
+import cmath  # complex functions
+from inspect import signature  # used in the method eval of the class
 
 ##### my libraries
 import plot_functions
@@ -20,30 +20,29 @@ import classical_functions
 import recurrent_functions
 from classes.class_estimator import *
 from classes.class_graph_estimator import *
+
 np.random.seed(124)
+
 
 ##### other files
 
 
-
-
-
-#-------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------
 # list of the possible kernels:
-            # fct_top_hat
-            # fct_plain
-            # fct_truncnorm
-            # fct_biweight
-            #
-            #
+# fct_top_hat
+# fct_plain
+# fct_truncnorm
+# fct_biweight
+#
+#
 
 
-#example of kernels:
+# example of kernels:
 # list_of_kernels = [Kernel(fct_top_hat, name="wide top hat", a=-450, b=450),
 #                    Kernel(fct_top_hat, name="normal top hat", a=-200, b=200),
 #                    Kernel(fct_truncnorm, name="wide truncnorm", a=-500, b=500, sigma=350),
 #                    Kernel(fct_truncnorm, name="normal truncnorm", a=-350, b=350, sigma=250)]
-#-------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------
 class Kernel:
     # kernel is a class of objects, where using eval evaluates the function given as parameter
     # the evaluation gives back a list of np.array
@@ -84,15 +83,6 @@ class Kernel:
         return ans
 
 
-
-
-
-
-
-
-
-
-
 def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vect=None):
     if scaling_vect is None:
         output = []
@@ -113,9 +103,9 @@ def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vec
                 a_scaled = a * scaling_vect[i][j]
                 b_scaled = b * scaling_vect[i][j]
                 output[i].append(1 / (2 * (b_scaled - a_scaled)) * \
-                              (np.sign(vector[j] - eval_point - a_scaled) +
-                               np.sign(b_scaled - vector[j] + eval_point))
-                              )
+                                 (np.sign(vector[j] - eval_point - a_scaled) +
+                                  np.sign(b_scaled - vector[j] + eval_point))
+                                 )
             output[i] = np.array(output[i])
     return output
 
@@ -139,17 +129,17 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200
         output = [[] for _ in range(len(length_elements_T_t))]
         for i in range(len(length_elements_T_t)):
             for j in range(length_elements_T_t[i]):
-                output[i].append( scipy.stats.truncnorm.pdf(T_t[i][j] / scaling_vect[i][j], (a) / sigma, (b) / sigma,
-                                                                                 loc=eval_point,
-                                                            scale=sigma) / scaling_vect[i][j]
-                                  )
+                output[i].append(scipy.stats.truncnorm.pdf(T_t[i][j] / scaling_vect[i][j], (a) / sigma, (b) / sigma,
+                                                           loc=eval_point,
+                                                           scale=sigma) / scaling_vect[i][j]
+                                 )
             output[i] = np.array(output[i])
     return output
 
 
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
-def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_vect= None):
+def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_vect=None):
     if scaling_vect is None:
         output = []
         for i in range(len(length_elements_T_t)):
@@ -158,22 +148,22 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
             # bc we evaluate at eval_point but translated by T_t,
             # if kernel not symmetric a != b, then we also need to translate by the mid of them.
             xx[(xx < -1) | (xx > 1)] = 1
-            output.append( 15/16 * np.power(1 - xx * xx,2) *2 / (b-a)) # kernel * scaling ; delta in my formulas
-    else :
+            output.append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
+    else:
         # optimize cool to optimize using numpy and vectorize.
         output = [[] for _ in range(len(length_elements_T_t))]
         for i in range(len(length_elements_T_t)):
             for j in range(length_elements_T_t[i]):
                 xx = (T_t[i][j] - (a + b) / 2 - eval_point) * 2 / (b - a) / scaling_vect[i][j]
-            # the correct order is eval_point - T_t,
-            # bc we evaluate at eval_point but translated by T_t,
-            # if kernel not symmetric a != b, then we also need to translate by the mid of them.
-                if xx < -1 or xx > 1 :
+                # the correct order is eval_point - T_t,
+                # bc we evaluate at eval_point but translated by T_t,
+                # if kernel not symmetric a != b, then we also need to translate by the mid of them.
+                if xx < -1 or xx > 1:
                     xx = 1
-                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a)/ scaling_vect[i][j])  # kernel * scaling ; delta in my formulas
+                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a) / scaling_vect[i][
+                    j])  # kernel * scaling ; delta in my formulas
             output[i] = np.array(output[i])
     return output
-
 
 # # ############ test
 # T_t = [np.linspace(-1000,1000,1000)]
@@ -183,4 +173,3 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
 #     res = fct_truncnorm(T_t, length_elements_T_t, i, a=-100, b=400, sigma=300)
 #     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
 #     aplot = APlot(datax = T_t[0], datay = res[0])
-

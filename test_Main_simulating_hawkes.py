@@ -190,7 +190,8 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         graph_test.draw_histogram()
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         graph_test = Graph_Estimator_Hawkes.from_path(
-            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_test.csv', self.the_update_functions)
+            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_test.csv',
+            self.the_update_functions)
         graph_test.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
 
     def test_simple_multi(self):
@@ -231,8 +232,6 @@ class Test_Simulation_Hawkes(unittest.TestCase):
                                    index=False,
                                    header=True)
 
-
-
     def test_over_the_time_adaptive(self):
         nb_of_times = 50
         HAWKSY = Hawkes_process(tt, PARAMETERS)
@@ -259,7 +258,6 @@ class Test_Simulation_Hawkes(unittest.TestCase):
                                    index=False,
                                    header=True)
 
-
         # work-in-progress
         #  I got the first estimates. I can potentially already draw the evolution of parameters.
         #  do adaptive here
@@ -267,7 +265,7 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         # on regarde le estimator_kernel et on en déduit l'optimal bandwidth.
 
         adaptive_estimator_kernel = Estimator_Hawkes()
-        my_adapt_kernel = Kernel_adaptive(fct_biweight, pilot_function_vector = scalings, name="BiWeight", a=-350, b=350)
+        my_adapt_kernel = Kernel_adaptive(fct_biweight, pilot_function_vector=scalings, name="BiWeight", a=-350, b=350)
         ############################## second step
         count_times = 0
         for time in Times:
@@ -277,7 +275,7 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             print("=" * 78)
             print(
                 f"Time : {count_times} out of : {len(Times)}."
-                )
+            )
 
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
                                                         nb_of_guesses=nb_of_guesses,
@@ -286,9 +284,10 @@ class Test_Simulation_Hawkes(unittest.TestCase):
 
         GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
-        adaptive_estimator_kernel.DF.to_csv('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_adapt.csv',
-                                   index=False,
-                                   header=True)
+        adaptive_estimator_kernel.DF.to_csv(
+            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_adapt.csv',
+            index=False,
+            header=True)
 
     def test_MSE(self):
         estimator_MSE = Estimator_Hawkes()
@@ -317,7 +316,6 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
 
 
-
 class Test_images(unittest.TestCase):
 
     def tearDown(self):
@@ -326,97 +324,88 @@ class Test_images(unittest.TestCase):
     def test_image_different_kernel_vision(self):
         nb_of_points = 50000
         ############################## 1
-        xx = np.linspace( -15,15, nb_of_points)
-        mesh = 30. /nb_of_points
+        xx = np.linspace(-15, 15, nb_of_points)
+        mesh = 30. / nb_of_points
         zz = np.zeros(nb_of_points)
         my_plot = plot_functions.APlot(how=(1, 1))
-        points = np.array([-7.,-6.,1.,2.,5.])
+        points = np.array([-7., -6., 1., 2., 5.])
         for f in points:
-            yy = recurrent_functions.phi_numpy(xx,f,2)/len(points)
-            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            yy = recurrent_functions.phi_numpy(xx, f, 2) / len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param={'label': f'Kernel at {f}'})
             zz += yy
 
         print(np.sum(zz * mesh))
 
-
-        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
-        my_plot.set_dict_fig(0, {'xlabel' : '' , 'ylabel' : 'Probability' , 'title': 'KDE estimation, fixed size kernel'})
+        my_plot.uni_plot(0, xx, zz, dict_plot_param={'color': 'r', 'label': 'KDE'})
+        my_plot.set_dict_fig(0, {'xlabel': '', 'ylabel': 'Probability', 'title': 'KDE estimation, fixed size kernel'})
         my_plot.show_legend()
 
         ############################## 2
         zz = np.zeros(nb_of_points)
         my_plot = plot_functions.APlot(how=(1, 1))
-        points = np.array([-7.,-6.,1.,2.,5.])
+        points = np.array([-7., -6., 1., 2., 5.])
         for f in points:
-            yy = recurrent_functions.phi_numpy(xx,f,2*(1+math.fabs(f)/10))/len(points)
-            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
+            yy = recurrent_functions.phi_numpy(xx, f, 2 * (1 + math.fabs(f) / 10)) / len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param={'label': f'Kernel at {f}'})
             zz += yy
 
-
-
-        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
-        my_plot.set_dict_fig(0, {'xlabel' : '' , 'ylabel' : 'Probability' , 'title': 'KDE estimation, adaptive size kernel'})
+        my_plot.uni_plot(0, xx, zz, dict_plot_param={'color': 'r', 'label': 'KDE'})
+        my_plot.set_dict_fig(0,
+                             {'xlabel': '', 'ylabel': 'Probability', 'title': 'KDE estimation, adaptive size kernel'})
         my_plot.show_legend()
 
         print(np.sum(zz * mesh))
-
 
         ############################## 3
         ############### left
         zz = np.zeros(nb_of_points)
         max_x = 0.15
-        my_plot = plot_functions.APlot(how=(1, 2), sharey = True)
-        my_plot.uni_plot(0,[0 for _ in xx],
-                         np.linspace(-0.01,max_x, len(xx) ),
-                         dict_plot_param= {'color':'g', 'label':'Estimation point',
-                                           'linestyle':'--', 'linewidth' : 2,
-                                           'markersize': 0, 'label':None})
-        points = np.array([-1.1,0.5,5.])
+        my_plot = plot_functions.APlot(how=(1, 2), sharey=True)
+        my_plot.uni_plot(0, [0 for _ in xx],
+                         np.linspace(-0.01, max_x, len(xx)),
+                         dict_plot_param={'color': 'g', 'label': 'Estimation point',
+                                          'linestyle': '--', 'linewidth': 2,
+                                          'markersize': 0, 'label': None})
+        points = np.array([-1.1, 0.5, 5.])
         for f in points:
             my_plot.uni_plot(0, [f for _ in xx],
                              np.linspace(-0.01, max_x, len(xx)),
                              dict_plot_param={'color': 'k', 'linestyle': '--', 'linewidth': 0.7,
                                               'markersize': 0,
-                                              'label':None})
-            yy = recurrent_functions.phi_numpy(xx, f, 2)/len(points)
-            my_plot.uni_plot(0, xx, yy, dict_plot_param= {'label': f'Kernel at {f}'})
-            my_plot.uni_plot(0,xx[nb_of_points//2],yy[nb_of_points//2],
-                             dict_plot_param= {'color':'r',
-                                           'markersize': 8, 'marker':'*', 'label':None})
+                                              'label': None})
+            yy = recurrent_functions.phi_numpy(xx, f, 2) / len(points)
+            my_plot.uni_plot(0, xx, yy, dict_plot_param={'label': f'Kernel at {f}'})
+            my_plot.uni_plot(0, xx[nb_of_points // 2], yy[nb_of_points // 2],
+                             dict_plot_param={'color': 'r',
+                                              'markersize': 8, 'marker': '*', 'label': None})
             zz += yy
-        my_plot.uni_plot(0, xx, zz, dict_plot_param= {'color':'r', 'label':'KDE'})
-        print("value : ", zz[nb_of_points //2])
+        my_plot.uni_plot(0, xx, zz, dict_plot_param={'color': 'r', 'label': 'KDE'})
+        print("value : ", zz[nb_of_points // 2])
 
         ############### right
-        zz = recurrent_functions.phi_numpy(xx,0,2)/3
-        z= 0
+        zz = recurrent_functions.phi_numpy(xx, 0, 2) / 3
         print(np.sum(zz * mesh))
         for f in points:
             my_plot.uni_plot(1, [f for _ in xx],
-                             np.linspace(-0.004, recurrent_functions.phi_numpy(f,0,2)/3, len(xx)),
+                             np.linspace(-0.004, recurrent_functions.phi_numpy(f, 0, 2) / 3, len(xx)),
                              dict_plot_param={'color': 'm', 'linestyle': '--', 'linewidth': 0.7,
                                               'markersize': 0,
                                               'label': f'Value kernel at {f}'})
-            my_plot.uni_plot(1,f, recurrent_functions.phi_numpy(f,0,2)/3,
-                             dict_plot_param= {'color':'g',
-                                           'markersize': 8, 'marker':'*', 'label':None})
+            my_plot.uni_plot(1, f, recurrent_functions.phi_numpy(f, 0, 2) / 3,
+                             dict_plot_param={'color': 'g',
+                                              'markersize': 8, 'marker': '*', 'label': None})
 
-        my_plot.uni_plot(1, xx, zz, dict_plot_param= {'color':'r', 'label':'Kernel for $t = 0$'})
-
-
-
-
-
-
+        my_plot.uni_plot(1, xx, zz, dict_plot_param={'color': 'r', 'label': 'Kernel for $t = 0$'})
 
         ### sum
         previous_f = 0
-        for i,f in enumerate(zip(points,['b','c','k'])):
+        for i, f in enumerate(zip(points, ['b', 'c', 'k'])):
             c = f[1]
             f = f[0]
             my_plot.uni_plot(1, -15, previous_f + recurrent_functions.phi_numpy(f, 0, 2) / 3,
                              dict_plot_param={'color': c,
-                                              'markersize': 8, 'marker': '*', 'label': f'cumsum leading to true result {i}'})
+                                              'markersize': 8, 'marker': '*',
+                                              'label': f'cumsum leading to true result {i}'})
             my_plot.uni_plot(1, [-15 for _ in xx],
                              np.linspace(previous_f, previous_f + recurrent_functions.phi_numpy(f, 0, 2) / 3, len(xx)),
                              dict_plot_param={'color': c, 'linestyle': '--', 'linewidth': 0.7,
@@ -425,10 +414,8 @@ class Test_images(unittest.TestCase):
             previous_f += recurrent_functions.phi_numpy(f, 0, 2) / 3
 
         my_plot.set_dict_fig(0,
-                             {'xlabel': '', 'ylabel': 'Probability', 'title': 'Kernels represented as functions of the events'})
+                             {'xlabel': '', 'ylabel': 'Probability',
+                              'title': 'Kernels represented as functions of the events'})
         my_plot.set_dict_fig(1,
                              {'xlabel': '', 'ylabel': '', 'title': 'Kernels represented as functions of the time'})
         my_plot.show_legend()
-
-
-

@@ -2,10 +2,11 @@
 
 ##### my libraries
 from classes.class_graph_estimator import *
-np.random.seed(124)
 
 ##### other files
 from classes.class_kernel import *
+
+np.random.seed(124)
 
 # defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
@@ -106,7 +107,7 @@ class Hawkes_process:
                 # it is tricky : first find where the min is (index) but it is flatten. So I recover coordinates with unravel index.
                 # I take [0] bc I only care about where the excitation comes from.
                 next_a_index = np.unravel_index(np.argmin(aa, axis=None), aa.shape)[0]
-            #otherwise, excitation always from 0 dim.
+            # otherwise, excitation always from 0 dim.
             else:
                 next_a_index = 0
             # min value.
@@ -131,11 +132,10 @@ class Hawkes_process:
                     if jj == next_a_index:
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
                             - self.BETA[jj, ii] * next_a_value) + \
-                                                            self.ALPHA[jj, ii]
-                    else :
+                                                  self.ALPHA[jj, ii]
+                    else:
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
                             - self.BETA[jj, ii] * next_a_value)
-
 
             if plot_bool:
                 # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.

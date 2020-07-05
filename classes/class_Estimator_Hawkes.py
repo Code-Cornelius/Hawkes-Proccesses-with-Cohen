@@ -12,10 +12,10 @@ class Estimator_Hawkes(Estimator):
     # once initialize, one can add values. Each row is one estimator
     def __init__(self):
         super().__init__(pd.DataFrame(columns=['variable', 'n', 'm',
-                                  'time estimation', 'weight function',
-                                  'value', 'T_max', 'true value', 'number of guesses']))
+                                               'time estimation', 'weight function',
+                                               'value', 'T_max', 'true value', 'number of guesses']))
 
-    def mean(self, separator = None):
+    def mean(self, separator=None):
         ## separators is a list, of the estimators to gather together.
         separators = ['variable', 'm', 'n']
         if separator is not None:
@@ -26,14 +26,13 @@ class Estimator_Hawkes(Estimator):
         for i in range(M):
             ans_N.append(dict_of_means[('nu', i, 0)])
             for j in range(M):
-                if not j :
+                if not j:
                     ans_A.append([])
                     ans_B.append([])
                 ans_A[i].append(dict_of_means[('alpha', i, j)])
                 ans_B[i].append(dict_of_means[('beta', i, j)])
 
         return [ans_N, ans_A, ans_B]
-
 
 # example:
 #

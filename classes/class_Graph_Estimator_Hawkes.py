@@ -66,7 +66,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
 
-################################ hist
+    ################################ hist
 
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         title = self.generate_title(separators, key, "",
@@ -78,7 +78,8 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return fig_dict
 
     evolution_name = 'time estimation'
-    def get_evolution_parameter(self,data):
+
+    def get_evolution_parameter(self, data):
         return data[Graph_Estimator_Hawkes.evolution_name].unique()
 
     def get_evolution_extremes(self, data):
@@ -109,7 +110,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             'title': f"Convergence in compute_MSE of the estimators, batches of {self.nb_of_guesses} realisations.",
             'labels': ["Nb of Events", "compute_MSE of the Estimator"],
             'parameters': [self.ALPHA[0][0](0, 1), self.BETA[0][0](0, 1), self.NU[0](0, 1)],
-            'name_parameters':["ALPHA", "BETA", "NU"]
+            'name_parameters': ["ALPHA", "BETA", "NU"]
         }
         return fig_dict
 
