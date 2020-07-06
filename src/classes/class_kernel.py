@@ -167,19 +167,26 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
 
 
 
+
 # thre versions :
 
 # where on coupe en 3
 # if et vectorize ?
 # autre ?
-def test_geom_kern(T_t, G = 1, min = -0.2, max=5):
+def test_geom_kern(T_t, G = 10, min = None, max=None):
+    if min is None:
+        min = np.quantile(T_t, 0.25)
+    print(min)
+    if max is None:
+        max = np.quantile(T_t, 0.95)
+    print(max)
     output = []
     xx = T_t[i] - G
     #xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
 
     ans = 0
-    scaling1 = 1/5
-    scaling2 = 1/20
+    scaling1 =  math.pi / min
+    scaling2 =  math.pi / (max-G)
     # I fix outside of my interest array to be the final value, which is math.pi.
     # I also need the scaling by +50 given by math.pi
     my_xx2 = np.where((xx*scaling1 > -math.pi) & (xx*scaling1 < 0),
@@ -197,10 +204,12 @@ def test_geom_kern(T_t, G = 1, min = -0.2, max=5):
 
 
 # # ############ test
-T_t = [np.linspace(-100,100,10000)]
+T_t = [np.linspace(0,100,10000)]
+G = 10
+#T_t = [np.random.randint(0,6*G, 20)]
 eval_point = [0]
 for i in eval_point:
-    res = test_geom_kern(T_t, 0)
+    res = test_geom_kern(T_t, G)
     aplot = APlot(datax = T_t[0], datay = res[0])
 
 # ############ test
