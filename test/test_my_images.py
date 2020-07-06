@@ -1,17 +1,17 @@
 # normal libraries
 import unittest
 
-import numpy as np  #maths library and arrays
+import numpy as np  # maths library and arrays
 import statistics as stat
-import pandas as pd  #dataframes
-import seaborn as sns  #envrionement for plots
-from matplotlib import pyplot as plt  #ploting 
-import scipy.stats  #functions of statistics
+import pandas as pd  # dataframes
+import seaborn as sns  # envrionement for plots
+from matplotlib import pyplot as plt  # ploting
+import scipy.stats  # functions of statistics
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  #allows to time event
+import time  # allows to time event
 import warnings
-import math  #quick math functions
-import cmath  #complex functions
+import math  # quick math functions
+import cmath  # complex functions
 
 # my libraries
 import classical_functions
@@ -25,9 +25,11 @@ import classes.class_estimator
 import classes.class_graph_estimator
 
 np.random.seed(124)
+
+
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Test_images(unittest.TestCase):
 
     def tearDown(self):
@@ -111,9 +113,8 @@ class Test_images(unittest.TestCase):
 
         ### sum
         previous_f = 0
-        for i, f in enumerate(zip(points, ['b', 'c', 'k'])):
-            c = f[1]
-            f = f[0]
+
+        for i, (f, c) in enumerate(zip(points, ['b', 'c', 'k'])):
             my_plot.uni_plot(1, -15, previous_f + recurrent_functions.phi_numpy(f, 0, 2) / 3,
                              dict_plot_param={'color': c,
                                               'markersize': 8, 'marker': '*',
@@ -131,5 +132,3 @@ class Test_images(unittest.TestCase):
         my_plot.set_dict_fig(1,
                              {'xlabel': '', 'ylabel': '', 'title': 'Kernels represented as functions of the time'})
         my_plot.show_legend()
-
-

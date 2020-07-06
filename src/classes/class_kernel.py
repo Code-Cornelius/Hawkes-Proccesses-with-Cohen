@@ -89,7 +89,7 @@ def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vec
         for i in range(len(length_elements_T_t)):
             vector = T_t[i]
             # TODO vector is np array?
-            # sign is -1 negative, 1 positive
+            # -1 if x < 0, 0 if x==0, 1 if x > 0.
             output.append(1 / (2 * (b - a)) * \
                           (np.sign(vector - eval_point - a) +
                            np.sign(b - vector + eval_point))
@@ -165,11 +165,59 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
             output[i] = np.array(output[i])
     return output
 
+
+
+# thre versions :
+
+# where on coupe en 3
+# if et vectorize ?
+# autre ?
+def test_geom_kern(T_t,length_elements_T_t, G = 0, min = 0.05, max = 0.95):
+    output = []
+    for i in range(len(length_elements_T_t)):
+        xx = (T_t[i] - G) /10
+        xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
+
+        my_xx = []
+        ans = 0
+        # pi allows me to get only the first bump. symmetric so both sides
+        my_xx.append( np.where((xx < -math.pi) | (xx > math.pi), xx, math.pi ) )# #outside
+        my_xx.append( np.where((xx > -math.pi) & (xx < 0), xx, math.pi/2) ) # left
+        my_xx.append( np.where((xx > 0) & (xx < math.pi ), xx, math.pi/2) ) # right
+        for part_vect in my_xx:
+            print(part_vect)
+            # I don't want it to be exactly 0 in 0
+            ans+= - 50 * np.cos( part_vect  )
+        ans += 50 + 0.01
+        output.append( ans )
+    return output
+
+def f(x):
+    return -50 * np.cos(x/10) + 50 + 0.01
+x = np.linspace(-100,100,10000)
+y = f(x)
+APlot(datax = x, datay = y)
+
+
 # # ############ test
-# T_t = [np.linspace(-1000,1000,1000)]
-# length_elements_T_t = [1000]
-# eval_point = [-200,0,1000]
-# for i in eval_point:
-#     res = fct_truncnorm(T_t, length_elements_T_t, i, a=-100, b=400, sigma=300)
-#     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
-#     aplot = APlot(datax = T_t[0], datay = res[0])
+T_t = [np.linspace(-100,100,100)]
+length_elements_T_t = [100]
+eval_point = [0]
+for i in eval_point:
+    res = test_geom_kern(T_t,length_elements_T_t, 0)
+    aplot = APlot(datax = T_t[0], datay = res[0])
+
+# ############ test
+T_t = [np.linspace(-1000,1000,100000)]
+
+for fct in [fct_biweight,fct_truncnorm,fct_top_hat]:
+    my_kernel = Kernel(fct, a=-250, b=250)
+    length_elements_T_t = [10000]
+    eval_point = [0]
+    for i in eval_point:
+        res = my_kernel.eval( T_t, i, 2000)
+        #aplot = APlot(datax = T_t[0], datay = res[0])
+
+
+
+plt.show()
