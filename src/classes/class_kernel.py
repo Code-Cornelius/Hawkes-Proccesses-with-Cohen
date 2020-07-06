@@ -172,39 +172,35 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
 # where on coupe en 3
 # if et vectorize ?
 # autre ?
-def test_geom_kern(T_t,length_elements_T_t, G = 0, min = 0.05, max = 0.95):
+def test_geom_kern(T_t, G = 1, min = -0.2, max=5):
     output = []
-    for i in range(len(length_elements_T_t)):
-        xx = (T_t[i] - G) /10
-        xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
+    xx = T_t[i] - G
+    #xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
 
-        my_xx = []
-        ans = 0
-        # pi allows me to get only the first bump. symmetric so both sides
-        my_xx.append( np.where((xx < -math.pi) | (xx > math.pi), xx, math.pi ) )# #outside
-        my_xx.append( np.where((xx > -math.pi) & (xx < 0), xx, math.pi/2) ) # left
-        my_xx.append( np.where((xx > 0) & (xx < math.pi ), xx, math.pi/2) ) # right
-        for part_vect in my_xx:
-            print(part_vect)
-            # I don't want it to be exactly 0 in 0
-            ans+= - 50 * np.cos( part_vect  )
-        ans += 50 + 0.01
-        output.append( ans )
+    ans = 0
+    scaling1 = 1/5
+    scaling2 = 1/20
+    # I fix outside of my interest array to be the final value, which is math.pi.
+    # I also need the scaling by +50 given by math.pi
+    my_xx2 = np.where((xx*scaling1 > -math.pi) & (xx*scaling1 < 0),
+                           xx*scaling1, math.pi) # left
+    my_xx3 = np.where((xx*scaling2 > 0) & (xx*scaling2 < math.pi ),
+                           xx*scaling2, math.pi) # right
+    ans += - 50 * np.cos( my_xx2  )
+    ans += - 50 * np.cos( my_xx3  )
+
+    ans += 0.01 # avoid infinite width kernel
+    output.append( ans )
     return output
 
-def f(x):
-    return -50 * np.cos(x/10) + 50 + 0.01
-x = np.linspace(-100,100,10000)
-y = f(x)
-APlot(datax = x, datay = y)
+
 
 
 # # ############ test
-T_t = [np.linspace(-100,100,100)]
-length_elements_T_t = [100]
+T_t = [np.linspace(-100,100,10000)]
 eval_point = [0]
 for i in eval_point:
-    res = test_geom_kern(T_t,length_elements_T_t, 0)
+    res = test_geom_kern(T_t, 0)
     aplot = APlot(datax = T_t[0], datay = res[0])
 
 # ############ test
