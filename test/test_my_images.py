@@ -132,3 +132,27 @@ class Test_images(unittest.TestCase):
         my_plot.set_dict_fig(1,
                              {'xlabel': '', 'ylabel': '', 'title': 'Kernels represented as functions of the time'})
         my_plot.show_legend()
+
+    def test_my_geometric_kernel(self):
+        # des listes de 50 éléments
+        liste_1 = np.full(50,13)
+        liste_2 = np.linspace(2,24,50)
+        liste_3 = np.append(liste_2[:25], liste_1[25:])
+        liste_4 = np.append( np.full(25,2) , np.full(25,20) )
+        my_sin  = 50*np.sin( np.linspace(0,11/2*math.pi, 35) ) + 100
+        liste_5 = np.append(my_sin, np.full(15,1))
+
+        my_list = [ liste_1, liste_2, liste_3, liste_4, liste_5 ]
+        print(liste_1)
+        print(liste_2)
+        print(liste_3)
+        print(liste_4)
+        print(liste_5)
+
+        from scipy.stats.mstats import gmean
+        print(my_list)
+        for i,l in enumerate(my_list):
+            print("{} value is {}. min {} max {}.".format(i, gmean(l), np.quantile(l, 0.15), np.quantile(l, 0.85)))
+
+
+
