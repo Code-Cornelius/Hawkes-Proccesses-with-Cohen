@@ -36,7 +36,7 @@ class Test_images(unittest.TestCase):
         plt.show()
 
     def test_image_different_kernel_vision(self):
-        nb_of_points = 100
+        nb_of_points = 10000
         ############################## 1
         xx = np.linspace(-15, 15, nb_of_points)
         mesh = 30. / nb_of_points
@@ -79,7 +79,7 @@ class Test_images(unittest.TestCase):
                          np.linspace(-0.004, max_x, len(xx)),
                          dict_plot_param={'color': 'g', 'label': 'Estimation point',
                                           'linestyle': '--', 'linewidth': 2,
-                                          'markersize': 0, 'label': None})
+                                          'markersize': 0, 'label': 'Point of interest'})
         points = np.array([-1.1, 0.5, 5.])
         for f in points:
             my_plot.uni_plot(0, [f for _ in xx],
