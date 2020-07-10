@@ -116,14 +116,12 @@ def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
 
 # first derivative
 def del_L_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = - T + np.sum(w[m] * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
     return ans
 
 
 def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     # 1
     my_jumps = np.array(T_t[n])
     ans1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (T - my_jumps))))
@@ -135,8 +133,6 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    # my_time = time.time()
-    _, M = np.shape(ALPHA)
 
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
@@ -147,7 +143,6 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     ANS3 = ALPHA[m, n] * np.sum(
         w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
 
-    # time_computational(my_time, time.time(), title="beta del")
     return ALPHA[m, n] / (BETA[m, n] * BETA[m, n]) * ANS1 - ALPHA[m, n] / (BETA[m, n]) * ANS2 - ANS3
 
 
@@ -181,9 +176,6 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 # second derivatives
 def del_L_mu_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    # my_time = time.time()
-    _, M = np.shape(ALPHA)
-
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * np.reciprocal(vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ans
@@ -194,7 +186,6 @@ def del_L_mu_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(w[m] * vector_R * vector_R * np.reciprocal(
@@ -203,7 +194,6 @@ def del_L_alpha_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_alpha_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
@@ -217,7 +207,6 @@ def del_L_alpha_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_alpha_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_R = np.array([R(m=m, n=n, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = -  np.sum(
@@ -230,7 +219,6 @@ def del_L_alpha_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     ans = ALPHA[m, n] * np.sum(
@@ -243,8 +231,6 @@ def del_L_beta_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
-
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
     ANS1 *= -1 / BETA[m, n]
@@ -263,8 +249,6 @@ def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
-
     vector_R = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array(
@@ -279,7 +263,6 @@ def del_L_beta_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     B = BETA[m, n]
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (1 - np.exp(- B * (my_jumps))))
@@ -301,7 +284,6 @@ def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta_beta_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-    _, M = np.shape(ALPHA)
     vector_R_dash_dash = np.array([get_R_dash(m, n_dash, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])

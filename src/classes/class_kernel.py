@@ -35,7 +35,8 @@ np.random.seed(124)
 # fct_biweight
 #
 #
-
+#### the functions are correct, they scale and shift the way it is supposed.
+# However they are written in the following way : f_t(t_i) = K( t_i - t )
 
 # example of kernels:
 # list_of_kernels = [Kernel(fct_top_hat, name="wide top hat", a=-450, b=450),
@@ -227,6 +228,29 @@ def test_geom_kern(T_t, G = 10, min = None, max=None):
     return output
 
 
+def test_normal_kernel(T_t, G = 10., gamma = 0.5):
+    output = []
+    xx = T_t[i]
+    print(xx)
+    ans = np.power(xx / G,-gamma)
+    print(ans)
+    output.append( ans )
+    return output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -241,8 +265,8 @@ def test_geom_kern(T_t, G = 10, min = None, max=None):
 
 
 # # ############ test
-T_t = [np.linspace(0,100,10000)]
-G = 10
+T_t = [np.linspace(0.1,100,10000)]
+G = 10.
 #T_t = [np.random.randint(0,6*G, 20)]
 eval_point = [0]
 for i in eval_point:
@@ -256,19 +280,28 @@ for i in eval_point:
                              dict_plot_param={'color': 'g', 'linestyle': '--', 'markersize': 0, 'linewidth': 2, 'label':'lower bound'})
     aplot.plot_vertical_line(max, np.linspace(-5, 105, 1000), nb_ax=0,
                              dict_plot_param={'color': 'g', 'linestyle': '--', 'markersize': 0, 'linewidth': 2, 'label':'upper bound'})
-    aplot.set_dict_fig(0, {'title':'Adaptive scaling for Adaptive Window Width','xlabel':'Ratio', 'ylabel':'Scaling'})
+    aplot.set_dict_fig(0, {'title':'Adaptive scaling for Adaptive Window Width','xlabel':'Value', 'ylabel':'Scaling'})
+    aplot.show_legend()
+
+eval_point = [0]
+for i in eval_point:
+    res = test_normal_kernel(T_t, G, gamma = 0.5)
+    aplot = APlot(how = (1,1))
+    aplot.uni_plot(nb_ax = 0, xx = T_t[0], yy = res[0])
+    aplot.plot_vertical_line(G, np.linspace(-1,10, 1000), nb_ax=0, dict_plot_param={'color':'k', 'linestyle':'--', 'markersize':0, 'linewidth':2, 'label':'geom. mean'})
+    aplot.set_dict_fig(0, {'title':'Adaptive scaling for Adaptive Window Width','xlabel':'Value', 'ylabel':'Scaling'})
     aplot.show_legend()
 
 # ############ test
-T_t = [np.linspace(-1000,1000,100000)]
-
-for fct in [fct_biweight,fct_truncnorm,fct_top_hat,fct_epa]:
-    my_kernel = Kernel(fct, a=-250, b=250)
-    length_elements_T_t = [10000]
-    eval_point = [0]
-    for i in eval_point:
-        res = my_kernel.eval( T_t, i, 2000)
-        aplot = APlot(datax = T_t[0], datay = res[0])
+# T_t = [np.linspace(-1000,1000,100000)]
+#
+# for fct in [fct_biweight,fct_truncnorm,fct_top_hat,fct_epa]:
+#     my_kernel = Kernel(fct, a=-250, b=250)
+#     length_elements_T_t = [10000]
+#     eval_point = [0]
+#     for i in eval_point:
+#         res = my_kernel.eval( T_t, i, 2000)
+#         aplot = APlot(datax = T_t[0], datay = res[0])
 
 
 
