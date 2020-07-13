@@ -154,7 +154,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 0)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 10, 100 * mini_T
+    nb_of_guesses, T = 25, 100 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -313,4 +313,27 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
             width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
 
+    def test_capabilities_test_optimization(self):
+        estimator_MSE = Estimator_Hawkes()
 
+        T = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T,
+             50 * mini_T, 60 * mini_T, 70 * mini_T, 80 * mini_T, 90 * mini_T, 100 * mini_T,
+             120 * mini_T, 150 * mini_T, 180 * mini_T, 200 * mini_T, 240 * mini_T]
+        T_plot = [T[i] // mini_T * 50 for i in range(len(T))]
+        vect_time_simulation = np.zeros(len(T))
+
+        for i, times in enumerate(T):
+            print(f"times {times}")
+            start = time.time()
+            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, T_max=times,
+                                                        nb_of_guesses=nb_of_guesses,
+                                                        silent=silent)
+            time_simulation = time.time() - start
+            vect_time_simulation[i] = time_simulation / nb_of_guesses
+
+        aplot = APlot(how = (1,1))
+        aplot.uni_plot(nb_ax = 0, xx = T_plot, yy = vect_time_simulation)
+        aplot.set_dict_fig(0, {'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(nb_of_guesses),
+            'xlabel': "Number of Jumps simulated", 'ylabel':"Average time to simulate"})
+        aplot.save_plot("Timing_opti")
+        return

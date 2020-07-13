@@ -23,8 +23,8 @@ def denomR(m, k, T_t, ALPHA, BETA, MU):
 def R(m, n, k, T_t, BETA, end=-10):
     constant = 0
     # M AND N STARTS AT 0 AND FINISH AT M-1.
-    if k < 1:
-        raise Exception("YOu moRoN")
+    #if k < 1:
+    #    raise Exception("k < 1 problem in R.")
     if k == 1:
         if m == n:
             return 0

@@ -147,47 +147,11 @@ def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_we
 
 # those two functions are quite useless right now. I don't want to spend time on them to refractor them.
 
+
+
+
+
 '''
-def capabilities_test_optimization(tt, ALPHA, BETA, MU, mini_T):
-    nb_of_trial_for_timing = 50
-    T = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T,
-         50 * mini_T, 60 * mini_T, 70 * mini_T, 80 * mini_T, 90 * mini_T, 100 * mini_T, 120 * mini_T]
-    # test
-    # T = [mini_T, 2 * mini_T, 4 * mini_T, 5 * mini_T]
-    T_plot = [T[i] // mini_T * 50 for i in range(len(T))]
-    vect_time_simulation = np.zeros(len(T))
-    # TODO with estimateur_variance(x_real, mean) estimate variance of each parameter
-
-    process = Hawkes_process(tt, ALPHA, BETA, MU)
-    for i_times in range(len(T)):
-        time_simulation = 0
-        # histogram for last value of T
-
-        print("=" * 78)
-        print("=" * 78)
-        print("=" * 78)
-
-        for i in range(nb_of_trial_for_timing):
-            print("=" * 78)
-            print("Global timing simulation : Big time {}, out of {}, successive simulation {} out of {}.".format(
-                i_times + 1, len(T), i + 1, nb_of_trial_for_timing))
-            print("=" * 78)
-
-            start = time.time()
-            process.gen_plus_conv_hawkes(T[i_times])
-            time_simulation += time.time() - start
-
-        vect_time_simulation[i_times] = time_simulation / nb_of_trial_for_timing
-    plot_functions.plot_graph(T_plot, vect_time_simulation, title=[
-        "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(
-            nb_of_trial_for_timing)],
-                              labels=["Number of Jumps simulated", "Time"],
-                              parameters=[ALPHA, BETA, MU], name_parameters=["ALPHA", "BETA", "NU"],
-                              name_save_file="Timing_opti")
-    return
-
-
-
 def one_long_and_longer_estimation(tt, ALPHA, BETA, MU, mini_T):
     _, M = np.shape(ALPHA)
     # my final guesses

@@ -61,26 +61,26 @@ class Kernel_adaptive(Kernel):
             return ans
 
 ########## test
-M = 10000
-INF = -1000
-SUP = 1000
-T_t = [np.linspace(INF,SUP,M)]
-eval_point = [-200,0,400]
-eval_point = [0]
-my_kernel = Kernel( fct_biweight,  a=-200, b=200 )
-for i in eval_point:
-    res = my_kernel.eval( T_t, i, SUP-INF)
-    #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
-    aplot = APlot(datax = T_t[0], datay = res[0])
-
-T_t = [np.linspace(INF,SUP,M)]
-scaling_vect = [[ (2000+x)/500 for x in list(range(M))]]
-scaling_vect = [[ 2  for x in list(range(M))]]
-eval_point = [-200,0,400]
-eval_point = [0]
-my_kernel = Kernel_adaptive( fct_biweight ,scaling_vect,  a=-200, b=200 )
-for i in eval_point:
-    res = my_kernel.eval( T_t, i, SUP-INF)
-    #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
-    aplot = APlot(datax = T_t[0], datay = res[0])
-plt.show()
+# M = 10000
+# INF = -1000
+# SUP = 1000
+# T_t = [np.linspace(INF,SUP,M)]
+# eval_point = [-200,0,400]
+# eval_point = [0]
+# my_kernel = Kernel( fct_biweight,  a=-200, b=200 )
+# for i in eval_point:
+#     res = my_kernel.eval( T_t, i, SUP-INF)
+#     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
+#     aplot = APlot(datax = T_t[0], datay = res[0])
+#
+# T_t = [np.linspace(INF,SUP,M)]
+# scaling_vect = [[ (2000+x)/500 for x in list(range(M))]]
+# scaling_vect = [[ 2  for x in list(range(M))]]
+# eval_point = [-200,0,400]
+# eval_point = [0]
+# my_kernel = Kernel_adaptive( fct_biweight ,scaling_vect,  a=-200, b=200 )
+# for i in eval_point:
+#     res = my_kernel.eval( T_t, i, SUP-INF)
+#     #res =  fct_biweight(T_t, length_elements_T_t, i, a=-300, b=100)
+#     aplot = APlot(datax = T_t[0], datay = res[0])
+# plt.show()
