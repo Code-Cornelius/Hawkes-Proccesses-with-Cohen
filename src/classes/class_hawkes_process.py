@@ -207,7 +207,7 @@ class Hawkes_process:
             number_on_display = i_dim + 1
             label_plot = str(" dimension " + str(number_on_display))
             upper_ax.plot(x, y, 'o-', markersize=0.2, linewidth=0.4, label=label_plot, color=c)
-            upper_ax.set_ylabel("Intensity : $\Lambda (t)$")
+            upper_ax.set_ylabel("Intensity : $\lambda (t)$")
             # the underlying
             y = 4 * i_dim + step_fun(x, np.array(time_real[i_dim]))
             lower_ax.plot(x, y, 'o-', markersize=0.5, linewidth=0.5, color=c)

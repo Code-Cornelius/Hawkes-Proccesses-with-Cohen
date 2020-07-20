@@ -2,6 +2,7 @@
 import unittest
 
 ##### my libraries
+import decorators_functions
 
 ##### other files
 from classes.class_Graph_Estimator_Hawkes import *
@@ -71,23 +72,46 @@ def choice_parameter(dim, styl):
     # dim choses how many dimensions
     # styl choses which variant of the parameters.
     if dim == 1:
-        ALPHA = [[1.75]]
-        BETA = [[2]]
-        MU = [0.2]
-        T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
-
-        ALPHA = [[2.]]
-        BETA = [[2.4]]
-        MU = [0.2]
-        T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
+        if styl ==1:
+            ALPHA = [[1.75]]
+            BETA = [[2]]
+            MU = [0.2]
+            T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
+        if styl == 2:
+            ALPHA = [[2.]]
+            BETA = [[2.4]]
+            MU = [0.2]
+            T0, mini_T = 0, 45  # 50 jumps for my uni variate stuff
 
     if dim == 2:
-        ALPHA = [[2, 1],
-                 [1, 2]]
-        BETA = [[5, 3],
-                [3, 5]]
-        MU = [0.2, 0.2]
-        T0, mini_T = 0, 120
+        if styl ==1:
+            ALPHA = [[2, 1],
+                     [1, 2]]
+            BETA = [[5, 3],
+                    [3, 5]]
+            MU = [0.2, 0.2]
+            T0, mini_T = 0, 70
+        if styl == 2:
+            ALPHA = [[2, 2],
+                     [1, 2]]
+            BETA = [[5, 3],
+                    [3, 5]]
+            MU = [0.4, 0.3]
+            T0, mini_T = 0, 12
+
+    if dim == 5:
+        ALPHA = [[2, 1, 0.5, 0.5, 0.5],
+                 [1, 2, 0.5, 0.5, 0.5],
+                 [0, 0, 0.5, 0, 0],
+                 [0, 0, 0., 0.5, 0.5],
+                 [0, 0, 0., 0.5, 0.5]]
+        BETA = [[5, 5, 5, 6, 3],
+                [5, 5, 5, 6, 3],
+                [0, 0, 10, 0, 0],
+                [0, 0, 0, 6, 3],
+                [0, 0, 0, 6, 3]]
+        MU = [0.2, 0.2, 0.2, 0.2, 0.2]
+        T0, mini_T = 0, 5
 
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
                                                                                                 dtype=np.float)  # I precise the type because he might think the np.array is int type.
@@ -151,10 +175,10 @@ test_mode = True
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 0)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1,1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 25, 100 * mini_T
+    nb_of_guesses, T = 1, 40 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -210,6 +234,20 @@ class Test_Simulation_Hawkes(unittest.TestCase):
                            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
         Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
+
+        total_nb_tries = len(Times) * len(list_of_kernels)
+        actual_state = [0]
+        @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
+                                                    multiplicator_factor=1,
+                                                    actual_state=actual_state)
+        def simulation():
+            print(''.join(["\n", "=" * 78]))
+            print(
+                f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
+            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                        nb_of_guesses=nb_of_guesses,
+                                                        kernel_weight=kernel, time_estimation=time, silent=silent)
+
         count_times = 0
         for time in Times:
             count_kernels = 0
@@ -218,12 +256,9 @@ class Test_Simulation_Hawkes(unittest.TestCase):
             print(HAWKSY)
             for kernel in list_of_kernels:
                 count_kernels += 1
-                print("=" * 78)
-                print(
-                    f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
-                functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
-                                                            nb_of_guesses=nb_of_guesses,
-                                                            kernel_weight=kernel, time_estimation=time, silent=silent)
+                actual_state[0] += 1
+                simulation()
+
         GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
         estimator_kernel.DF.to_csv(trash_path,
