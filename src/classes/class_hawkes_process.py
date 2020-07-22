@@ -50,6 +50,8 @@ class Hawkes_process:
     def simulation_Hawkes_exact(self, T_max, nb_of_sim=100000,
                                 plot_bool=True,
                                 silent=True):  # 100 000 is just a safe guard in order to not stuck the computer.
+        # TODO 20/07/2020 nie_k:  I want to add burn in, je dois simuler plus longtemps et effacer le début.
+        #  en gros je fais une simul sur T + un param, genre 100, et je cherche intensity et jump après 100 jusqu'à T+100.
         if not silent: print("Start of the simulation of the Hawkes process.")
         ########################################################################################
         # alpha and beta same shape. Mu a column vector with the initial intensities.

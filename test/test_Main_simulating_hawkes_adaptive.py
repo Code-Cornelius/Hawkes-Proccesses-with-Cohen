@@ -17,8 +17,8 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
-        list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                           Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
+        list_of_kernels = [#Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
+                           #Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
                            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
         Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
 
@@ -26,7 +26,7 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         total_nb_tries = len(Times) * len(list_of_kernels)
         actual_state = [0]
         @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
-                                                    multiplicator_factor=1,
+                                                    multiplicator_factor=0.7,
                                                     actual_state=actual_state)
         def simulation():
             print(''.join(["\n", "=" * 78]))
