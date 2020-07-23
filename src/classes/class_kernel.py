@@ -72,14 +72,36 @@ class Kernel:
         ans = self.fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
                               **{k: self.__dict__[k] for k in self.__dict__ if
                                  k in signature(self.fct_kernel).parameters})
-        # ans is a list of np arrays.
+        # ans is a list of np arrays. It is normalized such that it is a kernel.
         # then I want to scale every vector.
         # The total integral should be T_max, so I multiply by T_max
 
         # If it isn't fct plain, then I have to scale.
         if self.fct_kernel.__name__ != 'fct_plain':
+
+            # I want to rescale the results for the kernels that are not covering seen part. For that reason,
+            # I compute the percent of the kernel that is not used, and I multiply the result by that value.
+            lower_a = self.__dict__["a"]
+            upper_b = self.__dict__["b"]
+            interval_a_b = upper_b - lower_a
+            not_enough_left = eval_point + lower_a
+            too_much_right = eval_point + upper_b - T_max
+
+            coef_1 = coef_2 = 1
+            if not_enough_left < 0:
+                # the number is negative so I add it.
+                coef_1 += not_enough_left / interval_a_b
+
+            if too_much_right > 0:
+                coef_2 -= too_much_right / interval_a_b
+
+            #coef1 and 2 are the rescaling factors corresponding to the percent of used data over the width of the kernel.
+
+
             for i in range(len(length_elements_T_t)):
-                ans[i] = ans[i] * T_max  # *= do not work correctly since the vectors are not the same type (int/float).
+                # / np.sum(ans[i])
+                ans[i] = ans[i]  * T_max / coef_1 / coef_2  # *= do not work correctly since the vectors are not the same type (int/float).
+                # I also divide by the sum, the vector is normalized, however, possibly we're on the edge and we need to take that into account.
         # print("inside kernel debug, that's my integral : ", np.sum(ans[i][:-1] ) * T_max / (len(ans[i])-1))
         return ans
 
@@ -266,7 +288,7 @@ def test_normal_kernel(T_t, G = 10., gamma = 0.5):
 #     eval_point = [0]
 #     for i in eval_point:
 #         res = my_kernel.eval( T_t, i, 2000)
-#         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":fct.__name__,"markersize" : 0})
+#         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":fct.__name__,"markersize" : 0, "linewidth":2})
 # aplot.show_legend()
 #
 #

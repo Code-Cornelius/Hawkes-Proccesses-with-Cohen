@@ -178,7 +178,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1,1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 3, 90 * mini_T
+    nb_of_guesses, T = 40, 70 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)
@@ -187,7 +187,7 @@ HAWKSY = Hawkes_process(tt, PARAMETERS)
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
 
 
-class Test_Simulation_Hawkes(unittest.TestCase):
+class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def setUp(self):
         self.the_update_functions = update_functions(3)

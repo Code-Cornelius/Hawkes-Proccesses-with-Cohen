@@ -70,7 +70,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         title = self.generate_title(separators, key, "",
-                                    "Only 10-90% of the interval is shown (boundary effect), starting from 0 until {}.",
+                                    "Only 10-90% of the interval is shown, batches of {} simulations, time: 0 until {}.",
                                     [self.nb_of_guesses, self.T_max])
         fig_dict = {'title': "Evolution of the estimation" + title,
                     'xlabel': 'Time',

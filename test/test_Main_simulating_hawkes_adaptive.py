@@ -4,7 +4,7 @@ import unittest
 from test.test_Main_simulating_hawkes_simple import *
 
 
-class Test_Simulation_Hawkes(unittest.TestCase):
+class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def setUp(self):
         self.the_update_functions = update_functions(1)
@@ -13,14 +13,14 @@ class Test_Simulation_Hawkes(unittest.TestCase):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 20
+        nb_of_times = 30
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
-        list_of_kernels = [#Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                           #Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
+        list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
+                           Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
                            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
-        Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+        Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
 
 
         total_nb_tries = len(Times) * len(list_of_kernels)
