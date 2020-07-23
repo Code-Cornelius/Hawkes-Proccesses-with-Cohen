@@ -67,7 +67,6 @@ class Kernel:
         return repr(self.fct_kernel)
 
     def eval(self, T_t, eval_point, T_max):
-        # optimize cool to optimize using numpy and vectorize.
         length_elements_T_t = [len(T_t[i]) for i in range(len(T_t))]
         # ans is the kernel evaluated on the jumps
         ans = self.fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
@@ -81,33 +80,19 @@ class Kernel:
         if self.fct_kernel.__name__ != 'fct_plain':
             for i in range(len(length_elements_T_t)):
                 ans[i] = ans[i] * T_max  # *= do not work correctly since the vectors are not the same type (int/float).
+        # print("inside kernel debug, that's my integral : ", np.sum(ans[i][:-1] ) * T_max / (len(ans[i])-1))
         return ans
 
 
 def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vect=None):
-    if scaling_vect is None:
-        output = []
-        for i in range(len(length_elements_T_t)):
-            vector = T_t[i]
-            # TODO vector is np array?
-            # -1 if x < 0, 0 if x==0, 1 if x > 0.
-            output.append(1 / (2 * (b - a)) * \
-                          (np.sign(vector - eval_point - a) +
-                           np.sign(b - vector + eval_point))
-                          )
-    else:
-        # optimize cool to optimize using numpy and vectorize.
-        output = [[] for _ in range(len(length_elements_T_t))]
-        for i in range(len(length_elements_T_t)):
-            vector = T_t[i]
-            for j in range(length_elements_T_t[i]):
-                a_scaled = a * scaling_vect[i][j]
-                b_scaled = b * scaling_vect[i][j]
-                output[i].append(1 / (2 * (b_scaled - a_scaled)) * \
-                                 (np.sign(vector[j] - eval_point - a_scaled) +
-                                  np.sign(b_scaled - vector[j] + eval_point))
-                                 )
-            output[i] = np.array(output[i])
+    output = []
+    for i in range(len(length_elements_T_t)):
+        vector = T_t[i]
+        # -1 if x < 0, 0 if x==0, 1 if x > 0.
+        output.append(1 / (2 * (b - a)) * \
+                      (np.sign(vector - eval_point - a) +
+                       np.sign(b - vector + eval_point))
+                      )
     return output
 
 
@@ -120,21 +105,10 @@ def fct_plain(T_t, length_elements_T_t, eval_point):
 
 
 def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200, scaling_vect=None):
-    if scaling_vect is None:
-        output = []
-        for i in range(len(length_elements_T_t)):
-            output.append(scipy.stats.truncnorm.pdf(T_t[i], (a) / sigma, (b) / sigma,
-                                                    loc=eval_point, scale=sigma))
-    else:
-        # optimize cool to optimize using numpy and vectorize.
-        output = [[] for _ in range(len(length_elements_T_t))]
-        for i in range(len(length_elements_T_t)):
-            for j in range(length_elements_T_t[i]):
-                output[i].append(scipy.stats.truncnorm.pdf(T_t[i][j] / scaling_vect[i][j], (a) / sigma, (b) / sigma,
-                                                           loc=eval_point,
-                                                           scale=sigma) / scaling_vect[i][j]
-                                 )
-            output[i] = np.array(output[i])
+    output = []
+    for i in range(len(length_elements_T_t)):
+        output.append(scipy.stats.truncnorm.pdf(T_t[i], (a) / sigma, (b) / sigma,
+                                                loc=eval_point, scale=sigma))
     return output
 
 
@@ -145,29 +119,14 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
 def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_vect=None):
-    if scaling_vect is None:
-        output = []
-        for i in range(len(length_elements_T_t)):
-            xx = (T_t[i] - (a + b) / 2 - eval_point) * 2 / (b - a)
-            # the correct order is eval_point - T_t,
-            # bc we evaluate at eval_point but translated by T_t,
-            # if kernel not symmetric a != b, then we also need to translate by the mid of them.
-            xx[(xx < -1) | (xx > 1)] = 1
-            output.append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
-    else:
-        # optimize cool to optimize using numpy and vectorize.
-        output = [[] for _ in range(len(length_elements_T_t))]
-        for i in range(len(length_elements_T_t)):
-            for j in range(length_elements_T_t[i]):
-                xx = (T_t[i][j] - (a + b) / 2 - eval_point) * 2 / (b - a) / scaling_vect[i][j]
-                # the correct order is eval_point - T_t,
-                # bc we evaluate at eval_point but translated by T_t,
-                # if kernel not symmetric a != b, then we also need to translate by the mid of them.
-                if xx < -1 or xx > 1:
-                    xx = 1
-                output[i].append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a) / scaling_vect[i][
-                    j])  # kernel * scaling ; delta in my formulas
-            output[i] = np.array(output[i])
+    output = []
+    for i in range(len(length_elements_T_t)):
+        xx = (T_t[i] - (a + b) / 2 - eval_point) * 2 / (b - a)
+        # the correct order is eval_point - T_t,
+        # bc we evaluate at eval_point but translated by T_t,
+        # if kernel not symmetric a != b, then we also need to translate by the mid of them.
+        xx[(xx < -1) | (xx > 1)] = 1
+        output.append(15 / 16 * np.power(1 - xx * xx, 2) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
     return output
 
 
@@ -230,7 +189,7 @@ def test_geom_kern(T_t, G = 10, min = None, max=None):
 
 def test_normal_kernel(T_t, G = 10., gamma = 0.5):
     output = []
-    xx = T_t[i]
+    xx = T_t[0]
     print(xx)
     ans = np.power(xx / G,-gamma)
     print(ans)
@@ -295,16 +254,21 @@ def test_normal_kernel(T_t, G = 10., gamma = 0.5):
 
 
 # ############ test
-# T_t = [np.linspace(-1000,1000,100000)]
+# T_t = [np.linspace(-1000,1000,10000)]
+# aplot = APlot(how = (1,1))
+# aplot.set_dict_fig(0, {'title':"", 'xlabel':"", 'ylabel':""})
 #
-# for fct in [fct_biweight,fct_truncnorm,fct_top_hat,fct_epa]:
-#     my_kernel = Kernel(fct, a=-250, b=250)
+#
+# color = plt.cm.Dark2.colors
+# for fct,c in zip([fct_top_hat, fct_biweight, fct_truncnorm, fct_epa],color):
+#     my_kernel = Kernel(fct, a=-500, b=500)
 #     length_elements_T_t = [10000]
 #     eval_point = [0]
 #     for i in eval_point:
 #         res = my_kernel.eval( T_t, i, 2000)
-#         aplot = APlot(datax = T_t[0], datay = res[0])
-
-
+#         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":fct.__name__,"markersize" : 0})
+# aplot.show_legend()
+#
+#
 #
 # plt.show()

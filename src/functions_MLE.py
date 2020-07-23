@@ -30,7 +30,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
         w = Kernel(fct_plain, "plain", T_max =  T).eval(T_t, 0, T_max = T)
         # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
     print("debug")
-    print(np.sum(w))
+    print(" sum of weights, not integral : ", np.sum(w))
     print("debug")
     M = len(T_t)
     MU = np.full(M, 0.1)

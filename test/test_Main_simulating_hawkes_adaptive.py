@@ -7,13 +7,13 @@ from test.test_Main_simulating_hawkes_simple import *
 class Test_Simulation_Hawkes(unittest.TestCase):
 
     def setUp(self):
-        self.the_update_functions = update_functions(3)
+        self.the_update_functions = update_functions(1)
 
     def tearDown(self):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 50
+        nb_of_times = 20
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
