@@ -17,10 +17,16 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
-        list_of_kernels = [Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                           Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
-                           Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450)]
+        list_of_kernels = [#Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
+                           #Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
+                           Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450),
+                           #Kernel(fct_top_hat, name="top hat", a=-500, b=500),
+                           Kernel(fct_truncnorm_test, name="test", a = -500, b = 500, sigma = 450)
+                           #Kernel(fct_biweight, name="bi weight", a=-500, b=500),
+                           #Kernel(fct_epa, name="epa", a=-500, b=500)
+                           ]
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
+        Times = np.linspace(0.0 * T, 0.6 * T, nb_of_times)
 
 
         total_nb_tries = len(Times) * len(list_of_kernels)

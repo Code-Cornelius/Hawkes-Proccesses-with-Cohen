@@ -178,7 +178,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1,1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 40, 70 * mini_T
+    nb_of_guesses, T = 50, 50 * mini_T
 else:
     nb_of_guesses, T = 50, 120 * mini_T
 # a good precision is 500*(T-T0)

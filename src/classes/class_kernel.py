@@ -44,6 +44,7 @@ np.random.seed(124)
 #                    Kernel(fct_truncnorm, name="wide truncnorm", a=-500, b=500, sigma=350),
 #                    Kernel(fct_truncnorm, name="normal truncnorm", a=-350, b=350, sigma=250)]
 # -------------------------------------------------------------------------------------------------------
+# the functions only work for positive time. If one input negative times, it messes up the orientation.
 class Kernel:
     # kernel is a class of objects, where using eval evaluates the function given as parameter
     # the evaluation gives back a list of np.array
@@ -94,9 +95,10 @@ class Kernel:
 
             if too_much_right > 0:
                 coef_2 -= too_much_right / interval_a_b
-
             #coef1 and 2 are the rescaling factors corresponding to the percent of used data over the width of the kernel.
 
+            if self.fct_kernel.__name__ == 'fct_truncnorm_test':
+                coef_1 = coef_2 = 1
 
             for i in range(len(length_elements_T_t)):
                 # / np.sum(ans[i])
@@ -106,10 +108,10 @@ class Kernel:
         return ans
 
 
-def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200, scaling_vect=None):
+def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
     output = []
     for i in range(len(length_elements_T_t)):
-        vector = T_t[i]
+        vector = np.array(T_t[i])
         # -1 if x < 0, 0 if x==0, 1 if x > 0.
         output.append(1 / (2 * (b - a)) * \
                       (np.sign(vector - eval_point - a) +
@@ -126,24 +128,32 @@ def fct_plain(T_t, length_elements_T_t, eval_point):
     ]
 
 
-def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200, scaling_vect=None):
+def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200):
     output = []
     for i in range(len(length_elements_T_t)):
-        output.append(scipy.stats.truncnorm.pdf(T_t[i], (a) / sigma, (b) / sigma,
+        output.append(scipy.stats.truncnorm.pdf(np.array(T_t[i]), (a) / sigma, (b) / sigma,
                                                 loc=eval_point, scale=sigma))
     return output
 
 
 
 
-
+def fct_truncnorm_test(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200):
+    output = []
+    for i in range(len(length_elements_T_t)):
+        output.append( 2 * scipy.stats.truncnorm.pdf(np.array(T_t[i]), (a) / sigma, (b) / sigma,
+                                                loc=eval_point, scale=sigma))
+    output[i][
+        T_t[i] < eval_point
+        ] = 0
+    return output
 
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
 def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_vect=None):
     output = []
     for i in range(len(length_elements_T_t)):
-        xx = (T_t[i] - (a + b) / 2 - eval_point) * 2 / (b - a)
+        xx = (np.array(T_t[i]) - (a + b) / 2 - eval_point) * 2 / (b - a)
         # the correct order is eval_point - T_t,
         # bc we evaluate at eval_point but translated by T_t,
         # if kernel not symmetric a != b, then we also need to translate by the mid of them.
@@ -153,10 +163,10 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
 
 
 
-def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_vect=None):
+def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
     output = []
     for i in range(len(length_elements_T_t)):
-        xx = (T_t[i] - (a + b) / 2 - eval_point) * 2 / (b - a)
+        xx = (np.array(T_t[i]) - (a + b) / 2 - eval_point) * 2 / (b - a)
         # the correct order is eval_point - T_t,
         # bc we evaluate at eval_point but translated by T_t,
         # if kernel not symmetric a != b, then we also need to translate by the mid of them.
@@ -276,16 +286,16 @@ def test_normal_kernel(T_t, G = 10., gamma = 0.5):
 
 
 # ############ test
-# T_t = [np.linspace(-1000,1000,10000)]
+# T_t = [np.linspace(0,2000,10000)]
 # aplot = APlot(how = (1,1))
 # aplot.set_dict_fig(0, {'title':"", 'xlabel':"", 'ylabel':""})
 #
 #
 # color = plt.cm.Dark2.colors
-# for fct,c in zip([fct_top_hat, fct_biweight, fct_truncnorm, fct_epa],color):
+# for fct,c in zip([fct_top_hat, fct_truncnorm, fct_truncnorm_test],color):
 #     my_kernel = Kernel(fct, a=-500, b=500)
 #     length_elements_T_t = [10000]
-#     eval_point = [0]
+#     eval_point = [0,1000,2000]
 #     for i in eval_point:
 #         res = my_kernel.eval( T_t, i, 2000)
 #         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":fct.__name__,"markersize" : 0, "linewidth":2})
