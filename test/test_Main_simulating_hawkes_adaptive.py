@@ -14,6 +14,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_simple(self):
         nb_of_times = 30
+        # work-in-progress 25/07/2020 nie_k:  I will change the kernels for the fix width.
+        width_kernel = 1/5
+        b = width_kernel/2
+        print( "width of the kernels: {}.".format(width_kernel))
+
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
@@ -30,7 +35,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
         total_nb_tries = len(Times) * len(list_of_kernels)
-        actual_state = [0]
+        actual_state = [0] # initialization
         @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
                                                     multiplicator_factor=0.7,
                                                     actual_state=actual_state)
@@ -59,15 +64,21 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                    index=False,
                                    header=True)
 
-    def test_over_the_time_adaptive(self):
+
+
+
+    def test_over_the_time_adaptive_one(self):
         nb_of_times = 50
+        width_kernel = 1/5
+        b = width_kernel/2
+
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
         # work-in-progress
         #  put optimal kernel here
-        my_kernel = Kernel(fct_biweight, name="BiWeight", a=-350, b=350)
-        Times = np.linspace(0.1 * T, 0.9 * T, nb_of_times)
+        my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-350, b=350)
+        Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         ############################## first step
         count_times = 0
         for time in Times:
@@ -79,12 +90,13 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
                                                         nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=my_kernel, time_estimation=time,
+                                                        kernel_weight=my_opt_kernel, time_estimation=time,
                                                         silent=silent)
-        estimator_kernel.DF.to_csv(trash_path,
+        estimator_kernel.DF.to_csv(first_estimation_path,
                                    index=False,
                                    header=True)
 
+    def test_over_the_time_adaptive_two(self):
         # work-in-progress
         #  I got the first estimates. I can potentially already draw the evolution of parameters.
         #  do adaptive here
@@ -106,7 +118,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
             functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
                                                         nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=my_kernel, time_estimation=time,
+                                                        kernel_weight=my_opt_kernel, time_estimation=time,
                                                         silent=silent)
 
         GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)

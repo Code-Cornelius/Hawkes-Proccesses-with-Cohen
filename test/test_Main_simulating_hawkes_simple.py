@@ -184,8 +184,10 @@ else:
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 HAWKSY = Hawkes_process(tt, PARAMETERS)
+# for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
-
+#for the first estimate in the adaptive streategy I sotre it there:
+first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_first.csv'
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
@@ -232,7 +234,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
                  50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T,
                  130 * mini_T,
                  140 * mini_T, 150 * mini_T]
-        TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+        # TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         count_times = 0
         for times in TIMES:
             count_times += 1
