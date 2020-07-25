@@ -16,6 +16,7 @@ class Estimator_Hawkes(Estimator):
                                                'value', 'T_max', 'true value', 'number of guesses']))
 
     def mean(self, separator=None):
+        #todo the additional separator to handle.
         ## separators is a list, of the estimators to gather together.
         separators = ['variable', 'm', 'n']
         if separator is not None:
@@ -26,7 +27,7 @@ class Estimator_Hawkes(Estimator):
         for i in range(M):
             ans_N.append(dict_of_means[('nu', i, 0)])
             for j in range(M):
-                if not j:
+                if not j: # if j == 0
                     ans_A.append([])
                     ans_B.append([])
                 ans_A[i].append(dict_of_means[('alpha', i, j)])

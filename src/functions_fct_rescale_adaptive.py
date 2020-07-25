@@ -24,6 +24,7 @@ import recurrent_functions
 import errors.error_convergence
 import classes.class_estimator
 import classes.class_graph_estimator
+from classes.class_kernel import *
 
 np.random.seed(124)
 # other files
@@ -31,15 +32,14 @@ np.random.seed(124)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def test_geom_kern(times, G=10, L=None, R=None, h=100, l=0.01):
+def test_geom_kern(value_at_each_time, G=10, L=None, R=None, h=100, l=0.01):
     if L is None:
-        L = np.quantile(times, 0.02)
+        L = np.quantile(value_at_each_time, 0.02)
     print("Left boundary : ", L)
     if R is None:
-        R = np.quantile(times, 0.75)
+        R = np.quantile(value_at_each_time, 0.75)
     print("Right boundary : ", R)
-    output = []
-    xx = times - G
+    xx = value_at_each_time - G
     #xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
 
     ans = 0
@@ -58,18 +58,16 @@ def test_geom_kern(times, G=10, L=None, R=None, h=100, l=0.01):
     ans += - (h-l)/2 * np.cos( my_xx3  )
 
     ans += l # avoid infinite width kernel
-    output.append( ans )
-    return output
+    return ans
 
 
 def test_normal_kernel(times, G=10., gamma=0.5):
-    output = []
     xx = times
     print(xx)
     ans = np.power(xx / G,-gamma)
     print(ans)
-    output.append( ans )
-    return output
+    return ans
+
 
 
 
@@ -79,20 +77,23 @@ def rescaling(times, first_estimate):
     ans = np.zeros(len(times))
     #ans is my vector of normed estimates. Each value is for one time.
 
-    for counter, time in enumerate(times):
-        intermediate_vector = first_estimate[counter, :]
-        ans[counter] = np.linalg.norm(intermediate_vector, 2)
+    for i in range(len(times)):
+        intermediate_vector = first_estimate[:, i]
+        ans[i] = np.linalg.norm(intermediate_vector, 2)
 
     # I compute the geometric mean from our estimator.
     G = gmean(ans)
-    print("G : ", G)
     scaling_factors = test_geom_kern(ans, G=G)
     return scaling_factors
 
-my_estimator = [[1.1,1.2,1.3],[1,1.1,1.1], [1.2,1.2,1.2],[2,2,2]]
-my_estimator = np.array(my_estimator)
-ans = rescaling(np.linspace(0,1000,4), my_estimator)
-print(ans)
+
+def creator_list_kernels(my_scalings, previous_scaling):
+    list_of_kernels = []
+    for scale in my_scalings:
+        new_scaling = previous_scaling*scale
+        list_of_kernels.append( Kernel(fct_biweight, name="biweight", a= -new_scaling, b=new_scaling) )
+    return list_of_kernels
+
 
 ############ test adaptive window
 # T_t = [np.linspace(0.1,100,10000)]
