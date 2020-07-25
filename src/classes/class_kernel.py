@@ -81,30 +81,19 @@ class Kernel:
         if self.fct_kernel.__name__ != 'fct_plain':
 
             # I want to rescale the results for the kernels that are not covering seen part. For that reason,
-            # I compute the percent of the kernel that is not used, and I multiply the result by that value.
-            lower_a = self.__dict__["a"]
-            upper_b = self.__dict__["b"]
-            interval_a_b = upper_b - lower_a
-            not_enough_left = eval_point + lower_a
-            too_much_right = eval_point + upper_b - T_max
+            # I compute the integral of the kernel, and scale accordingly.
+            tt_integral = [np.linspace(0,T_max, 10000)]
+            yy = self.fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
+                              **{k: self.__dict__[k] for k in self.__dict__ if
+                                 k in signature(self.fct_kernel).parameters})
+            integral = classical_functions.trapeze_int(tt_integral[0], yy[0]) # yy[0] bc function gives back a list of arrays.
 
-            coef_1 = coef_2 = 1
-            if not_enough_left < 0:
-                # the number is negative so I add it.
-                coef_1 += not_enough_left / interval_a_b
-
-            if too_much_right > 0:
-                coef_2 -= too_much_right / interval_a_b
-            #coef1 and 2 are the rescaling factors corresponding to the percent of used data over the width of the kernel.
-
-            if self.fct_kernel.__name__ == 'fct_truncnorm_test':
-                coef_1 = coef_2 = 1
 
             for i in range(len(length_elements_T_t)):
-                # / np.sum(ans[i])
-                ans[i] = ans[i]  * T_max / coef_1 / coef_2  # *= do not work correctly since the vectors are not the same type (int/float).
+                ans[i] = ans[i] / integral * T_max
+                # *= do not work correctly since the vectors are not the same type (int/float).
                 # I also divide by the sum, the vector is normalized, however, possibly we're on the edge and we need to take that into account.
-        # print("inside kernel debug, that's my integral : ", np.sum(ans[i][:-1] ) * T_max / (len(ans[i])-1))
+                # print("inside kernel debug, that's my integral : {}. Name : {}.".format(np.sum(ans[i][:-1] ) * T_max / (len(ans[i])-1), self.fct_kernel.__name__) )
         return ans
 
 
@@ -209,13 +198,14 @@ def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
 #
 #
 # color = plt.cm.Dark2.colors
-# for fct,c in zip([fct_top_hat, fct_truncnorm, fct_truncnorm_test],color):
+# for fct,c in zip([fct_truncnorm],color):
 #     my_kernel = Kernel(fct, a=-500, b=500)
 #     length_elements_T_t = [10000]
-#     eval_point = [0,1000,2000]
-#     for i in eval_point:
-#         res = my_kernel.eval( T_t, i, 2000)
-#         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":fct.__name__,"markersize" : 0, "linewidth":2})
+#     eval_point = [0, 100, 250, 1000,1750,1900, 2000]
+#     for i_point in eval_point:
+#         res = my_kernel.eval( T_t, i_point, 2000)
+#         aplot.uni_plot(nb_ax=0, xx=T_t[0], yy=res[0], dict_plot_param={"color":c, "label":str(fct.__name__) + " evaluated at " + str(i_point),
+#                                                                        "markersize" : 0, "linewidth":2})
 # aplot.show_legend()
 #
 #

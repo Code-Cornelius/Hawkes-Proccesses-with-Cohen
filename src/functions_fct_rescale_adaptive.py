@@ -11,6 +11,9 @@ import warnings
 import math  #quick math functions
 import cmath  #complex functions
 
+from scipy.stats.mstats import gmean
+
+
 # my libraries
 import classical_functions
 import decorators_functions
@@ -31,10 +34,10 @@ np.random.seed(124)
 def test_geom_kern(times, G=10, L=None, R=None, h=100, l=0.01):
     if L is None:
         L = np.quantile(times, 0.02)
-    print(L)
+    print("Left boundary : ", L)
     if R is None:
         R = np.quantile(times, 0.75)
-    print(R)
+    print("Right boundary : ", R)
     output = []
     xx = times - G
     #xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
@@ -70,9 +73,26 @@ def test_normal_kernel(times, G=10., gamma=0.5):
 
 
 
+def rescaling(times, first_estimate):
+    # on each row should be one estimate, on each column one time.
+    # todo norm of first estimate
+    ans = np.zeros(len(times))
+    #ans is my vector of normed estimates. Each value is for one time.
 
+    for counter, time in enumerate(times):
+        intermediate_vector = first_estimate[counter, :]
+        ans[counter] = np.linalg.norm(intermediate_vector, 2)
 
+    # I compute the geometric mean from our estimator.
+    G = gmean(ans)
+    print("G : ", G)
+    scaling_factors = test_geom_kern(ans, G=G)
+    return scaling_factors
 
+my_estimator = [[1.1,1.2,1.3],[1,1.1,1.1], [1.2,1.2,1.2],[2,2,2]]
+my_estimator = np.array(my_estimator)
+ans = rescaling(np.linspace(0,1000,4), my_estimator)
+print(ans)
 
 ############ test adaptive window
 # T_t = [np.linspace(0.1,100,10000)]

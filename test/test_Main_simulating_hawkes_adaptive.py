@@ -14,7 +14,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 30
+        nb_of_times = 50
         # work-in-progress 25/07/2020 nie_k:  I will change the kernels for the fix width.
         width_kernel = 1/5
         b = width_kernel/2
@@ -24,15 +24,13 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [#Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-                           #Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
+                           Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
                            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450),
-                           #Kernel(fct_top_hat, name="top hat", a=-500, b=500),
-                           Kernel(fct_truncnorm_test, name="test", a = -500, b = 500, sigma = 450)
-                           #Kernel(fct_biweight, name="bi weight", a=-500, b=500),
-                           #Kernel(fct_epa, name="epa", a=-500, b=500)
+                           Kernel(fct_top_hat, name="top-hat", a=-500, b=500),
+                           Kernel(fct_biweight, name="biweight", a=-500, b=500),
+                           Kernel(fct_epa, name="epanechnikov", a=-500, b=500)
                            ]
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
-        Times = np.linspace(0.0 * T, 0.6 * T, nb_of_times)
 
 
         total_nb_tries = len(Times) * len(list_of_kernels)
@@ -96,6 +94,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel.to_csv(first_estimation_path,
                                    index=False,
                                    header=True)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
 
     def test_over_the_time_adaptive_two(self):
         nb_of_times = 50
