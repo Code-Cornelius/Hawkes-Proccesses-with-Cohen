@@ -1,6 +1,7 @@
 ##### normal libraries
 import unittest
 
+import functions_fct_rescale_adaptive
 from test.test_Main_simulating_hawkes_simple import *
 
 
@@ -97,16 +98,22 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                    header=True)
 
     def test_over_the_time_adaptive_two(self):
+        nb_of_times = 50
+        width_kernel = 1/5
+        b = width_kernel/2
+        Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         # work-in-progress
         #  I got the first estimates. I can potentially already draw the evolution of parameters.
         #  do adaptive here
         estimator_kernel = Graph_Estimator.from_path(first_estimation_path)
         # on regarde le estimator_kernel et on en déduit l'optimal bandwidth.
-        test_geom_kern(T_t, G=10, L=None, R=None, h=100, l=0.01)
+        functions_fct_rescale_adaptive.test_geom_kern(Times, G=10, L=None, R=None, h=100, l=0.01)
 
-
+        # work-in-progress 1 : tu calcules et recups les poids
+        #  2: tu calcules les nouveaux kernels. (créer functionsn en gros boucle avec un calculateur de kernel, il calcule le scaling)
+        #  3: et ensuite on fait l'estimation, genre 100 fois sur chaque points, avec zip kernel, puis plot. Ca vaut le coup de plot les kernels. Genre 1/5
         adaptive_estimator_kernel = Estimator_Hawkes()
-        my_adapt_kernel = Kernel_adaptive(fct_biweight, pilot_function_vector=scalings, name="BiWeight", a=-350, b=350)
+        my_adapt_kernel = Kernel_adaptive(fct_biweight, name="BiWeight", a=-350, b=350)
         ############################## second step
         count_times = 0
         for time in Times:

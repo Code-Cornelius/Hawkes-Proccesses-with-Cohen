@@ -28,31 +28,25 @@ np.random.seed(124)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-
-
-
-# thre versions :
-
-# where on coupe en 3
-# if et vectorize ?
-# autre ?
-# TODO 25/07/2020 nie_k: change the T_t[0] into [i]. Globally I adapt in every direction.
-def test_geom_kern(T_t, G=10, L=None, R=None, h = 100, l = 0.01):
+def test_geom_kern(times, G=10, L=None, R=None, h=100, l=0.01):
     if L is None:
-        L = np.quantile(T_t, 0.02)
+        L = np.quantile(times, 0.02)
     print(L)
     if R is None:
-        R = np.quantile(T_t, 0.75)
+        R = np.quantile(times, 0.75)
     print(R)
     output = []
-    xx = T_t[0] - G
+    xx = times - G
     #xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
 
     ans = 0
     scaling1 =  math.pi / (G - L)
     scaling2 =  math.pi / (R - G)
-    # I fix outside of my interest array to be the final value, which is math.pi.
+    # I fix the part outside of my interest, to be the final value, h. This part corresponds to math.pi.
     # I also need the scaling by +50 given by math.pi
+
+    #xx2 and xx3 are the cosinus, but they are different cosinus.
+    # So I fix them where I don't want them to move at 0 and then I can add the two functions.
     my_xx2 = np.where((xx*scaling1 > -math.pi) & (xx*scaling1 < 0),
                            xx*scaling1, math.pi) # left
     my_xx3 = np.where((xx*scaling2 > 0) & (xx*scaling2 < math.pi ),
@@ -65,14 +59,18 @@ def test_geom_kern(T_t, G=10, L=None, R=None, h = 100, l = 0.01):
     return output
 
 
-def test_normal_kernel(T_t, G = 10., gamma = 0.5):
+def test_normal_kernel(times, G=10., gamma=0.5):
     output = []
-    xx = T_t[0]
+    xx = times
     print(xx)
     ans = np.power(xx / G,-gamma)
     print(ans)
     output.append( ans )
     return output
+
+
+
+
 
 
 
