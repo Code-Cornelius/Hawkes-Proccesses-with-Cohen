@@ -1,6 +1,6 @@
 from classical_functions import *
 
-import functions_MLE
+import functions_for_MLE
 
 import csv
 
@@ -110,7 +110,7 @@ for row in reader:
 # normal estimation
 #'''
 my_time = time.time()
-print(functions_MLE.call_newton_raph_MLE_opt(time_real, T))
+print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T))
 time_computational(my_time, time.time(), "my function")
 #'''
 

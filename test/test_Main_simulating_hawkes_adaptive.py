@@ -43,9 +43,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print(''.join(["\n", "=" * 78]))
             print(
                 f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
-            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
-                                                        nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=kernel, time_estimation=time, silent=silent)
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                            nb_of_guesses=nb_of_guesses,
+                                                            kernel_weight=kernel, time_estimation=time, silent=silent)
 
         count_times = 0
         for time in Times:
@@ -88,11 +88,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print("=" * 78)
             print(f"Time : {count_times} out of : {len(Times)}.")
 
-            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
-                                                        nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=my_opt_kernel, time_estimation=time,
-                                                        silent=silent)
-        estimator_kernel.DF.to_csv(first_estimation_path,
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                            nb_of_guesses=nb_of_guesses,
+                                                            kernel_weight=my_opt_kernel, time_estimation=time,
+                                                            silent=silent)
+        estimator_kernel.to_csv(first_estimation_path,
                                    index=False,
                                    header=True)
 
@@ -100,8 +100,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         # work-in-progress
         #  I got the first estimates. I can potentially already draw the evolution of parameters.
         #  do adaptive here
-
+        estimator_kernel = Graph_Estimator.from_path(first_estimation_path)
         # on regarde le estimator_kernel et on en déduit l'optimal bandwidth.
+        test_geom_kern(T_t, G=10, L=None, R=None, h=100, l=0.01)
+
 
         adaptive_estimator_kernel = Estimator_Hawkes()
         my_adapt_kernel = Kernel_adaptive(fct_biweight, pilot_function_vector=scalings, name="BiWeight", a=-350, b=350)
@@ -116,10 +118,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                 f"Time : {count_times} out of : {len(Times)}."
             )
 
-            functions_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
-                                                        nb_of_guesses=nb_of_guesses,
-                                                        kernel_weight=my_opt_kernel, time_estimation=time,
-                                                        silent=silent)
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+                                                            nb_of_guesses=nb_of_guesses,
+                                                            kernel_weight=my_opt_kernel, time_estimation=time,
+                                                            silent=silent)
 
         GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')

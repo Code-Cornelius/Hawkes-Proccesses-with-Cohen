@@ -5,7 +5,7 @@ import warnings
 from errors.error_convergence import *
 
 ##### other files
-from functions_MLE_algo import newtons_method_multi_MLE
+from functions_my_newton_raphson import newtons_method_multi_MLE
 from functions_derivatives_MLE import *
 from classes.class_hawkes_process import *
 
