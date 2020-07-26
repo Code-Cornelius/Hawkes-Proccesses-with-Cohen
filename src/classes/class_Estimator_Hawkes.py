@@ -16,24 +16,33 @@ class Estimator_Hawkes(Estimator):
                                                'value', 'T_max', 'true value', 'number of guesses']))
 
     def mean(self, separator=None):
-        #todo the additional separator to handle.
+        # the output format is list of lists with on each line [ans_N, ans_A, ans_B],
+        # and on every single additional dimension, the separator.
         ## separators is a list, of the estimators to gather together.
         separators = ['variable', 'm', 'n']
+        M = self.DF["m"].max() + 1
+        ans_dict = {}
+
         if separator is not None:
             for str in separator: separators.append(str)
-        dict_of_means = self.DF.groupby(separators)['value'].mean()
-        ans_N, ans_A, ans_B = [], [], []
-        M = self.DF["m"].max() + 1
-        for i in range(M):
-            ans_N.append(dict_of_means[('nu', i, 0)])
-            for j in range(M):
-                if not j: # if j == 0
-                    ans_A.append([])
-                    ans_B.append([])
-                ans_A[i].append(dict_of_means[('alpha', i, j)])
-                ans_B[i].append(dict_of_means[('beta', i, j)])
 
-        return [ans_N, ans_A, ans_B]
+
+        global_dict, keys = self.groupby_DF(separator)
+        for key in keys:
+            data = global_dict.get_group(key)
+            dict_of_means = data.groupby(separators)['value'].mean()
+            ans_N, ans_A, ans_B = [], [], []
+
+            for i in range(M):
+                ans_N.append(dict_of_means[('nu', i, 0)])
+                for j in range(M):
+                    if not j: # if j == 0
+                        ans_A.append([])
+                        ans_B.append([])
+                    ans_A[i].append(dict_of_means[('alpha', i, j)])
+                    ans_B[i].append(dict_of_means[('beta', i, j)])
+            ans_dict[ key ] = [ans_N, ans_A, ans_B]
+        return ans_dict
 
 # example:
 #

@@ -37,7 +37,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         total_nb_tries = len(Times) * len(list_of_kernels)
         actual_state = [0] # initialization
         @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
-                                                    multiplicator_factor=0.7,
+                                                    multiplicator_factor=0.9,
                                                     actual_state=actual_state)
         def simulation():
             print(''.join(["\n", "=" * 78]))
@@ -75,13 +75,12 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         HAWKSY = Hawkes_process(tt, PARAMETERS)
 
         estimator_kernel = Estimator_Hawkes()
-        # work-in-progress
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-350, b=350)
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         actual_state = [0] # initialization
         @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
-                                                    multiplicator_factor=0.7,
+                                                    multiplicator_factor=0.9,
                                                     actual_state=actual_state)
         def simulation():
             print(''.join(["\n", "=" * 78]))
@@ -104,7 +103,12 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                    index=False,
                                    header=True)
         GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
+        list_of_kernels = []
+        for i in range(len(Times)):
+            list_of_kernels.append(my_opt_kernel)
+        plot_param = list_of_kernels, Times
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param = plot_param)
+
 
 
 
@@ -114,20 +118,20 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = T / 5.
         b = width_kernel/2
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
-        estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path)
-        # on regarde le estimator_kernel et on en déduit l'optimal bandwidth.
+        #estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path)
+        #test path.
+        estimator_kernel = Graph_Estimator_Hawkes.from_path(trash_path)
 
+        # by looking at the previous estimation, we deduce the scaling
+        # for that I take back the estimate
+        my_estimator_dict = estimator_kernel.mean(separator='time estimation')
+        my_estimator = []
+        print(my_estimator_dict)
+        # mean returns a dict, so I create my list of list:
+        for a_time in Times:
+            my_estimator.append( my_estimator_dict[a_time] )
 
-        # for that I do this:
-        print(estimator_kernel.mean(separator='time estimation'))
         time.sleep(1000)
-        #todo see if its enough. It should be, I could get: [ans_N, ans_A, ans_B] everyone in a list, just the way we want.
-        # work-in-progress recupérer les valeurs des fonctions depuis estimator_kernel
-        my_estimator = [[1, 2, 3, 3],
-                        [4, 5, 6, 7],
-                        [1, 3, 4, 5]]
-
-
         my_scaling = functions_fct_rescale_adaptive.rescaling(Times, my_estimator)
         list_of_kernels = functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
 
@@ -154,10 +158,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             simulation(time, kernel)
 
         GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
-        #todo
-        # create a new functions but for Graph_Estimator_Hawkes using the upper class function and for that just say Bar.fct()
-        # in it you draw on the plot the kernels for each time. Allows for a double check.
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
+        plot_param = list_of_kernels, Times
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param = plot_param)
         adaptive_estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
 
 

@@ -127,3 +127,34 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         :return:
         '''
         return sum / self.nb_of_guesses
+
+
+
+
+
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, plot_param = None):
+        '''
+        plot the evolution of the estimators over the attribute given by get_plot_data.
+        It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
+
+        Args:
+            separators:
+            separator_colour: the column of the dataframe to consider for color discrimination
+
+        Returns:
+
+        '''
+        super().draw_evolution_parameter_over_time(separators, separator_colour)
+        if plot_param is not None:
+            list_of_kernels, Times = plot_param
+
+            list_of_plots = APlot.print_register()
+            # on each plot
+            for counter,plots in enumerate(list_of_plots):
+                # for each eval point
+                for kernel, a_time in zip(list_of_kernels, Times):
+                    tt = np.linspace(0,self.T_max, 10000)
+                    yy = kernel.eval(tt, a_time, self.T_max)
+                    plots.uniplot(nb_ax = 0, xx = tt,yy= yy, dict_plot_param = {"color": "m", "markersize" : 0 , "linewidth": 2 })
+                name_file =  'double_estimation_result_{}'.format(counter)
+                plots.save_plot(name_save_file=name_file)
