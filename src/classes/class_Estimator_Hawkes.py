@@ -23,8 +23,8 @@ class Estimator_Hawkes(Estimator):
         M = self.DF["m"].max() + 1
         ans_dict = {}
 
-        if separator is not None:
-            for str in separator: separators.append(str)
+        # if separator is not None:
+        #     for str in separator: separators.append(str)
 
 
         global_dict, keys = self.groupby_DF(separator)
@@ -39,8 +39,10 @@ class Estimator_Hawkes(Estimator):
                     if not j: # if j == 0
                         ans_A.append([])
                         ans_B.append([])
+                    # we append to this new small list the j's.
                     ans_A[i].append(dict_of_means[('alpha', i, j)])
                     ans_B[i].append(dict_of_means[('beta', i, j)])
+            # i get triple list like usually.
             ans_dict[ key ] = [ans_N, ans_A, ans_B]
         return ans_dict
 

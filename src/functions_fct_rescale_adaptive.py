@@ -71,14 +71,30 @@ def test_normal_kernel(times, G=10., gamma=0.5):
 
 
 
-def rescaling(times, first_estimate):
-    # on each row should be one estimate, on each column one time.
-    # todo norm of first estimate
+def rescaling_kernel_processing(times, first_estimate):
+    # on the first entry, I get the time, on the second entry I get nu alpha or beta, then it s where in the matrix.
+    #todo the scaling of the parameters
     ans = np.zeros(len(times))
     #ans is my vector of normed estimates. Each value is for one time.
 
+    # test that it works for multidimensional.
+    # print(first_estimate)
+    # first_estimate = [[[0.1] , [[1.5,1.5],[1.5,1.5]] , [[5,5],[5,5]] ]]
+    # print(first_estimate)
+
     for i in range(len(times)):
-        intermediate_vector = first_estimate[:, i]
+        nu,alpha,beta =  first_estimate[i]
+        alpha = [item for sublist in alpha for item in sublist]
+        beta = [item for sublist in beta for item in sublist]
+        # flat_list = []
+        # for sublist in intermediate_vector:
+        #     for item in sublist:
+        #         flat_list.append(item)
+        intermediate_vector = []
+        intermediate_vector.extend(nu)
+        intermediate_vector.extend(alpha)
+        intermediate_vector.extend(beta)
+
         ans[i] = np.linalg.norm(intermediate_vector, 2)
 
     # I compute the geometric mean from our estimator.

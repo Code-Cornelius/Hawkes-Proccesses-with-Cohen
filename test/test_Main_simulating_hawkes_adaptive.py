@@ -114,25 +114,24 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_two(self):
-        nb_of_times = 50
+        nb_of_times = 25
         width_kernel = T / 5.
         b = width_kernel/2
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
-        #estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path)
+        #estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, self.the_update_functions)
         #test path.
-        estimator_kernel = Graph_Estimator_Hawkes.from_path(trash_path)
+        estimator_kernel = Graph_Estimator_Hawkes.from_path('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_5_kernels.csv', self.the_update_functions)
 
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
-        my_estimator_dict = estimator_kernel.mean(separator='time estimation')
+        my_estimator_dict = estimator_kernel.estimator.mean(separator='time estimation')
         my_estimator = []
-        print(my_estimator_dict)
         # mean returns a dict, so I create my list of list:
         for a_time in Times:
+            # check that the times are agreeing with the one from the csv file.
             my_estimator.append( my_estimator_dict[a_time] )
 
-        time.sleep(1000)
-        my_scaling = functions_fct_rescale_adaptive.rescaling(Times, my_estimator)
+        my_scaling = functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, my_estimator)
         list_of_kernels = functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
@@ -155,7 +154,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print(HAWKSY)
             count_times += 1
             actual_state[0] += 1
-            simulation(time, kernel)
+            simulation(a_time, kernel)
 
         GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
         plot_param = list_of_kernels, Times
