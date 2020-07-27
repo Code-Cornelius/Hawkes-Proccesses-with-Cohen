@@ -148,7 +148,7 @@ M_PREC += 1
 #######################################################################
 # simulation
 silent = True
-test_mode = False
+test_mode = True
 #######################################################################
 #######################################################################
 #######################################################################
@@ -178,7 +178,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 3, 30 * mini_T
+    nb_of_guesses, T = 3, 10 * mini_T
 else:
     nb_of_guesses, T = 40, 100 * mini_T
 # a good precision is 500*(T-T0)
@@ -200,11 +200,20 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         plt.show()
 
     def test_plot_hawkes(self):
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool=True, silent=True)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool=False, silent=True)
+        print(time_real)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=True, silent=True)
+        print(time_real)
+        print(intensity)
+
+
         HAWKSY.plot_hawkes(time_real, intensity, name="EXACT_HAWKES")
 
     def test_simple_unique(self):
         intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool=False, silent=silent)
+        print(time_real)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=False, silent=True)
+        print(time_real)
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=silent))
         self.assertTrue(True)
 

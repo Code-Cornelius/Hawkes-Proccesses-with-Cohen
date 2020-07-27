@@ -199,8 +199,9 @@ class Hawkes_process:
         time_burn_in = 200
         nb_points_burned =  8000
         points_burned = np.linspace(0,200,nb_points_burned)
-        # TODO 20/07/2020 nie_k:  I want to add burn in, je dois simuler plus longtemps et effacer le début.
-        #  en gros je fais une simul sur T + un param, genre 100, et je cherche intensity et jump après 100 jusqu'à T+100.
+        #I want to add burn in, je dois simuler plus longtemps et effacer le début.
+        #en gros je fais une simul sur T + un param, genre 100, et je cherche intensity et jump après 100 jusqu'à T+100.
+
         if not silent: print("Start of the simulation of the Hawkes process.")
         ########################################################################################
         # alpha and beta same shape. Mu a column vector with the initial intensities.
@@ -347,10 +348,12 @@ class Hawkes_process:
                     for j_from in range(self.M):
                         intensity[i_line, i_times] += small_lambdas[j_from, i_line, i_times]
 
+
+        print(T_t)
         #conditions on the times, we want a subset of them.
         for i in range(len(T_t)):
             # find the times big enough.
-            i_time = classical_functions.find_smallest_rank_leq_to_K(T_t[i], time_burn_in)
+            i_time = classical_functions.find_smallest_rank_leq_to_K(np.array(T_t[i]), time_burn_in)
             # shift the times
             T_t[i]= list(
                 # tooo check that the i_times + 1 is correct.

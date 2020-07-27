@@ -9,7 +9,7 @@ from test.test_Main_simulating_hawkes_simple import *
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def setUp(self):
-        self.the_update_functions = update_functions(1)
+        self.the_update_functions = update_functions(4)
 
     def tearDown(self):
         plt.show()
@@ -65,7 +65,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                    header=True)
 
     def test_over_the_time_adaptive_one(self):
-        nb_of_times = 25
+        nb_of_times = 50
         width_kernel = 1 / 5
         b = width_kernel / 2
 
@@ -76,8 +76,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-450, b=450)
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         actual_state = [0]  # initialization
-        estimator_kernel = Estimator_Hawkes.from_path(
-            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_5_kernels.csv')
 
 
         @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
@@ -92,13 +90,13 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                                             silent=silent)
 
         ############################## first step
-        # count_times = 0
-        # for a_time in Times:
-        #     HAWKSY.update_coef(time, self.the_update_functions, T_max=T)
-        #     print(HAWKSY)
-        #     count_times += 1
-        #     actual_state[0] += 1
-        #     simulation()
+        count_times = 0
+        for a_time in Times:
+            HAWKSY.update_coef(a_time, self.the_update_functions, T_max=T)
+            print(HAWKSY)
+            count_times += 1
+            actual_state[0] += 1
+            simulation()
 
         estimator_kernel.to_csv(first_estimation_path,
                                 index=False,
@@ -111,16 +109,13 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
-        nb_of_times = 25
+        nb_of_times = 50
         width_kernel = T / 5.
         b = width_kernel / 2
         b = 450
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
-        # estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, self.the_update_functions)
-        # test path.
-        estimator_kernel = Estimator_Hawkes.from_path(
-            'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_5_kernels.csv')
-        print(type(estimator_kernel))
+        estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, self.the_update_functions)
+
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
         my_estimator_dict = estimator_kernel.mean(separator='time estimation')
@@ -137,7 +132,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         actual_state = [0]  # initialization
 
         @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
-                                                    multiplicator_factor=0.7,
+                                                    multiplicator_factor=0.9,
                                                     actual_state=actual_state)
         def simulation(a_time, kernel):
             print(''.join(["\n", "=" * 78]))
