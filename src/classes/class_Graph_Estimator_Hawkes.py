@@ -28,7 +28,6 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         # path has to be raw. with \\
         estimator = Estimator_Hawkes()
         estimator.append(pd.read_csv(path))
-        # get the max value which is M-1
         return cls(estimator, parameters)
 
     #############################" hist
@@ -153,8 +152,11 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             for counter,plots in enumerate(list_of_plots):
                 # for each eval point
                 for kernel, a_time in zip(list_of_kernels, Times):
-                    tt = np.linspace(0,self.T_max, 10000)
+                    tt = [np.linspace(0,self.T_max, 10000)]
                     yy = kernel.eval(tt, a_time, self.T_max)
-                    plots.uniplot(nb_ax = 0, xx = tt,yy= yy, dict_plot_param = {"color": "m", "markersize" : 0 , "linewidth": 2 })
+                    plots.uni_plot_ax_bis(nb_ax = 0, xx = tt[0],yy= yy[0], dict_plot_param = {"color": "m", "markersize" : 0 , "linewidth": 0.5,
+                                                                                              "linestyle":"--" })
+                    lim_ =  plots.axs[0].get_ylim()
+                    plots.plot_vertical_line(a_time, np.linspace(0 ,lim_[-1] * 0.9 , 5), nb_ax=0, dict_plot_param={"color": "k", "markersize" : 0 , "linewidth": 0.2, "linestyle":"--" })
                 name_file =  'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)

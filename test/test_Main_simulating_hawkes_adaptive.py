@@ -120,11 +120,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         #estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, self.the_update_functions)
         #test path.
-        estimator_kernel = Graph_Estimator_Hawkes.from_path('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_5_kernels.csv', self.the_update_functions)
-
+        estimator_kernel = Estimator_Hawkes.from_path('C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_5_kernels.csv')
+        print(type(estimator_kernel))
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
-        my_estimator_dict = estimator_kernel.estimator.mean(separator='time estimation')
+        my_estimator_dict = estimator_kernel.mean(separator='time estimation')
         my_estimator = []
         # mean returns a dict, so I create my list of list:
         for a_time in Times:
@@ -149,17 +149,17 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         ############################## second step
         count_times = 0
 
-        for a_time, kernel in zip(Times, list_of_kernels):
-            HAWKSY.update_coef(a_time, self.the_update_functions, T_max=T)
-            print(HAWKSY)
-            count_times += 1
-            actual_state[0] += 1
-            simulation(a_time, kernel)
+        # for a_time, kernel in zip(Times, list_of_kernels):
+        #     HAWKSY.update_coef(a_time, self.the_update_functions, T_max=T)
+        #     print(HAWKSY)
+        #     count_times += 1
+        #     actual_state[0] += 1
+        #     simulation(a_time, kernel)
 
-        GRAPH_kernels = Graph_Estimator_Hawkes(adaptive_estimator_kernel, self.the_update_functions)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
         plot_param = list_of_kernels, Times
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param = plot_param)
-        adaptive_estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
+        estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
 
 
 
