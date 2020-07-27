@@ -33,12 +33,12 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def my_rescale_sin(value_at_each_time, G=10, L=None, R=None, h=100, l=0.01):
+def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.3):
     if L is None:
-        L = np.quantile(value_at_each_time, 0.02)
+        L = np.quantile(value_at_each_time, 0.1)
     print("Left boundary : ", L)
     if R is None:
-        R = np.quantile(value_at_each_time, 0.75)
+        R = np.quantile(value_at_each_time, 0.9)
     print("Right boundary : ", R)
     xx = value_at_each_time - G
     # xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
@@ -105,7 +105,7 @@ def rescaling_kernel_processing(times, first_estimate):
 def creator_list_kernels(my_scalings, previous_scaling):
     list_of_kernels = []
     for scale in my_scalings:
-        new_scaling = previous_scaling * scale
+        new_scaling = previous_scaling / scale
         list_of_kernels.append(Kernel(fct_biweight, name="biweight", a=-new_scaling, b=new_scaling))
     return list_of_kernels
 
