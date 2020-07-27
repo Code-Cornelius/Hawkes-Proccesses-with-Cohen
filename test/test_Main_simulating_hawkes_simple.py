@@ -178,7 +178,7 @@ print("\n~~~~~Computations.~~~~~\n")
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
-    nb_of_guesses, T = 3, 10 * mini_T
+    nb_of_guesses, T = 60, 50 * mini_T
 else:
     nb_of_guesses, T = 40, 100 * mini_T
 # a good precision is 500*(T-T0)
@@ -201,10 +201,10 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_plot_hawkes(self):
         intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool=False, silent=True)
-        print(time_real)
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=True, silent=True)
-        print(time_real)
-        print(intensity)
+        print("exact : ", time_real)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=True, silent=False)
+        print(" burn in : ", time_real)
+        print("intensity : ", intensity)
 
 
         HAWKSY.plot_hawkes(time_real, intensity, name="EXACT_HAWKES")

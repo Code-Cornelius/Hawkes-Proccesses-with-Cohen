@@ -196,7 +196,7 @@ class Hawkes_process:
     def simulation_Hawkes_exact_with_burn_in(self, T_max, nb_of_sim=100000,
                                 plot_bool=True,
                                 silent=True):  # 100 000 is just a safe guard in order to not stuck the computer.
-        time_burn_in = 200
+        time_burn_in = 10
         nb_points_burned =  8000
         points_burned = np.linspace(0,200,nb_points_burned)
         #I want to add burn in, je dois simuler plus longtemps et effacer le début.
@@ -272,6 +272,8 @@ class Hawkes_process:
             previous_jump = last_jump
             last_jump += next_a_value
 
+            if not silent: print(last_jump)
+
             # I add the time iff I haven't reached the limit already.
             # the already added is useful only for the double possibility between T_max and nb_of_sim.
             # already_added = False
@@ -294,6 +296,7 @@ class Hawkes_process:
                     else:
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
                             - self.BETA[jj, ii] * next_a_value)
+
 
             if plot_bool:
                 # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
@@ -345,11 +348,13 @@ class Hawkes_process:
             for i_line in range(self.M):
                 for i_times in range(len(self.tt)):
                     intensity[i_line, i_times] = self.NU[i_line]
+                    #work-in-progress add the previous. Pour cela on calcule l'intensity exactement en t jonction et on l'ajoute.
+                    # Et pour cela, on va avoir besoin de calculer l'intesity de ceux d'avant....
                     for j_from in range(self.M):
                         intensity[i_line, i_times] += small_lambdas[j_from, i_line, i_times]
 
 
-        print(T_t)
+        print("inside not shifted : ", T_t)
         #conditions on the times, we want a subset of them.
         for i in range(len(T_t)):
             # find the times big enough.
@@ -357,7 +362,7 @@ class Hawkes_process:
             # shift the times
             T_t[i]= list(
                 # tooo check that the i_times + 1 is correct.
-                np.array(   T_t[i][i_time + 1:] ) - time_burn_in
+                np.array(   T_t[i][i_time:] ) - time_burn_in
                         )
 
 
