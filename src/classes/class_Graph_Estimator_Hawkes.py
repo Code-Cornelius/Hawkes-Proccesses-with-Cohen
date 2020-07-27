@@ -127,11 +127,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         '''
         return sum / self.nb_of_guesses
 
-
-
-
-
-    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, plot_param = None):
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, plot_param=None):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
@@ -149,14 +145,17 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
             list_of_plots = APlot.print_register()
             # on each plot
-            for counter,plots in enumerate(list_of_plots):
+            for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for kernel, a_time in zip(list_of_kernels, Times):
-                    tt = [np.linspace(0,self.T_max, 10000)]
+                    tt = [np.linspace(0, self.T_max, 10000)]
                     yy = kernel.eval(tt, a_time, self.T_max)
-                    plots.uni_plot_ax_bis(nb_ax = 0, xx = tt[0],yy= yy[0], dict_plot_param = {"color": "m", "markersize" : 0 , "linewidth": 0.5,
-                                                                                              "linestyle":"--" })
-                    lim_ =  plots.axs[0].get_ylim()
-                    plots.plot_vertical_line(a_time, np.linspace(0 ,lim_[-1] * 0.9 , 5), nb_ax=0, dict_plot_param={"color": "k", "markersize" : 0 , "linewidth": 0.2, "linestyle":"--" })
-                name_file =  'double_estimation_result_{}'.format(counter)
+                    plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
+                                          dict_plot_param={"color": "m", "markersize": 0, "linewidth": 0.5,
+                                                           "linestyle": "--"})
+                    lim_ = plots.axs[0].get_ylim()
+                    plots.plot_vertical_line(a_time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
+                                             dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
+                                                              "linestyle": "--"})
+                name_file = 'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)

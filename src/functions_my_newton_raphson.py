@@ -3,6 +3,7 @@ import numpy as np
 
 from errors.error_convergence import Error_convergence
 
+
 # e is the error.
 # tol is the each step tolerance
 # An interesting number of jump for that algorithm is around a hundred.
@@ -125,7 +126,8 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
     # True because it was successful.
     return MU, ALPHA, BETA
 
-#return 3 things, first the coefficient by which to multiply the stepest descent.
+
+# return 3 things, first the coefficient by which to multiply the stepest descent.
 # also which direction has to change.
 # finally whether the coefficient has been changed.
 def armijo_rule(f, df, x0, direction, a, sigma, b):

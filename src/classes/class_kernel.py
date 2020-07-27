@@ -82,12 +82,12 @@ class Kernel:
 
             # I want to rescale the results for the kernels that are not covering seen part. For that reason,
             # I compute the integral of the kernel, and scale accordingly.
-            tt_integral = [np.linspace(0,T_max, 10000)]
+            tt_integral = [np.linspace(0, T_max, 10000)]
             yy = self.fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
-                              **{k: self.__dict__[k] for k in self.__dict__ if
-                                 k in signature(self.fct_kernel).parameters})
-            integral = classical_functions.trapeze_int(tt_integral[0], yy[0]) # yy[0] bc function gives back a list of arrays.
-
+                                 **{k: self.__dict__[k] for k in self.__dict__ if
+                                    k in signature(self.fct_kernel).parameters})
+            integral = classical_functions.trapeze_int(tt_integral[0],
+                                                       yy[0])  # yy[0] bc function gives back a list of arrays.
 
             for i in range(len(length_elements_T_t)):
                 ans[i] = ans[i] / integral * T_max
@@ -125,17 +125,16 @@ def fct_truncnorm(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200
     return output
 
 
-
-
 def fct_truncnorm_test(T_t, length_elements_T_t, eval_point, a=-300, b=300, sigma=200):
     output = []
     for i in range(len(length_elements_T_t)):
-        output.append( 2 * scipy.stats.truncnorm.pdf(np.array(T_t[i]), (a) / sigma, (b) / sigma,
-                                                loc=eval_point, scale=sigma))
+        output.append(2 * scipy.stats.truncnorm.pdf(np.array(T_t[i]), (a) / sigma, (b) / sigma,
+                                                    loc=eval_point, scale=sigma))
     output[i][
         T_t[i] < eval_point
         ] = 0
     return output
+
 
 #  if important, I can generalize biweight with function beta.
 #  Thus creating like 4 kernels with one function ( BETA(1), BETA(2)...)
@@ -151,7 +150,6 @@ def fct_biweight(T_t, length_elements_T_t, eval_point, a=-300, b=300, scaling_ve
     return output
 
 
-
 def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
     output = []
     for i in range(len(length_elements_T_t)):
@@ -162,34 +160,6 @@ def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
         xx[(xx < -1) | (xx > 1)] = 1
         output.append(3 / 4 * (1 - xx * xx) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
     return output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # ############ test
 # T_t = [np.linspace(0,2000,10000)]

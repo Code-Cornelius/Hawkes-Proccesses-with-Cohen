@@ -10,7 +10,7 @@ from classes.class_kernel import *
 class Estimator_Hawkes(Estimator):
     # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
-    def __init__(self, df = None):
+    def __init__(self, df=None):
         if df is not None:
             # test that the good columns are given.
             if {'variable', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'true value',
@@ -19,10 +19,10 @@ class Estimator_Hawkes(Estimator):
             else:
                 raise ("Probleme, the columns of the dataframe do not match the estimator hawkes.")
         # if no df:
-        else :
+        else:
             super().__init__(pd.DataFrame(columns=['variable', 'n', 'm',
-                                               'time estimation', 'weight function',
-                                               'value', 'T_max', 'true value', 'number of guesses']))
+                                                   'time estimation', 'weight function',
+                                                   'value', 'T_max', 'true value', 'number of guesses']))
 
     @classmethod
     def from_path(cls, path):

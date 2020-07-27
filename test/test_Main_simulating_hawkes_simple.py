@@ -175,7 +175,7 @@ test_mode = False
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1,1)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, 1)
 estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T = 3, 30 * mini_T
@@ -186,7 +186,7 @@ tt = np.linspace(T0, T, M_PREC, endpoint=True)
 HAWKSY = Hawkes_process(tt, PARAMETERS)
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
-#for the first estimate in the adaptive streategy I sotre it there:
+# for the first estimate in the adaptive streategy I sotre it there:
 first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_first.csv'
 second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_second.csv'
 
@@ -228,7 +228,6 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
         estimator_multi.to_csv(trash_path, index=False, header=True)
 
-
     def test_MSE(self):
         estimator_MSE = Estimator_Hawkes()
 
@@ -268,9 +267,11 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             time_simulation = time.time() - start
             vect_time_simulation[i] = time_simulation / nb_of_guesses
 
-        aplot = APlot(how = (1,1))
-        aplot.uni_plot(nb_ax = 0, xx = T_plot, yy = vect_time_simulation)
-        aplot.set_dict_fig(0, {'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(nb_of_guesses),
-            'xlabel': "Number of Jumps simulated", 'ylabel':"Average time to simulate"})
+        aplot = APlot(how=(1, 1))
+        aplot.uni_plot(nb_ax=0, xx=T_plot, yy=vect_time_simulation)
+        aplot.set_dict_fig(0, {
+            'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(
+                nb_of_guesses),
+            'xlabel': "Number of Jumps simulated", 'ylabel': "Average time to simulate"})
         aplot.save_plot("Timing_opti")
         return
