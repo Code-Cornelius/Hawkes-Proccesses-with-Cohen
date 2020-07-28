@@ -82,7 +82,7 @@ np.random.seed(124)
 ###################main###################
 ##########################################
 #################### Exact simulation of multidimensional Hawkes
-intensity, time_real = simulation_Hawkes_exact(tt, ALPHA, BETA, MU, nb_of_sim=nb_of_sim, T_max=T, plot_bool = False)
+intensity, time_real = simulation_Hawkes_exact_with_burn_in(tt, ALPHA, BETA, MU, nb_of_sim=nb_of_sim, T_max=T, plot_bool = False)
 
 
 
