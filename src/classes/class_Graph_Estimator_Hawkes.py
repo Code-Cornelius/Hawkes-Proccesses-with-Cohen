@@ -11,6 +11,8 @@ from classes.class_kernel import *
 # batch_estimation is one dataframe with the estimators.
 class Graph_Estimator_Hawkes(Graph_Estimator):
     def __init__(self, estimator, fct_parameters):
+
+        #TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
         Graph_Estimator.__init__(self, estimator, ['variable', 'm', 'n'])
 

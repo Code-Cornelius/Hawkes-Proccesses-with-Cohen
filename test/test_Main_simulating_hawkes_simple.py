@@ -16,55 +16,95 @@ import functions_general_for_Hawkes
 np.random.seed(124)
 
 
-def update_functions(case):
-    the_update_functions = functions_general_for_Hawkes.multi_list_generator(HAWKSY.M)
-    if case == 1:
-        for i in range(HAWKSY.M):
+def update_functions(case, PARAMETERS):
+    MU,ALPHA,BETA = PARAMETERS
+    M = len(MU)
+    the_update_functions = functions_general_for_Hawkes.multi_list_generator(M)
+    if case == 0:
+        for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 0.1, MU[i], T_max)
-            for j in range(HAWKSY.M):
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i], T_max=T_max, time_burn_in = time_burn_in)
+            for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 2, ALPHA[i, j], T_max)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, ALPHA[i, j], T_max=T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+
+
+    if case == 1:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 0.1, MU[i], T_max, time_burn_in= time_burn_in)
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i], T_max=T_max, time_burn_in= time_burn_in)
+
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 2, ALPHA[i, j], T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max, time_burn_in = time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+
 
     elif case == 2:
-        for i in range(HAWKSY.M):
+        for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.1, MU[i], 0, T_max)
-            for j in range(HAWKSY.M):
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.1, MU[i], 0, T_max, time_burn_in= time_burn_in)
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i], T_max=T_max, time_burn_in= time_burn_in)
+
+            for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.7, ALPHA[i, j], ALPHA[i, j],
-                                                                               T_max)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.5, ALPHA[i, j], 2.5*ALPHA[i, j],
+                                                                               T_max , time_burn_in = time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in)
 
     elif case == 3:
-        for i in range(HAWKSY.M):
+        for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=0, b=MU[i],
-                                                                               base_value=MU[i] * 1.5, T_max=T_max)
-            for j in range(HAWKSY.M):
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=0, b=MU[i],
+                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in)
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i],
+                                                                                                   T_max=T_max,
+                                                                                                   time_burn_in=time_burn_in)
+            for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.4, a=1.4,
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.5, a=3,
                                                                                    b=ALPHA[i, j],
                                                                                    base_value=ALPHA[i, j] / 2,
-                                                                                   T_max=T_max)
+                                                                                   T_max=T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
                                                                                    b=BETA[i, j],
                                                                                    base_value=BETA[i, j] / 1.5,
-                                                                                   T_max=T_max)
+                                                                                   T_max=T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j],
+                                                                                                       T_max=T_max,
+                                                                                                       time_burn_in=time_burn_in)
 
     elif case == 4:
-        for i in range(HAWKSY.M):
+        for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, MU[i], 0.2)
-            for j in range(HAWKSY.M):
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, MU[i], 0.2, time_burn_in=time_burn_in)
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i],
+                                                                                                   T_max=T_max,
+                                                                                                   time_burn_in=time_burn_in)
+            for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, ALPHA[i, j], 1)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, ALPHA[i, j], 1, time_burn_in=time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5)
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5, time_burn_in=time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j],
+                                                                                                       T_max=T_max,
+                                                                                                       time_burn_in=time_burn_in)
     return the_update_functions
 
 
@@ -77,16 +117,21 @@ def choice_parameter(dim, styl):
             BETA = [[2]]
             MU = [0.2]
             T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
-        if styl == 2:
+        elif styl == 2:
             ALPHA = [[2.]]
             BETA = [[2.4]]
             MU = [0.2]
             T0, mini_T = 0, 45  # 50 jumps for my uni variate stuff
-        if styl == 3:
+        elif styl == 3:
             ALPHA = [[1.75]]
             BETA = [[2]]
             MU = [0.5]
             T0, mini_T = 0, 15  # 50 jumps for my uni variate stuff
+        elif styl ==4:
+            ALPHA = [[1]]
+            BETA = [[4]]
+            MU = [0.2]
+            T0, mini_T = 0, 45  # 50 jumps for my uni variate stuff
 
 
     if dim == 2:
@@ -154,7 +199,7 @@ M_PREC += 1
 #######################################################################
 # simulation
 silent = True
-test_mode = False
+test_mode = True
 #######################################################################
 #######################################################################
 #######################################################################
@@ -181,18 +226,20 @@ test_mode = False
 #######################################################################
 #######################################################################
 print("\n~~~~~Computations.~~~~~\n")
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, styl = 3)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, styl = 4)
+the_update_functions = update_functions(4, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
+
 if test_mode:
-    nb_of_guesses, T = 3, 30 * mini_T
+    nb_of_guesses, T = 3, 100 * mini_T
 else:
     nb_of_guesses, T = 40, 100 * mini_T
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
-HAWKSY = Hawkes_process(tt, PARAMETERS)
+HAWKSY = Hawkes_process(tt, the_update_functions)
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
-# for the first estimate in the adaptive streategy I sotre it there:
+# for the first estimate in the adaptive streategy I store it there:
 first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_first.csv'
 second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_second.csv'
 
@@ -200,20 +247,18 @@ second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def setUp(self):
-        self.the_update_functions = update_functions(3)
+        pass
 
     def tearDown(self):
         plt.show()
 
     def test_plot_hawkes(self):
-        #intensity, time_real = HAWKSY.simulation_Hawkes_exact(T_max=T, plot_bool=False, silent=True)
         intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=True, silent=False)
         HAWKSY.plot_hawkes(time_real, intensity, name="EXACT_HAWKES")
 
     def test_simple_unique(self):
         intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=False, silent=True)
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=silent))
-        self.assertTrue(True)
 
     def test_from_csv(self):
         graph_test = Graph_Estimator_Hawkes.from_path(

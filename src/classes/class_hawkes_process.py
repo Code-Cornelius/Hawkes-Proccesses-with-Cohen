@@ -5,6 +5,7 @@ from classes.class_graph_estimator import *
 
 ##### other files
 from classes.class_kernel import *
+from functions_general_for_Hawkes import multi_list_generator
 
 np.random.seed(124)
 
@@ -36,20 +37,32 @@ class Hawkes_process:
     nb_points_burned = 6000
     points_burned = np.linspace(0, time_burn_in, nb_points_burned)
     #### problem with the tt, perhaps think about getting rid of it.
-    def __init__(self, tt, parameters):
+    def __init__(self, tt, the_update_functions):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
+
+        #work-in-progress put the tt outside. In the function signature
         self.tt = tt
         self.tt_burn = np.append(self.points_burned, self.tt + self.time_burn_in)
-        self.parameters = parameters.copy()  # without the copy, if I update the parameters inside HP, it also updates the parameters outside of the object.
-        self.ALPHA = self.parameters[1]
-        self.BETA = self.parameters[2]
-        self.NU = self.parameters[0]
+        self.the_update_functions = the_update_functions.copy()  # without the copy, if I update the the_update_functions inside HP, it also updates the the_update_functions outside of the object.
+        self.ALPHA = self.the_update_functions[1]
+        self.BETA = self.the_update_functions[2]
+        self.NU = self.the_update_functions[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
         self.M = np.shape(self.ALPHA)[1]
 
+    def __call__(self, t, T_max):
+        NU, ALPHA, BETA = multi_list_generator(self.M)
+        for i in range( self.M ):
+            NU[i] = self.NU[i](t, T_max, Hawkes_process.time_burn_in)
+            for j in range( self.M ):
+                ALPHA[i][j] =self.ALPHA[i][j](t, T_max, Hawkes_process.time_burn_in)
+                BETA[i][j] =  self.BETA[i][j](t, T_max, Hawkes_process.time_burn_in)
+
+        f'Hawkes process, with the value in time {t}  : {NU}, {ALPHA}, {BETA}'
+
     def __repr__(self):
-        return f'Hawkes process, with parameters : {self.NU}, {self.ALPHA}, {self.BETA}'
+        return self.__call__(0, 1000)
 
 
     # if plot bool  then draw the path of the simulation.
@@ -72,7 +85,7 @@ class Hawkes_process:
 
         # here alpha and beta should be scalars in a matrix form.
         if np.shape(self.ALPHA) != np.shape(self.BETA):
-            raise Exception("Why are the parameters not of the good shape ?")
+            raise Exception("Why are the the_update_functions not of the good shape ?")
 
         ########################################################################################
         # empty vector for stocking the information (the times at which something happens).
@@ -109,14 +122,16 @@ class Hawkes_process:
                 for i_where_from in range(self.M + 1):
                     U = np.random.rand(1)
                     if i_where_from == 0:
-                        aa[m_dims, i_where_from] = CDF_exp(U, self.NU[m_dims])
+                        # todo change function MU
+                        aa[m_dims, i_where_from] = CDF_exp(U, self.NU[m_dims](0,T_max, Hawkes_process.time_burn_in))
                     # cases where the other processes can have an impact. If not big enough, it can't: ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
                     # cases where it is big enough:
                     else:
+                        # todo change function BETA
                         aa[m_dims, i_where_from] = CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
-                                                           self.BETA[i_where_from - 1, m_dims])
+                                                           self.BETA[i_where_from - 1][ m_dims](0,T_max, Hawkes_process.time_burn_in))
             # next_a_index indicates the dimension in which the jump happens.
             if self.M > 1:
                 # it is tricky : first find where the min is (index) but it is flatten. So I recover coordinates with unravel index.
@@ -127,62 +142,71 @@ class Hawkes_process:
                 next_a_index = 0
             # min value.
             next_a_value = np.amin(aa)
+
+
+            # last jump is the time at which the current interesting jump happened.
+            # previous_jump is the one before.
             previous_jump = last_jump
             last_jump += next_a_value
 
             if not silent: print("actual jump : ", last_jump)
 
             # I add the time iff I haven't reached the limit already.
+
             # the already added is useful only for the double possibility between T_max and nb_of_sim.
-            # already_added = False
+            #       already_added = False
+
             if T_max is not None : #and not already_added:
                 # already_added = True
-                if (last_jump < T_max):
-                    T_t[next_a_index].append(last_jump)  # check this is correct
+                if (last_jump < T_max + self.time_burn_in):
+                    T_t[next_a_index].append(last_jump)
             # if nb_of_sim is not None and not already_added:
             #     if (counter < nb_of_sim - 1):
             #         T_t[next_a_index].append(last_jump)  # check this is correct
+
+
 
             # previous lambda gives the lambda for simulation.
             # small lambda is the lambda in every dimension for plotting.
             for ii in range(self.M):
                 for jj in range(self.M):
                     if jj == next_a_index:
+                        # todo change function ALPHA BETA
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
-                            - self.BETA[jj, ii] * next_a_value) + \
-                                                  self.ALPHA[jj, ii]
+                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in) * next_a_value) + \
+                                                  self.ALPHA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in)
                     else:
+                        # todo change function BETA
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
-                            - self.BETA[jj, ii] * next_a_value)
+                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in) * next_a_value)
 
 
             if plot_bool:
-                print("previous : ", previous_jump)
-                print("last : ", last_jump)
+                # print("previous : ", previous_jump)
+                # print("last : ", last_jump)
                 first_index_time = classical_functions.find_smallest_rank_leq_to_K(self.tt_burn, previous_jump)
                 # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
                 for i_line in range(self.M):
                     for j_column in range(self.M):
                         for i_times in range(first_index_time, len(self.tt_burn)):
-                            print("time index : ", self.tt_burn[i_times])
-
                             # this is when there is the jump. It means the time is exactly smaller but the next one bigger.
                             if self.tt_burn[i_times - 1] <= last_jump and self.tt_burn[i_times] > last_jump:
-                                print()
                                 # I filter the lines on which I add the jump. I add the jump to the process iff the value appears on the relevant line of the alpha.
                                 if i_line == next_a_index:
+                                    # todo change function ALPHA BETA
                                     small_lambdas[i_line, j_column, i_times] = self.ALPHA[
-                                                                                   i_line, j_column] * np.exp(
-                                        - self.BETA[i_line, j_column] * (self.tt_burn[i_times] - last_jump))
+                                                                                   i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * np.exp(
+                                        - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * (self.tt_burn[i_times] - last_jump))
                                 # since we are at the jump, one doesn't have to look further.
                                 # break is going out of time loop.
                                 break
                             # the window of times I haven't updated.
                             # I am updating all the other times.
+                            # todo change function BETA
                             if self.tt_burn[i_times]  > previous_jump and self.tt_burn[i_times] < last_jump:
                                 small_lambdas[i_line, j_column, i_times] += small_lambdas[
                                                                                 i_line, j_column, i_times - 1] * np.exp(
-                                    - self.BETA[i_line, j_column] * (self.tt_burn[i_times] - self.tt_burn[i_times - 1]))
+                                    - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * (self.tt_burn[i_times] - self.tt_burn[i_times - 1]))
 
             # condition part:
             if nb_of_sim is not None:
@@ -209,7 +233,8 @@ class Hawkes_process:
         if plot_bool:
             for i_line in range(self.M):
                 for i_times in range(len(self.tt_burn)):
-                    intensity[i_line, i_times] = self.NU[i_line]
+                    # todo change function NU
+                    intensity[i_line, i_times] = self.NU[i_line](i_times, T_max, Hawkes_process.time_burn_in)
                     for j_from in range(self.M):
                         intensity[i_line, i_times] += small_lambdas[j_from, i_line, i_times]
 
@@ -234,6 +259,7 @@ class Hawkes_process:
 
         # tricks, not giving back a list of list but a list of numpy array.
         # T_t = [np.array(aa) for aa in T_t]
+
         return intensity_bis, T_t
 
 
@@ -243,6 +269,15 @@ class Hawkes_process:
 
 
     def plot_hawkes(self, time_real, intensity, name=None):
+
+        NU, ALPHA, BETA = multi_list_generator(self.M)
+        for i in range( self.M ):
+            NU[i] = self.NU[i](0, 1000, Hawkes_process.time_burn_in)
+            for j in range( self.M ):
+                ALPHA[i][j] =self.ALPHA[i][j](0, 1000, Hawkes_process.time_burn_in)
+                BETA[i][j] =  self.BETA[i][j](0, 1000, Hawkes_process.time_burn_in)
+
+
         # I need alpha and beta in order for me to plot them.
         shape_intensity = np.shape(intensity)
         plt.figure(figsize=(10, 5))
@@ -261,6 +296,7 @@ class Hawkes_process:
             upper_ax.plot(x, y, 'o-', markersize=0.2, linewidth=0.4, label=label_plot, color=c)
             upper_ax.set_ylabel("Intensity : $\lambda (t)$")
             # the underlying
+            print("real : ", time_real)
             y = 4 * i_dim + step_fun(x, np.array(time_real[i_dim]))
             lower_ax.plot(x, y, 'o-', markersize=0.5, linewidth=0.5, color=c)
             lower_ax.set_xlabel("Time")
@@ -274,8 +310,8 @@ class Hawkes_process:
         plt.text(0.5, 0, "$\\alpha$", fontsize=12, color='black')
         plt.axis('off')
         ax = plt.subplot2grid((21, 21), (3, 16), rowspan=5, colspan=5)
-        im = plt.imshow(self.ALPHA, cmap="coolwarm")
-        for (j, i), label in np.ndenumerate(self.ALPHA):
+        im = plt.imshow(ALPHA, cmap="coolwarm")
+        for (j, i), label in np.ndenumerate(ALPHA):
             ax.text(i, j, label, ha='center', va='center')
         plt.colorbar(im)
         plt.axis('off')
@@ -284,14 +320,14 @@ class Hawkes_process:
         plt.text(0.5, 0, "$\\beta$", fontsize=12, color='black')
         plt.axis('off')
         ax = plt.subplot2grid((21, 21), (10, 16), rowspan=5, colspan=5)
-        im = plt.imshow(self.BETA, cmap="coolwarm")
-        for (j, i), label in np.ndenumerate(self.BETA):
+        im = plt.imshow(BETA, cmap="coolwarm")
+        for (j, i), label in np.ndenumerate(BETA):
             ax.text(i, j, label, ha='center', va='center')
         plt.colorbar(im)
         plt.axis('off')
 
         plt.subplot2grid((21, 21), (19, 16), rowspan=1, colspan=5)
-        plt.text(0.5, 0, "$\\mu$" + str(self.NU), fontsize=11, color='black')
+        plt.text(0.5, 0, "$\\nu = $ " + str(NU), fontsize=11, color='black')
         plt.axis('off')
 
         if name is not None:
@@ -302,13 +338,14 @@ class Hawkes_process:
 
         return
 
-    def update_coef(self, time, fct, **kwargs):
-        # fct here is a list of lists of lists; because we want to change each coeff indep.
-        # for NU, the functions are on the first column.
-        for i in range(self.M):
-            self.NU[i] = (fct[0][i])(time, **kwargs)
-            for j in range(self.M):
-                self.ALPHA[i, j] = (fct[1][i][j])(time, **kwargs)
-                self.BETA[i, j] = (fct[2][i][j])(time, **kwargs)
-
-        return
+    # old function
+    # def update_coef(self, time, fct, **kwargs):
+    #     # fct here is a list of lists of lists; because we want to change each coeff indep.
+    #     # for NU, the functions are on the first column.
+    #     for i in range(self.M):
+    #         self.NU[i] = (fct[0][i])(time, **kwargs)
+    #         for j in range(self.M):
+    #             self.ALPHA[i, j] = (fct[1][i][j])(time, **kwargs)
+    #             self.BETA[i, j] = (fct[2][i][j])(time, **kwargs)
+    #
+    #     return

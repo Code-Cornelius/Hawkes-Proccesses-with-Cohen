@@ -1,5 +1,5 @@
 # create the exact good list of size M*M*3
-# the function returns [   [[0]], [[0]], [[0]]   ]
+# the function returns [   [0], [[0]], [[0]]   ]
 def multi_list_generator(size):
     if size < 1:
         raise ("Size not big enough.")
