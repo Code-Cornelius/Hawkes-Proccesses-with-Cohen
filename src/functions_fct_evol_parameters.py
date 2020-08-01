@@ -4,6 +4,10 @@ import numpy as np
 
 # all of those functions are simply function that returns one element.
 
+# be sure that the behaviour after T_max is ok.
+# Sometimes, I need the function for values slightly bigger than T_max (last event).
+
+
 #todo add to the other movements :
 def constant_parameter(time, constant, T_max = 0, time_burn_in = 0):
     return constant
@@ -48,7 +52,7 @@ def periodic_stop(time, T_max, a, base_value, time_burn_in):  # need longer real
 # xx = np.linspace(0,T_max,100000)
 # for fct,param in zip(list_1, list_2):
 #     fct = np.vectorize(fct)
-#     yy = fct(xx, T_max = T_max, **param)
+#     yy = fct(xx, T_max = T_max, time_burn_in = 0, **param)
 #     aplot = APlot(how = (1,1))
 #     aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy, dict_plot_param = {"color" : "blue", "markersize": 0, "linewidth" : 2})
 #     aplot.set_dict_fig(0, {'title': '', 'xlabel':'', 'ylabel':''})

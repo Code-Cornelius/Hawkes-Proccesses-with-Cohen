@@ -15,15 +15,45 @@ INFINITY = float("inf")
 
 
 def CDF_exp(x, LAMBDA):
-    return - np.log(1 - x) / LAMBDA
+    return - np.log(1 - x) / LAMBDA # I inverse 1-x bc the uniform can be equal to 0, not defined in the log.
+
+
+def CDF_LEE(U, lambda_value, delta):
+    if U.item() > 1 - np.exp(- lambda_value / delta):
+        return INFINITY
+    else:
+        return -1 / delta * np.log(1 + delta / lambda_value * np.log(1 - U))
 
 
 def exp_kernel(alpha, beta, t):
     return alpha * np.exp(- beta * t)
 
 
+def lewis_non_homo(max_time, actual_time, max_nu, fct_value, **kwargs):
+    '''
+
+    Args:
+        max_time: in order to avoid infinite loop.
+        actual_time: current time, in order to update the parameter NU
+        max_nu:  over the interval for thinning.
+        fct_value: NU fct.
+        **kwargs: for NU fct.
+
+    Returns:
+
+    '''
+    arrival_time = 0
+    while actual_time + arrival_time < max_time:
+        U = np.random.rand(1)
+        arrival_time += CDF_exp(U, max_nu)
+        D = np.random.rand(1)
+        if (D <= fct_value(actual_time + arrival_time, **kwargs) / max_nu):
+            return arrival_time
+    return INFINITY
+
+
 def step_fun(tt, time_real):
-    # At every index where the jumps occurs and onwards, +1 to the stepfunction.
+    # At every index where the jumps occurs and onwards, +1 to the step-function.
     y = np.zeros(len(tt))
     for i in range(len(tt)):
         jumps = classical_functions.find_smallest_rank_leq_to_K(time_real, tt[i])
@@ -33,7 +63,7 @@ def step_fun(tt, time_real):
 
 class Hawkes_process:
     # how to acces class fields?
-    time_burn_in = 200
+    time_burn_in = 0
     nb_points_burned = 6000
     points_burned = np.linspace(0, time_burn_in, nb_points_burned)
     #### problem with the tt, perhaps think about getting rid of it.
@@ -106,13 +136,13 @@ class Hawkes_process:
         previous_lambda = np.zeros((self.M, self.M))
         small_lambdas = np.zeros((self.M, self.M, len(self.tt_burn)))
 
-        def CDF_LEE(U, lambda_value, delta):
-            if U.item() > 1 - np.exp(- lambda_value / delta):
-                return INFINITY
-            else:
-                return -1 / delta * np.log(1 + delta / lambda_value * np.log(1 - U))
-
         condition = True
+
+        #I need the max value of mu for thinning simulation:
+        # it is an array with the max in each dimension.
+        the_funct_nu = [np.vectorize(self.NU[i]) for i in range(self.M) ]
+        max_nu = [ np.max(the_funct_nu[i](self.tt_burn, T_max, Hawkes_process.time_burn_in)) for i in range(self.M) ]
+        print(the_funct_nu[0](self.tt_burn, T_max, Hawkes_process.time_burn_in))
         while condition:
             # aa is the matrix of the a_m^i. Each column represents one i, each row a m, just the way the equations are written.
             aa = np.zeros((self.M, self.M + 1))
@@ -120,15 +150,21 @@ class Hawkes_process:
             ################## second loop over where from.
             for m_dims in range(self.M):
                 for i_where_from in range(self.M + 1):
-                    U = np.random.rand(1)
                     if i_where_from == 0:
                         # todo change function MU
-                        aa[m_dims, i_where_from] = CDF_exp(U, self.NU[m_dims](0,T_max, Hawkes_process.time_burn_in))
+                        aa[m_dims, i_where_from] = lewis_non_homo( T_max + Hawkes_process.time_burn_in,
+                                                                  last_jump,
+                                                                  max_nu[m_dims],
+                                                                  self.NU[m_dims],
+                                                                  T_max = T_max,
+                                                                  time_burn_in = Hawkes_process.time_burn_in )
+
                     # cases where the other processes can have an impact. If not big enough, it can't: ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
                     # cases where it is big enough:
                     else:
+                        U = np.random.rand(1)
                         # todo change function BETA
                         aa[m_dims, i_where_from] = CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
                                                            self.BETA[i_where_from - 1][ m_dims](0,T_max, Hawkes_process.time_burn_in))
@@ -231,13 +267,15 @@ class Hawkes_process:
         # will be an empty list if not for plot purpose.
         if plot_bool:
             for i_line in range(self.M):
-                for i_times in range(len(self.tt_burn)):
+                for counter_times, i_times in enumerate(self.tt_burn):
                     # todo change function NU
-                    intensity[i_line, i_times] = self.NU[i_line](i_times, T_max, Hawkes_process.time_burn_in)
+                    intensity[i_line, counter_times] = self.NU[i_line](i_times, T_max, Hawkes_process.time_burn_in)
                     for j_from in range(self.M):
-                        intensity[i_line, i_times] += small_lambdas[j_from, i_line, i_times]
+                        intensity[i_line, counter_times] += small_lambdas[j_from, i_line, counter_times]
 
 
+        print("intensity : ", intensity)
+        print("small : ", small_lambdas)
         if not silent: print("inside not shifted : ", T_t)
         #conditions on the times, we want a subset of them.
 
@@ -258,7 +296,7 @@ class Hawkes_process:
 
         # tricks, not giving back a list of list but a list of numpy array.
         # T_t = [np.array(aa) for aa in T_t]
-
+        print("bis : ", intensity_bis)
         return intensity_bis, T_t
 
 
@@ -295,7 +333,6 @@ class Hawkes_process:
             upper_ax.plot(x, y, 'o-', markersize=0.2, linewidth=0.4, label=label_plot, color=c)
             upper_ax.set_ylabel("Intensity : $\lambda (t)$")
             # the underlying
-            print("real : ", time_real)
             y = 4 * i_dim + step_fun(x, np.array(time_real[i_dim]))
             lower_ax.plot(x, y, 'o-', markersize=0.5, linewidth=0.5, color=c)
             lower_ax.set_xlabel("Time")
@@ -348,3 +385,6 @@ class Hawkes_process:
     #             self.BETA[i, j] = (fct[2][i][j])(time, **kwargs)
     #
     #     return
+
+
+
