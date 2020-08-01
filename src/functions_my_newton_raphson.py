@@ -83,7 +83,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 
         # if the max is too big I replace the value by a random number between 0 and 1.
         # Also, I synchronize the alpha and the beta in order to avoid boundary problem.
-        if np.max(x0) > 100:
+        if np.max(np.abs(x0)) > 100: #absolute in case goes negative infinity.
             nb_of_explosions += 1
             for i in range(len(x0)):
                 if i < M:
@@ -98,7 +98,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
             # I reset the step size.
             reset_index = number_of_step_crash
 
-        # Here I deal with negative points
+        # Here I deal with negative parameters
         for i in range(len(x0)):
             if i >= M + M * M:  # betas, they can't be negative otherwise overflow in many expressions involving exponentials.
                 if x0[i] < 0:

@@ -13,7 +13,7 @@ class Estimator_Hawkes(Estimator):
     def __init__(self, df=None):
         if df is not None:
             # test that the good columns are given.
-            if {'variable', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'true value',
+            if {'variable', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in', 'true value',
                 'number of guesses'}.issubset(df.columns):
                 super().__init__(df)
             else:
@@ -22,7 +22,7 @@ class Estimator_Hawkes(Estimator):
         else:
             super().__init__(pd.DataFrame(columns=['variable', 'n', 'm',
                                                    'time estimation', 'weight function',
-                                                   'value', 'T_max', 'true value', 'number of guesses']))
+                                                   'value', 'T_max', 'time_burn_in', 'true value', 'number of guesses']))
 
     @classmethod
     def from_path(cls, path):

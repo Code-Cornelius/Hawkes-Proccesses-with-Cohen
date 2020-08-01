@@ -74,7 +74,8 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
              "weight function": [kernel_weight.name],
              "value": [mu_hat[s]],
              'T_max': [T_max],
-             'true value': [hp.NU[s]],
+             'time_burn_in': [hp.time_burn_in],
+             'true value': [hp.NU[s](time_estimation,T_max, hp.time_burn_in)],
              'number of guesses': [nb_of_guesses]
              }), sort=True
         )
@@ -87,7 +88,8 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
                  "weight function": [kernel_weight.name],
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
-                 'true value': [hp.ALPHA[s, t]],
+                 'time_burn_in': [hp.time_burn_in],
+                 'true value': [hp.ALPHA[s][t](time_estimation,T_max, hp.time_burn_in) ],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -99,7 +101,8 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
                  "weight function": [kernel_weight.name],
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
-                 'true value': [hp.BETA[s, t]],
+                 'time_burn_in': [hp.time_burn_in],
+                 'true value': [hp.BETA[s][t](time_estimation,T_max, hp.time_burn_in)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )

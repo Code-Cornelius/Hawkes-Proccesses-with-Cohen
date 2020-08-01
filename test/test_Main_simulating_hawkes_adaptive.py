@@ -9,7 +9,7 @@ from test.test_Main_simulating_hawkes_simple import *
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def setUp(self):
-        self.the_update_functions = update_functions(4)
+        pass
 
     def tearDown(self):
         plt.show()
@@ -21,7 +21,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         b = width_kernel / 2
         print("width of the kernels: {}.".format(width_kernel))
 
-        HAWKSY = Hawkes_process(tt, PARAMETERS)
+        HAWKSY = Hawkes_process(tt, the_update_functions)
 
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
@@ -51,14 +51,13 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         for a_time in Times:
             count_kernels = 0
             count_times += 1
-            HAWKSY.update_coef(time, self.the_update_functions, T_max=T)
-            print(HAWKSY)
+            print(HAWKSY(a_time, T))
             for kernel in list_of_kernels:
                 count_kernels += 1
                 actual_state[0] += 1
                 simulation()
 
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
         estimator_kernel.DF.to_csv(trash_path,
                                    index=False,
@@ -69,7 +68,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = 1 / 5
         b = width_kernel / 2
 
-        HAWKSY = Hawkes_process(tt, PARAMETERS)
+        HAWKSY = Hawkes_process(tt, the_update_functions)
 
         estimator_kernel = Estimator_Hawkes()
         #  put optimal kernel here
@@ -92,16 +91,16 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         ############################## first step
         count_times = 0
         for a_time in Times:
-            HAWKSY.update_coef(a_time, self.the_update_functions, T_max=T)
-            print(HAWKSY)
+            print(HAWKSY(a_time, T))
             count_times += 1
             actual_state[0] += 1
             simulation()
 
-        estimator_kernel.to_csv(first_estimation_path,
+        estimator_kernel.to_csv(#first_estimation_path,
+                                trash_path,
                                 index=False,
                                 header=True)
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
         list_of_kernels = []
         for i in range(len(Times)):
             list_of_kernels.append(my_opt_kernel)
@@ -114,7 +113,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         b = width_kernel / 2
         b = 450
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
-        estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, self.the_update_functions)
+        estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, the_update_functions)
 
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
@@ -152,7 +151,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         #     actual_state[0] += 1
         #     simulation(a_time, kernel)
 
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, self.the_update_functions)
+        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
         plot_param = list_of_kernels, Times
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param=plot_param)
         estimator_kernel.to_csv(second_estimation_path, index=False, header=True)

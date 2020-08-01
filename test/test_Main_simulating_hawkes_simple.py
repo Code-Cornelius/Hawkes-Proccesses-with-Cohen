@@ -231,7 +231,7 @@ the_update_functions = update_functions(4, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T = 3, 100 * mini_T
+    nb_of_guesses, T = 3, 50 * mini_T
 else:
     nb_of_guesses, T = 40, 100 * mini_T
 # a good precision is 500*(T-T0)
@@ -258,24 +258,24 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_simple_unique(self):
         intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=False, silent=True)
-        print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=silent))
+        print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=False))
 
     def test_from_csv(self):
         graph_test = Graph_Estimator_Hawkes.from_path(
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
-            self.the_update_functions)
+            the_update_functions)
         graph_test.draw_evolution_parameter_over_time(separator_colour='weight function')
         graph_test.draw_histogram()
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         graph_test = Graph_Estimator_Hawkes.from_path(
             'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_test.csv',
-            self.the_update_functions)
+            the_update_functions)
         graph_test.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
 
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
         functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent)
-        GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, self.the_update_functions)
+        GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, the_update_functions)
         GRAPH_multi.draw_histogram()
 
         estimator_multi.to_csv(trash_path, index=False, header=True)
@@ -287,7 +287,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
                  50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T,
                  130 * mini_T,
                  140 * mini_T, 150 * mini_T]
-        # TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+        #TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         count_times = 0
         for times in TIMES:
             count_times += 1
@@ -296,7 +296,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
                 f"Time : {count_times} out of : {len(TIMES)}.")
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                             times, nb_of_guesses, silent=silent)
-        GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, self.the_update_functions)
+        GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
         estimator_MSE.DF.to_csv(trash_path, index=False,
                                 header=True)
         GRAPH_MSE.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)

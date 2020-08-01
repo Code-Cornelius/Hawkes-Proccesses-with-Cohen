@@ -59,7 +59,7 @@ class Hawkes_process:
                 ALPHA[i][j] =self.ALPHA[i][j](t, T_max, Hawkes_process.time_burn_in)
                 BETA[i][j] =  self.BETA[i][j](t, T_max, Hawkes_process.time_burn_in)
 
-        f'Hawkes process, with the value in time {t}  : {NU}, {ALPHA}, {BETA}'
+        return f'a Hawkes process, with parameters at time {t} : {NU}, {ALPHA}, {BETA}'
 
     def __repr__(self):
         return self.__call__(0, 1000)
@@ -185,7 +185,6 @@ class Hawkes_process:
                 # print("previous : ", previous_jump)
                 # print("last : ", last_jump)
                 first_index_time = classical_functions.find_smallest_rank_leq_to_K(self.tt_burn, previous_jump)
-                # optimize-speed I can search for the index of the last jump. Then, start i_times at this time. It will reduce computational time for high times.
                 for i_line in range(self.M):
                     for j_column in range(self.M):
                         for i_times in range(first_index_time, len(self.tt_burn)):
