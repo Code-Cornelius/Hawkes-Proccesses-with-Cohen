@@ -18,7 +18,7 @@ def choice_parameter(dim, styl):
     # styl choses which variant of the parameters.
     if dim == 1:
         if styl ==1:
-            ALPHA = [[1.9]]
+            ALPHA = [[1.75]]
             BETA = [[2]]
             MU = [0.2]
             T0, mini_T = 0, 70  # 50 jumps for my uni variate stuff
@@ -104,11 +104,11 @@ test_mode = False
 print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
-the_update_functions = update_functions(1, PARAMETERS)
+the_update_functions = update_functions(0, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T = 3, 20 * mini_T
+    nb_of_guesses, T = 3, 100 * mini_T
 else:
     nb_of_guesses, T = 50,  100 * mini_T
 # a good precision is 500*(T-T0)
