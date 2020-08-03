@@ -107,17 +107,20 @@ class Hawkes_process:
 
     def plot_parameters_hawkes(self):
         # I m printing the evolution of the parameters there.
-        # TODO 03/08/2020 nie_k: self.M dimensions probleme
         aplot = APlot(how=(1, self.M))
         tt = np.linspace(0,1,1000)
+        my_colors = plt.cm.rainbow(np.linspace(0, 1, 2*self.M))
         for i_dim in range(self.M):
             xx_nu = [self.NU[i_dim](t, 1, 0) for t in tt]
+            aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param={"label": "nu", "color": "blue"})
+            color = iter(my_colors)
             for j_dim in range(self.M):
+                c1 = next(color)
+                c2 = next(color)
                 xx_alpha = [self.ALPHA[i_dim][j_dim](t, 1, 0) for t in tt]
                 xx_beta = [self.BETA[i_dim][j_dim](t, 1, 0) for t in tt]
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha", "color": "black"})
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta", "color": "red"})
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param = {"label": "nu", "color": "blue"})
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha", "color": c1})
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta", "color": c2})
 
                 aplot.set_dict_fig(i_dim, {'title': "Evolution of the parameters, time in $\%$; dim : {}".format(i_dim), 'xlabel':'', 'ylabel':''})
             aplot.show_legend()
