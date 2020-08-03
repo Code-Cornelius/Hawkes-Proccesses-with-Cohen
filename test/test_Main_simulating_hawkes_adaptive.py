@@ -88,6 +88,16 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                                             kernel_weight=my_opt_kernel, time_estimation=a_time,
                                                             silent=silent)
 
+
+
+# section ############################
+#  ###################################
+#  ###################################
+#  ###################################
+ # title
+
+
+
         ############################## first step
         count_times = 0
         for a_time in Times:

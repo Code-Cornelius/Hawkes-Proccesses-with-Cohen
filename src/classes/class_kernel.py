@@ -27,6 +27,13 @@ np.random.seed(124)
 ##### other files
 
 
+# section ######################################################################
+#  #############################################################################
+# some information
+
+
+
+
 # -------------------------------------------------------------------------------------------------------
 # list of the possible kernels:
 # fct_top_hat
@@ -45,6 +52,11 @@ np.random.seed(124)
 #                    Kernel(fct_truncnorm, name="normal truncnorm", a=-350, b=350, sigma=250)]
 # -------------------------------------------------------------------------------------------------------
 # the functions only work for positive time. If one input negative times, it messes up the orientation.
+
+
+# section ######################################################################
+#  #############################################################################
+# class
 class Kernel:
     # kernel is a class of objects, where using eval evaluates the function given as parameter
     # the evaluation gives back a list of np.array
@@ -161,7 +173,13 @@ def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
         output.append(3 / 4 * (1 - xx * xx) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
     return output
 
-# ############ test
+
+# section ######################################################################
+#  #############################################################################
+# test
+
+
+
 # T_t = [np.linspace(0,2000,10000)]
 # aplot = APlot(how = (1,1))
 # aplot.set_dict_fig(0, {'title':"", 'xlabel':"", 'ylabel':""})

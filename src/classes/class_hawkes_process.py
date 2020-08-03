@@ -9,6 +9,12 @@ from functions_general_for_Hawkes import multi_list_generator
 
 np.random.seed(124)
 
+
+# section ######################################################################
+#  #############################################################################
+ # fcts
+
+
 # defaut kernel, useful for default argument.
 kernel_plain = Kernel(fct_kernel=fct_plain, name="flat")
 INFINITY = float("inf")
@@ -60,6 +66,9 @@ def step_fun(tt, time_real):
         y[i] = jumps
     return y
 
+# section ######################################################################
+#  #############################################################################
+ # class
 
 class Hawkes_process:
     # how to acces class fields?
@@ -374,17 +383,8 @@ class Hawkes_process:
 
         return
 
-    # old function
-    # def update_coef(self, time, fct, **kwargs):
-    #     # fct here is a list of lists of lists; because we want to change each coeff indep.
-    #     # for NU, the functions are on the first column.
-    #     for i in range(self.M):
-    #         self.NU[i] = (fct[0][i])(time, **kwargs)
-    #         for j in range(self.M):
-    #             self.ALPHA[i, j] = (fct[1][i][j])(time, **kwargs)
-    #             self.BETA[i, j] = (fct[2][i][j])(time, **kwargs)
-    #
-    #     return
-
+# section ######################################################################
+#  #############################################################################
+# test
 
 
