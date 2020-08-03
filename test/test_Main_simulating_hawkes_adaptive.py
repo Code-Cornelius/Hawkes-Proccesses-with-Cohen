@@ -89,15 +89,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                                             silent=silent)
 
 
-
-# section ############################
-#  ###################################
-#  ###################################
-#  ###################################
- # title
-
-
-
         ############################## first step
         count_times = 0
         for a_time in Times:

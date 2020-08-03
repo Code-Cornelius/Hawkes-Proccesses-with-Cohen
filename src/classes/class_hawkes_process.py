@@ -151,7 +151,6 @@ class Hawkes_process:
         # it is an array with the max in each dimension.
         the_funct_nu = [np.vectorize(self.NU[i]) for i in range(self.M) ]
         max_nu = [ np.max(the_funct_nu[i](self.tt_burn, T_max, Hawkes_process.time_burn_in)) for i in range(self.M) ]
-        print(the_funct_nu[0](self.tt_burn, T_max, Hawkes_process.time_burn_in))
         while condition:
             # aa is the matrix of the a_m^i. Each column represents one i, each row a m, just the way the equations are written.
             aa = np.zeros((self.M, self.M + 1))
@@ -283,8 +282,6 @@ class Hawkes_process:
                         intensity[i_line, counter_times] += small_lambdas[j_from, i_line, counter_times]
 
 
-        print("intensity : ", intensity)
-        print("small : ", small_lambdas)
         if not silent: print("inside not shifted : ", T_t)
         #conditions on the times, we want a subset of them.
 
@@ -305,7 +302,6 @@ class Hawkes_process:
 
         # tricks, not giving back a list of list but a list of numpy array.
         # T_t = [np.array(aa) for aa in T_t]
-        print("bis : ", intensity_bis)
         return intensity_bis, T_t
 
 

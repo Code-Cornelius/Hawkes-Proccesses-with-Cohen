@@ -2,97 +2,15 @@
 import unittest
 
 ##### my libraries
-import decorators_functions
 
 ##### other files
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_hawkes_process import *
 from classes.class_kernel_adaptive import *
-import functions_change_point_analysis
 import functions_for_MLE
-import functions_fct_evol_parameters
-import functions_general_for_Hawkes
+from functions_fct_evol_parameters import update_functions
 
 np.random.seed(124)
-
-
-def update_functions(case, PARAMETERS):
-    MU,ALPHA,BETA = PARAMETERS
-    M = len(MU)
-    the_update_functions = functions_general_for_Hawkes.multi_list_generator(M)
-    if case == 0:
-        for i in range(M):
-            the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, MU[i], T_max=T_max, time_burn_in = time_burn_in)
-            for j in range(M):
-                the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, ALPHA[i, j], T_max=T_max, time_burn_in= time_burn_in)
-                the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
-
-
-    if case == 1:
-        for i in range(M):
-            the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, MU[i]/2, T_max, time_burn_in= time_burn_in)
-
-            for j in range(M):
-                the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 2, ALPHA[i, j], T_max, time_burn_in= time_burn_in)
-                # the_update_functions[2][i][j] = \
-                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max, time_burn_in = time_burn_in)
-                the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
-
-
-    elif case == 2:
-        for i in range(M):
-            the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.7, MU[i]/5, 2*MU[i], T_max, time_burn_in= time_burn_in)
-            for j in range(M):
-                the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.5, ALPHA[i, j], 2.5*ALPHA[i, j],
-                                                                               T_max , time_burn_in = time_burn_in)
-                # the_update_functions[2][i][j] = \
-                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
-                the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in)
-
-    elif case == 3:
-        for i in range(M):
-            the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=2, b=MU[i],
-                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in)
-            for j in range(M):
-                the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.5, a=3,
-                                                                                   b=ALPHA[i, j],
-                                                                                   base_value=ALPHA[i, j] / 2,
-                                                                                   T_max=T_max, time_burn_in= time_burn_in)
-                # the_update_functions[2][i][j] = \
-                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
-                #                                                                    b=BETA[i, j],
-                #                                                                    base_value=BETA[i, j] / 1.5,
-                #                                                                    T_max=T_max, time_burn_in= time_burn_in)
-                the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j],
-                                                                                                       T_max=T_max,
-                                                                                                       time_burn_in=time_burn_in)
-
-    elif case == 4:
-        for i in range(M):
-            the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, MU[i], 0.2, time_burn_in=time_burn_in)
-            for j in range(M):
-                the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, ALPHA[i, j], 1, time_burn_in=time_burn_in)
-                # the_update_functions[2][i][j] = \
-                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5, time_burn_in=time_burn_in)
-                the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: functions_fct_evol_parameters.constant_parameter(time, BETA[i, j],
-                                                                                                       T_max=T_max,
-                                                                                                       time_burn_in=time_burn_in)
-    return the_update_functions
 
 
 def choice_parameter(dim, styl):
@@ -100,7 +18,7 @@ def choice_parameter(dim, styl):
     # styl choses which variant of the parameters.
     if dim == 1:
         if styl ==1:
-            ALPHA = [[1.75]]
+            ALPHA = [[1.5]]
             BETA = [[2]]
             MU = [0.2]
             T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
@@ -173,54 +91,22 @@ def choice_parameter(dim, styl):
 # number of max jump
 nb_of_sim, M_PREC = 50000, 200000
 M_PREC += 1
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
+# section ######################################################################
+#  #############################################################################
 # simulation
 silent = True
-test_mode = True
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
-#######################################################################
+test_mode = False
+# section ######################################################################
+#  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(1, styl = 4)
-the_update_functions = update_functions(4, PARAMETERS)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = 1  , styl = 1)
+the_update_functions = update_functions(1, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
     nb_of_guesses, T = 3, 20 * mini_T
 else:
-    nb_of_guesses, T = 40, 100 * mini_T
+    nb_of_guesses, T = 50, 100 * mini_T
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 HAWKSY = Hawkes_process(tt, the_update_functions)
@@ -272,9 +158,8 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
                  50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T,
-                 130 * mini_T,
-                 140 * mini_T, 150 * mini_T]
-        #TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+                 130 * mini_T, 140 * mini_T, 150 * mini_T]
+        TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         count_times = 0
         for times in TIMES:
             count_times += 1

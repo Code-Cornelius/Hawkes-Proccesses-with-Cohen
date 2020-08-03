@@ -64,9 +64,9 @@ def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.3):
 
 def classical_rescale(times, G=10., gamma=0.5):
     xx = times
-    print(xx)
+    print("classical_rescale", xx)
     ans = np.power(xx / G, -gamma)
-    print(ans)
+    print("classical_rescale", ans)
     return ans
 
 

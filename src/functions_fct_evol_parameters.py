@@ -9,6 +9,9 @@ import numpy as np
 
 
 #todo add to the other movements :
+import functions_general_for_Hawkes
+
+
 def constant_parameter(time, constant, T_max = 0, time_burn_in = 0):
     return constant
 
@@ -37,6 +40,89 @@ def periodic_stop(time, T_max, a, base_value, time_burn_in):  # need longer real
             time / (T_max+time_burn_in) * 2 * math.pi * 2.25)
     else:
         return base_value
+
+
+
+def update_functions(case, PARAMETERS):
+    MU,ALPHA,BETA = PARAMETERS
+    M = len(MU)
+    the_update_functions = functions_general_for_Hawkes.multi_list_generator(M)
+    if case == 0:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: constant_parameter(time, MU[i], T_max=T_max, time_burn_in = time_burn_in)
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, ALPHA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+
+
+    if case == 1:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: linear_growth(time, 3, MU[i]/2, T_max, time_burn_in= time_burn_in)
+
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: linear_growth(time, BETA[i, j]*0.9 - ALPHA[i, j], ALPHA[i, j], T_max, time_burn_in= time_burn_in)
+
+                # the_update_functions[2][i][j] = \
+                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max, time_burn_in = time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+
+
+    elif case == 2:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: one_jump(time, 0.7, MU[i]/5, 2*MU[i], T_max, time_burn_in= time_burn_in)
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: one_jump(time, 0.5, ALPHA[i, j], 2.5*ALPHA[i, j],
+                                                                               T_max , time_burn_in = time_burn_in)
+                # the_update_functions[2][i][j] = \
+                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in)
+
+    elif case == 3:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: moutain_jump(time, when_jump=0.7, a=2, b=MU[i],
+                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in)
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: moutain_jump(time, when_jump=0.5, a=3,
+                                                                                   b=ALPHA[i, j],
+                                                                                   base_value=ALPHA[i, j] / 2,
+                                                                                   T_max=T_max, time_burn_in= time_burn_in)
+                # the_update_functions[2][i][j] = \
+                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
+                #                                                                    b=BETA[i, j],
+                #                                                                    base_value=BETA[i, j] / 1.5,
+                #                                                                    T_max=T_max, time_burn_in= time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j],
+                                                                                                       T_max=T_max,
+                                                                                                       time_burn_in=time_burn_in)
+
+    elif case == 4:
+        for i in range(M):
+            the_update_functions[0][i] = \
+                lambda time, T_max, time_burn_in: periodic_stop(time, T_max, MU[i], 0.2, time_burn_in=time_burn_in)
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    lambda time, T_max, time_burn_in: periodic_stop(time, T_max, ALPHA[i, j], 1, time_burn_in=time_burn_in)
+                # the_update_functions[2][i][j] = \
+                #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5, time_burn_in=time_burn_in)
+                the_update_functions[2][i][j] = \
+                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j],
+                                                                                                       T_max=T_max,
+                                                                                                       time_burn_in=time_burn_in)
+    return the_update_functions
+
+
 
 
 # import numpy as np

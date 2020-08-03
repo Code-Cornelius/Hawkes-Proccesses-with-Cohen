@@ -14,8 +14,9 @@ from classes.class_hawkes_process import *
 # now there is an error raised.
 def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
 
-    intensity, time_real = hp.simulation_Hawkes_exact_with_burn_in(T_max=T_max, plot_bool=False, silent=True)
+    _, time_real = hp.simulation_Hawkes_exact_with_burn_in(T_max=T_max, plot_bool=False, silent=True) # don't store intensity, only used for plots.
     w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
+    # print(time_real)
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
     except Error_convergence as err:
