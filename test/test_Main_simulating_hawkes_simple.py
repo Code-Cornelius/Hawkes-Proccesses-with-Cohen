@@ -21,7 +21,7 @@ def choice_parameter(dim, styl):
             ALPHA = [[1.75]]
             BETA = [[2]]
             MU = [0.2]
-            T0, mini_T = 0, 70  # 50 jumps for my uni variate stuff
+            T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
         elif styl == 2:
             ALPHA = [[2.]]
             BETA = [[2.4]]
