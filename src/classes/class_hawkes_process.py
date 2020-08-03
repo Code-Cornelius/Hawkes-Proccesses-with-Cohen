@@ -89,6 +89,7 @@ class Hawkes_process:
         self.NU = self.the_update_functions[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
         self.M = np.shape(self.ALPHA)[1]
+        self.plot_parameters_hawkes()
 
     def __call__(self, t, T_max):
         NU, ALPHA, BETA = multi_list_generator(self.M)
@@ -102,6 +103,24 @@ class Hawkes_process:
 
     def __repr__(self):
         return self.__call__(0, 1000)
+
+
+    def plot_parameters_hawkes(self):
+        # I m printing the evolution of the parameters there.
+        # TODO 03/08/2020 nie_k: self.M dimensions probleme
+        aplot = APlot(how=(1, self.M))
+        tt = np.linspace(0,1,1000)
+        for i_dim in range(self.M):
+            xx_nu = [self.NU[i_dim](t, 1, 0) for t in tt]
+            for j_dim in range(self.M):
+                xx_alpha = [self.ALPHA[i_dim][j_dim](t, 1, 0) for t in tt]
+                xx_beta = [self.BETA[i_dim][j_dim](t, 1, 0) for t in tt]
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha", "color": "black"})
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta", "color": "red"})
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param = {"label": "nu", "color": "blue"})
+
+                aplot.set_dict_fig(i_dim, {'title': "Evolution of the parameters, time in $\%$; dim : {}".format(i_dim), 'xlabel':'', 'ylabel':''})
+            aplot.show_legend()
 
 
     # if plot bool  then draw the path of the simulation.
@@ -264,9 +283,9 @@ class Hawkes_process:
 
             if T_max is not None:
                 # print part
-                if round(last_jump, -1) % 500 == 0 and round(last_jump, -1) != last_print:
-                    last_print = round(last_jump, -1)
-                    if not silent:
+                if not silent:
+                    if round(last_jump, -1) % 500 == 0 and round(last_jump, -1) != last_print:
+                        last_print = round(last_jump, -1)
                         print(f"Time {round(last_jump, -1)} out of total time : {T_max}.")
                 # IF YOU ARE TOO BIG IN TIME:
                 # I add the burn in
@@ -316,8 +335,8 @@ class Hawkes_process:
         for i in range( self.M ):
             NU[i] = self.NU[i](0, 1000, Hawkes_process.time_burn_in)
             for j in range( self.M ):
-                ALPHA[i][j] =self.ALPHA[i][j](0, 1000, Hawkes_process.time_burn_in)
-                BETA[i][j] =  self.BETA[i][j](0, 1000, Hawkes_process.time_burn_in)
+                ALPHA[i][j] = self.ALPHA[i][j](0, 1000, Hawkes_process.time_burn_in)
+                BETA[i][j]  = self.BETA[i][j](0, 1000, Hawkes_process.time_burn_in)
 
 
         # I need alpha and beta in order for me to plot them.

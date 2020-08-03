@@ -30,7 +30,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             Kernel(fct_top_hat, name="top-hat", a=-500, b=500),
             Kernel(fct_biweight, name="biweight", a=-500, b=500),
             Kernel(fct_epa, name="epanechnikov", a=-500, b=500)
-        ]
+                        ]
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
 
         total_nb_tries = len(Times) * len(list_of_kernels)

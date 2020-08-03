@@ -18,10 +18,10 @@ def choice_parameter(dim, styl):
     # styl choses which variant of the parameters.
     if dim == 1:
         if styl ==1:
-            ALPHA = [[1.5]]
+            ALPHA = [[1.9]]
             BETA = [[2]]
             MU = [0.2]
-            T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
+            T0, mini_T = 0, 70  # 50 jumps for my uni variate stuff
         elif styl == 2:
             ALPHA = [[2.]]
             BETA = [[2.4]]
@@ -91,24 +91,31 @@ def choice_parameter(dim, styl):
 # number of max jump
 nb_of_sim, M_PREC = 50000, 200000
 M_PREC += 1
+
 # section ######################################################################
 #  #############################################################################
 # simulation
+
 silent = True
 test_mode = False
+
 # section ######################################################################
 #  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = 1  , styl = 1)
+dim = 1
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 the_update_functions = update_functions(1, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
     nb_of_guesses, T = 3, 20 * mini_T
 else:
-    nb_of_guesses, T = 50, 100 * mini_T
+    nb_of_guesses, T = 50,  100 * mini_T
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
+
+
+
 HAWKSY = Hawkes_process(tt, the_update_functions)
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
@@ -156,7 +163,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
     def test_MSE(self):
         estimator_MSE = Estimator_Hawkes()
 
-        TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
+        TIMES = [10 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
                  50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 110 * mini_T, 120 * mini_T,
                  130 * mini_T, 140 * mini_T, 150 * mini_T]
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
@@ -175,8 +182,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_capabilities_test_optimization(self):
         estimator_MSE = Estimator_Hawkes()
-
-        T = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 40 * mini_T,
+        T = [10 * mini_T, 20 * mini_T, 30 * mini_T, 40 * mini_T,
              50 * mini_T, 60 * mini_T, 70 * mini_T, 80 * mini_T, 90 * mini_T, 100 * mini_T,
              120 * mini_T, 150 * mini_T, 180 * mini_T, 200 * mini_T, 240 * mini_T]
         T_plot = [T[i] // mini_T * 50 for i in range(len(T))]
