@@ -63,9 +63,10 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
     ## hp is a hawkes process
     ## the flag notes if the convergence was a success. If yes, function hands in the results
 
-    alpha_hat, beta_hat, mu_hat = simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+    alpha_hat, beta_hat, mu_hat = simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation)
 
     _, M = np.shape(alpha_hat)
+    T_max = tt[-1]
     for s in range(M):
         estimator.DF = (estimator.DF).append(pd.DataFrame(
             {"time estimation": [time_estimation],
@@ -75,8 +76,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
              "weight function": [kernel_weight.name],
              "value": [mu_hat[s]],
              'T_max': [T_max],
-             'time_burn_in': [hp.time_burn_in],
-             'true value': [hp.NU[s](time_estimation,T_max, hp.time_burn_in)],
+             'time_burn_in': [Hawkes_process.time_burn_in],
+             'true value': [hp.NU[s](time_estimation,T_max, Hawkes_process.time_burn_in)],
              'number of guesses': [nb_of_guesses]
              }), sort=True
         )
@@ -89,8 +90,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
                  "weight function": [kernel_weight.name],
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
-                 'time_burn_in': [hp.time_burn_in],
-                 'true value': [hp.ALPHA[s][t](time_estimation,T_max, hp.time_burn_in) ],
+                 'time_burn_in': [Hawkes_process.time_burn_in],
+                 'true value': [hp.ALPHA[s][t](time_estimation,T_max, Hawkes_process.time_burn_in) ],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -102,8 +103,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
                  "weight function": [kernel_weight.name],
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
-                 'time_burn_in': [hp.time_burn_in],
-                 'true value': [hp.BETA[s][t](time_estimation,T_max, hp.time_burn_in)],
+                 'time_burn_in': [Hawkes_process.time_burn_in],
+                 'true value': [hp.BETA[s][t](time_estimation,T_max, Hawkes_process.time_burn_in)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )

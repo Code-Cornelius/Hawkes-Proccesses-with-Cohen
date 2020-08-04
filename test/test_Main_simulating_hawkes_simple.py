@@ -18,10 +18,10 @@ def choice_parameter(dim, styl):
     # styl choses which variant of the parameters.
     if dim == 1:
         if styl ==1:
-            ALPHA = [[1.75]]
+            ALPHA = [[1.5]]
             BETA = [[2]]
             MU = [0.2]
-            T0, mini_T = 0, 35  # 50 jumps for my uni variate stuff
+            T0, mini_T = 0, 60  # 50 jumps for my uni variate stuff
         elif styl == 2:
             ALPHA = [[2.]]
             BETA = [[2.4]]
@@ -43,8 +43,8 @@ def choice_parameter(dim, styl):
         if styl ==1:
             ALPHA = [[2, 1],
                      [1, 2]]
-            BETA = [[5, 3],
-                    [3, 5]]
+            BETA = [[7, 4],
+                    [4, 7]]
             MU = [0.2, 0.2]
             T0, mini_T = 0, 70
         if styl == 2:
@@ -97,7 +97,7 @@ M_PREC += 1
 # simulation
 
 silent = True
-test_mode = True
+test_mode = False
 
 # section ######################################################################
 #  #############################################################################
@@ -106,7 +106,7 @@ dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
 the_update_functions = update_functions(0, PARAMETERS)
-print(the_update_functions)
+
 
 estimator_multi = Estimator_Hawkes()
 
@@ -120,7 +120,6 @@ tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
 
 HAWKSY = Hawkes_process(the_update_functions)
-plt.show()
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
 # for the first estimate in the adaptive streategy I store it there:

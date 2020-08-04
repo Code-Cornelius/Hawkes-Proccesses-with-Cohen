@@ -207,7 +207,6 @@ class Hawkes_process:
                 next_a_index = 0
             # min value.
             next_a_value = np.amin(aa)
-            print("next a ", next_a_value)
 
 
             # last jump is the time at which the current interesting jump happened.
