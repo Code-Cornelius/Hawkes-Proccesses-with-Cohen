@@ -72,11 +72,11 @@ def step_fun(tt, time_real):
 
 class Hawkes_process:
     # how to acces class fields?
-    time_burn_in = 0
+    time_burn_in = 100
     nb_points_burned = 6000
     points_burned = np.linspace(0, time_burn_in, nb_points_burned)
     #### problem with the tt, perhaps think about getting rid of it.
-    def __init__(self, tt, the_update_functions):
+    def __init__(self, the_update_functions):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
 
@@ -109,18 +109,18 @@ class Hawkes_process:
         my_colors = plt.cm.rainbow(np.linspace(0, 1, 2*self.M))
         for i_dim in range(self.M):
             xx_nu = [self.NU[i_dim](t, 1, 0) for t in tt]
-            aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param={"label": "nu", "color": "blue"})
+            aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param={"label": "nu", "color": "blue"}, tight = False)
             color = iter(my_colors)
             for j_dim in range(self.M):
                 c1 = next(color)
                 c2 = next(color)
                 xx_alpha = [self.ALPHA[i_dim][j_dim](t, 1, 0) for t in tt]
                 xx_beta = [self.BETA[i_dim][j_dim](t, 1, 0) for t in tt]
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha", "color": c1})
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta", "color": c2})
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha, {},{}.".format(i_dim, j_dim), "color": c1}, tight = False)
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta, {},{}.".format(i_dim, j_dim), "color": c2}, tight = False)
 
-                aplot.set_dict_fig(i_dim, {'title': "Evolution of the parameters, time in $\%$; dim : {}".format(i_dim), 'xlabel':'', 'ylabel':''})
-            aplot.show_legend()
+                aplot.set_dict_fig(i_dim, {'title': "Evolution of the parameters, time in $\%$ of total; dimension : {}".format(i_dim), 'xlabel':'', 'ylabel':''})
+            aplot.show_legend(i_dim)
 
 
     # if plot bool  then draw the path of the simulation.
@@ -188,7 +188,6 @@ class Hawkes_process:
                                                                   self.NU[m_dims],
                                                                   T_max = T_max,
                                                                   time_burn_in = Hawkes_process.time_burn_in )
-
                     # cases where the other processes can have an impact. If not big enough, it can't: ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
@@ -208,6 +207,7 @@ class Hawkes_process:
                 next_a_index = 0
             # min value.
             next_a_value = np.amin(aa)
+            print("next a ", next_a_value)
 
 
             # last jump is the time at which the current interesting jump happened.
@@ -336,10 +336,10 @@ class Hawkes_process:
 
         NU, ALPHA, BETA = multi_list_generator(self.M)
         for i in range( self.M ):
-            NU[i] = self.NU[i](0, 1000, Hawkes_process.time_burn_in)
+            NU[i] = self.NU[i](0, 1000,0)
             for j in range( self.M ):
-                ALPHA[i][j] = self.ALPHA[i][j](0, 1000, Hawkes_process.time_burn_in)
-                BETA[i][j]  = self.BETA[i][j](0, 1000, Hawkes_process.time_burn_in)
+                ALPHA[i][j] = self.ALPHA[i][j](0, 1000, 0)
+                BETA[i][j]  = self.BETA[i][j](0, 1000, 0)
 
 
         # I need alpha and beta in order for me to plot them.

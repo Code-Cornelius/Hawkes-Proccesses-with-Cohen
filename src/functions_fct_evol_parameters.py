@@ -1,6 +1,6 @@
 import math
 import numpy as np
-
+from functools import partial
 
 # all of those functions are simply function that returns one element.
 
@@ -47,81 +47,80 @@ def update_functions(case, PARAMETERS):
     MU,ALPHA,BETA = PARAMETERS
     M = len(MU)
     the_update_functions = functions_general_for_Hawkes.multi_list_generator(M)
+
     if case == 0:
         for i in range(M):
+            value = MU[i]
             the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: constant_parameter(time, MU[i], T_max=T_max, time_burn_in = time_burn_in)
+                partial(lambda time, T_max, time_burn_in, i: constant_parameter(time, value, T_max=T_max, time_burn_in = time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, ALPHA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i,j: constant_parameter(time, ALPHA[i, j], T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
-
+                    partial(lambda time, T_max, time_burn_in, i,j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
 
     if case == 1:
         for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: linear_growth(time, 3*MU[i], MU[i]/2, T_max, time_burn_in= time_burn_in)
+                partial(lambda time, T_max, time_burn_in, i: linear_growth(time, 3*MU[i], MU[i]/2, T_max, time_burn_in= time_burn_in), i = i)
 
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, ALPHA[i, j], T_max=T_max,
-                                                                         time_burn_in=time_burn_in)
-                    #lambda time, T_max, time_burn_in: linear_growth(time, BETA[i, j]*0.9 - ALPHA[i, j], ALPHA[i, j], T_max, time_burn_in= time_burn_in) # it goes up to BETA 90%
+                    partial(lambda time, T_max, time_burn_in, i, j: linear_growth(time, BETA[i, j]*0.9 - ALPHA[i, j], ALPHA[i, j], T_max, time_burn_in= time_burn_in), i = i, j = j) # it goes up to BETA 90%
 
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max, time_burn_in = time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
 
 
     elif case == 2:
         for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: one_jump(time, 0.7, MU[i]/3, 2*MU[i], T_max, time_burn_in= time_burn_in)
+                partial(lambda time, T_max, time_burn_in, i: one_jump(time, 0.7, MU[i]/3, 2*MU[i], T_max, time_burn_in= time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: one_jump(time, 0.4, ALPHA[i, j]/3, BETA[i, j]*0.7 - ALPHA[i, j]/3,
-                                                                               T_max , time_burn_in = time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i, j: one_jump(time, 0.4, ALPHA[i, j]/3, BETA[i, j]*0.7 - ALPHA[i, j]/3,
+                                                                               T_max , time_burn_in = time_burn_in), i = i, j = j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in), i = i, j = j)
 
     elif case == 3:
         for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: moutain_jump(time, when_jump=0.7, a=2, b=MU[i],
-                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in)
+                partial(lambda time, T_max, time_burn_in, i: moutain_jump(time, when_jump=0.7, a=2, b=MU[i],
+                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: moutain_jump(time, when_jump=0.5, a=BETA[i, j]*0.9 - ALPHA[i, j],
+                    partial(lambda time, T_max, time_burn_in, i, j: moutain_jump(time, when_jump=0.5, a=BETA[i, j]*0.9 - ALPHA[i, j],
                                                                                    b=ALPHA[i, j],
                                                                                    base_value=ALPHA[i, j] / 2,
-                                                                                   T_max=T_max, time_burn_in= time_burn_in)
+                                                                                   T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
                 #                                                                    b=BETA[i, j],
                 #                                                                    base_value=BETA[i, j] / 1.5,
                 #                                                                    T_max=T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j],
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j],
                                                                                                        T_max=T_max,
-                                                                                                       time_burn_in=time_burn_in)
+                                                                                                       time_burn_in=time_burn_in), i = i, j = j)
 
     elif case == 4:
         for i in range(M):
             the_update_functions[0][i] = \
-                lambda time, T_max, time_burn_in: periodic_stop(time, T_max, MU[i], 0.2, time_burn_in=time_burn_in)
+                partial(lambda time, T_max, time_burn_in, i: periodic_stop(time, T_max, MU[i], 0.2, time_burn_in=time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    lambda time, T_max, time_burn_in: periodic_stop(time, T_max, BETA[i, j]*0.9 - ALPHA[i, j]/2, ALPHA[i, j] / 2, time_burn_in=time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i, j: periodic_stop(time, T_max, BETA[i, j]*0.9 - ALPHA[i, j]/2, ALPHA[i, j] / 2, time_burn_in=time_burn_in), i = i, j = j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.periodic_stop(time, T_max, BETA[i, j], 2.5, time_burn_in=time_burn_in)
                 the_update_functions[2][i][j] = \
-                    lambda time, T_max, time_burn_in: constant_parameter(time, BETA[i, j],
-                                                                                                       T_max=T_max,
-                                                                                                       time_burn_in=time_burn_in)
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j],
+                                                                         T_max=T_max,
+                                                                         time_burn_in=time_burn_in), i = i, j = j)
     return the_update_functions
 
 

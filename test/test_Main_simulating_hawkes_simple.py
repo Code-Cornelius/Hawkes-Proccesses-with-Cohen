@@ -75,7 +75,7 @@ def choice_parameter(dim, styl):
 
     print("ALPHA : \n", ALPHA)
     print("BETA : \n", BETA)
-    print('MU : \n', MU)
+    print('NU : \n', MU)
     print("=" * 78)
     print("=" * 78)
     print("=" * 78)
@@ -97,18 +97,21 @@ M_PREC += 1
 # simulation
 
 silent = True
-test_mode = False
+test_mode = True
 
 # section ######################################################################
 #  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
+print(PARAMETERS)
 the_update_functions = update_functions(0, PARAMETERS)
+print(the_update_functions)
+
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T = 3, 100 * mini_T
+    nb_of_guesses, T = 3, 10 * mini_T
 else:
     nb_of_guesses, T = 50,  100 * mini_T
 # a good precision is 500*(T-T0)
@@ -117,6 +120,7 @@ tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
 
 HAWKSY = Hawkes_process(the_update_functions)
+plt.show()
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
 # for the first estimate in the adaptive streategy I store it there:
