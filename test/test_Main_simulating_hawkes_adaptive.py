@@ -21,7 +21,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         b = width_kernel / 2
         print("width of the kernels: {}.".format(width_kernel))
 
-        HAWKSY = Hawkes_process(tt, the_update_functions)
+        HAWKSY = Hawkes_process(the_update_functions)
 
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
@@ -43,7 +43,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print(''.join(["\n", "=" * 78]))
             print(
                 f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=kernel, time_estimation=a_time, silent=silent)
 
@@ -68,7 +68,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = 1 / 5
         b = width_kernel / 2
 
-        HAWKSY = Hawkes_process(tt, the_update_functions)
+        HAWKSY = Hawkes_process(the_update_functions)
 
         estimator_kernel = Estimator_Hawkes()
         #  put optimal kernel here
@@ -83,7 +83,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         def simulation():
             print(''.join(["\n", "=" * 78]))
             print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, T_max=T,
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=my_opt_kernel, time_estimation=a_time,
                                                             silent=silent)
@@ -137,7 +137,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         def simulation(a_time, kernel):
             print(''.join(["\n", "=" * 78]))
             print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, T_max=T,
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=kernel, time_estimation=a_time,
                                                             silent=silent)

@@ -116,7 +116,7 @@ tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
 
 
-HAWKSY = Hawkes_process(tt, the_update_functions)
+HAWKSY = Hawkes_process(the_update_functions)
 # for not keeping the data, I store it in the bin:
 trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
 # for the first estimate in the adaptive streategy I store it there:
@@ -133,11 +133,11 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         plt.show()
 
     def test_plot_hawkes(self):
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=True, silent=False)
-        HAWKSY.plot_hawkes(time_real, intensity, name="EXACT_HAWKES")
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt= tt, plot_bool=True, silent=False)
+        HAWKSY.plot_hawkes(tt, time_real, intensity, name="EXACT_HAWKES")
 
     def test_simple_unique(self):
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(T_max=T, plot_bool=False, silent=True)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt = tt, plot_bool=False, silent=True)
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=False))
 
     def test_from_csv(self):
@@ -154,7 +154,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
-        functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, T, nb_of_guesses, silent=silent)
+        functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
         GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, the_update_functions)
         GRAPH_multi.draw_histogram()
 
@@ -169,12 +169,13 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         count_times = 0
         for times in TIMES:
+            tt = np.linspace(T0, times, M_PREC, endpoint=True)
             count_times += 1
             print("=" * 78)
             print(
                 f"Time : {count_times} out of : {len(TIMES)}.")
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
-                                                            times, nb_of_guesses, silent=silent)
+                                                            tt, nb_of_guesses, silent=silent)
         GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
         estimator_MSE.DF.to_csv(trash_path, index=False,
                                 header=True)
@@ -189,9 +190,10 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         vect_time_simulation = np.zeros(len(T))
 
         for i, times in enumerate(T):
+            tt = np.linspace(T0, times, M_PREC, endpoint=True)
             print(f"times {times}")
             start = time.time()
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, T_max=times,
+            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             silent=silent)
             time_simulation = time.time() - start

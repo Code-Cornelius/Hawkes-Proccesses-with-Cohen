@@ -94,6 +94,7 @@ class Kernel:
 
             # I want to rescale the results for the kernels that are not covering seen part. For that reason,
             # I compute the integral of the kernel, and scale accordingly.
+            # todo the linspace shouldn't be 0 T_max but the point at which I start the simulation...
             tt_integral = [np.linspace(0, T_max, 10000)]
             yy = self.fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
                                  **{k: self.__dict__[k] for k in self.__dict__ if

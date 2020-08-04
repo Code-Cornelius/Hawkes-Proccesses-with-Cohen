@@ -12,16 +12,16 @@ from classes.class_hawkes_process import *
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
 # now there is an error raised.
-def simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation):
-
-    _, time_real = hp.simulation_Hawkes_exact_with_burn_in(T_max=T_max, plot_bool=False, silent=True) # don't store intensity, only used for plots.
+def simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation):
+    T_max = tt[-1]
+    _, time_real = hp.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False, silent=True) # don't store intensity, only used for plots.
     w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
     # print(time_real)
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
     except Error_convergence as err:
         warnings.warn(err.message)
-        return simulation_and_convergence(T_max, hp, kernel_weight, silent, time_estimation)
+        return simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation)
     # One shouldn't get an infinite loop here. It's probability.
     return alpha_hat, beta_hat, mu_hat
 
@@ -57,7 +57,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     return ALPHA, BETA, MU
 
 
-def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
+def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
                   silent=True):
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
@@ -112,7 +112,7 @@ def estimation_hp(hp, estimator, T_max, nb_of_guesses, kernel_weight= kernel_pla
 
 # we want to run the same simulations a few number of times and estimate the Hawkes processes' parameters every time.
 # the length of simulation is given by T
-def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
+def multi_estimations_at_one_time(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
                                   silent=False):
     for i in range(nb_of_guesses):
         if not silent:
@@ -121,7 +121,7 @@ def multi_estimations_at_one_time(hp, estimator, T_max, nb_of_guesses, kernel_we
         else:
             if i % 20 == 0:
                 print(f"estimation {i} out of {nb_of_guesses} estimations.")
-        estimation_hp(hp, estimator, T_max, kernel_weight=kernel_weight, time_estimation=time_estimation, silent=silent,
+        estimation_hp(hp, estimator, tt, kernel_weight=kernel_weight, time_estimation=time_estimation, silent=silent,
                       nb_of_guesses=nb_of_guesses)
 
     return # no need to return the estimator.
