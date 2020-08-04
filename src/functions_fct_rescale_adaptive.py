@@ -103,6 +103,7 @@ def rescaling_kernel_processing(times, first_estimate):
 
 
 def creator_list_kernels(my_scalings, previous_scaling):
+    # the kernel is taken as biweight.
     list_of_kernels = []
     for scale in my_scalings:
         new_scaling = previous_scaling / scale

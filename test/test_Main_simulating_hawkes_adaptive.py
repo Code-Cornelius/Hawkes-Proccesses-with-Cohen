@@ -25,11 +25,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-            Kernel(fct_truncnorm, name="large truncnorm", a=-500, b=500, sigma=300),
-            Kernel(fct_truncnorm, name="large, high truncnorm", a=-500, b=500, sigma=450),
-            Kernel(fct_top_hat, name="top-hat", a=-500, b=500),
-            Kernel(fct_biweight, name="biweight", a=-500, b=500),
-            Kernel(fct_epa, name="epanechnikov", a=-500, b=500)
+            Kernel(fct_truncnorm, name="large truncnorm", a= -b, b= b, sigma= b * 0.6),
+            Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
+            Kernel(fct_top_hat, name="top-hat", a=-b, b=b),
+            Kernel(fct_biweight, name="biweight", a=-b, b=b),
+            Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
                         ]
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
 
@@ -72,7 +72,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         estimator_kernel = Estimator_Hawkes()
         #  put optimal kernel here
-        my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-450, b=450)
+        my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-b, b=b)
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         actual_state = [0]  # initialization
 
@@ -126,6 +126,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             my_estimator.append(my_estimator_dict[a_time])
 
         my_scaling = functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, my_estimator)
+        # the kernel is taken as biweight.
         list_of_kernels = functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
