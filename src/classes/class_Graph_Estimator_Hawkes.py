@@ -87,11 +87,12 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return fig_dict
 
 
-    # todo is not using self.
-    def get_evolution_parameter(self, data):
+    @staticmethod
+    def get_evolution_parameter(data):
         return data[Graph_Estimator_Hawkes.evolution_name].unique()
 
-    def get_evolution_extremes(self, data):
+    @staticmethod
+    def get_evolution_extremes(data):
         values = data.groupby([Graph_Estimator_Hawkes.evolution_name])['value']
         return (values.min(), values.max())
 
