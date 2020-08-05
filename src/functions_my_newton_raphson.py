@@ -1,7 +1,7 @@
 import classical_functions
 import numpy as np
 
-from errors.error_convergence import Error_convergence
+from errors.Error_convergence import Error_convergence
 
 
 # e is the error.

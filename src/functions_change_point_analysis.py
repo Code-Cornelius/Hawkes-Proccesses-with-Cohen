@@ -26,7 +26,7 @@ def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_mu
 
 
     #################################### my code version
-    separators = ['variable', 'm', 'n']
+    separators = ['parameter', 'm', 'n']
 
     dict_serie = {}
     global_dict = estimator.DF.groupby(separators)

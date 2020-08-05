@@ -111,9 +111,9 @@ the_update_functions = update_functions(0, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T = 3, 10 * mini_T
+    nb_of_guesses, T = 3, 80 * mini_T
 else:
-    nb_of_guesses, T = 80,  120 * mini_T
+    nb_of_guesses, T = 80,  100 * mini_T
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
@@ -169,7 +169,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         TIMES = [10 * mini_T, 20 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
                  50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 120 * mini_T,
                  130 * mini_T, 140 * mini_T, 150 * mini_T, 160 * mini_T]
-        TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
+        # TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T]
         count_times = 0
         for times in TIMES:
             tt = np.linspace(T0, times, M_PREC, endpoint=True)

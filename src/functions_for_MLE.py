@@ -2,7 +2,7 @@
 import warnings
 
 ##### my libraries
-from errors.error_convergence import *
+from errors.Error_convergence import *
 
 ##### other files
 from functions_my_newton_raphson import newtons_method_multi_MLE
@@ -70,7 +70,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
     for s in range(M):
         estimator.DF = (estimator.DF).append(pd.DataFrame(
             {"time estimation": [time_estimation],
-             "variable": ["nu"],
+             "parameter": ["nu"],
              "n": [s],
              "m": [0],
              "weight function": [kernel_weight.name],
@@ -84,7 +84,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
         for t in range(M):
             estimator.DF = (estimator.DF).append(pd.DataFrame(
                 {"time estimation": [time_estimation],
-                 "variable": ["alpha"],
+                 "parameter": ["alpha"],
                  "n": [s],
                  "m": [t],
                  "weight function": [kernel_weight.name],
@@ -97,7 +97,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
             )
             estimator.DF = (estimator.DF).append(pd.DataFrame(
                 {"time estimation": [time_estimation],
-                 "variable": ["beta"],
+                 "parameter": ["beta"],
                  "n": [s],
                  "m": [t],
                  "weight function": [kernel_weight.name],

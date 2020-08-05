@@ -15,10 +15,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 25
-        # work-in-progress 25/07/2020 nie_k:  I will change the kernels for the fix width.
-        width_kernel = 1 / 5
-        b = width_kernel / 2
+        nb_of_times = 50
+        width_kernel = 1 / 5. * T
+        b = width_kernel / 2.
         print("width of the kernels: {}.".format(width_kernel))
 
         HAWKSY = Hawkes_process(the_update_functions)
@@ -26,7 +25,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
             Kernel(fct_truncnorm, name="large truncnorm", a= -b, b= b, sigma= b * 0.6),
-            Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
+            #Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
             Kernel(fct_top_hat, name="top-hat", a=-b, b=b),
             Kernel(fct_biweight, name="biweight", a=-b, b=b),
             Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
@@ -65,7 +64,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_one(self):
         nb_of_times = 50
-        width_kernel = 1 / 5
+        width_kernel = 1 / 5 * T
         b = width_kernel / 2
 
         HAWKSY = Hawkes_process(the_update_functions)
@@ -110,8 +109,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_two(self):
         nb_of_times = 50
-        width_kernel = T / 5.
-        b = width_kernel / 2
+        width_kernel = 1 / 5. * T
+        b = width_kernel / 2.
         b = 450
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, the_update_functions)

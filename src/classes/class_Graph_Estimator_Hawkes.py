@@ -2,19 +2,23 @@
 
 
 ##### my libraries
-
-##### other files
 from classes.class_Estimator_Hawkes import *
 from classes.class_kernel import *
+from errors import Error_forbidden
+
+##### other files
+
 
 
 # batch_estimation is one dataframe with the estimators.
 class Graph_Estimator_Hawkes(Graph_Estimator):
+    evolution_name = 'time estimation'
+
     def __init__(self, estimator, fct_parameters):
 
         #TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        Graph_Estimator.__init__(self, estimator, ['variable', 'm', 'n'])
+        Graph_Estimator.__init__(self, estimator, ['parameter', 'm', 'n'])
 
         # parameters is a list of lists of lists of functions
         self.ALPHA = fct_parameters[1]
@@ -52,7 +56,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_plot_param_for_hist(self, key, mean):
         range = self.get_optimal_range_histogram(key, mean)
-        dict_param = {'bins': 35,
+        dict_param = {'bins': 60,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': range,
@@ -61,25 +65,29 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return dict_param
 
     def get_dict_fig_hist(self, separators, key):
-        title = self.generate_title(separators, key)
-        fig_dict = {'title': "Histogram" + title,
-                    'xlabel': 'value',
+        title = self.generate_title(names = separators, values = key, before_text = "Histogram for the estimator of a Hawkes Process;",
+                                    extra_text="Time of simulation {}", extra_arguments=[self.T_max])
+        fig_dict = {'title': title,
+                    'xlabel': "Estimation",
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
+
 
     ################################ hist
 
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
-        title = self.generate_title(separators, key, "",
-                                    "Only 5-95% of the interval is shown, batches of {} simulations, time: 0 until {}.",
-                                    [self.nb_of_guesses, self.T_max])
-        fig_dict = {'title': "Evolution of the estimation" + title,
+        title = self.generate_title(names = separators,
+                                    values = key,
+                                    before_text = "",
+                                    extra_text = "Only 5-95% of the interval is shown, batches of {} simulations, time: 0 until {}",
+                                    extra_arguments = [self.nb_of_guesses, self.T_max])
+        fig_dict = {'title': "Evolution of the estimation, " + title,
                     'xlabel': 'Time',
-                    'ylabel': 'Value'}
+                    'ylabel': "Estimation"}
         return fig_dict
 
-    evolution_name = 'time estimation'
 
+    # todo is not using self.
     def get_evolution_parameter(self, data):
         return data[Graph_Estimator_Hawkes.evolution_name].unique()
 
@@ -106,14 +114,19 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     def get_evolution_plot_data(self, data):
         return self.get_evolution_specific_data(data, 'value')
 
-    def get_computation_plot_fig_dict(self):
-        fig_dict = {
-            'title': f"Convergence in compute_MSE of the estimators, batches of {self.nb_of_guesses} realisations.",
-            'labels': ["Nb of Events", "compute_MSE of the Estimator"],
-            'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1,1), self.NU[0](0, 1,1)],
-            'name_parameters': ["ALPHA", "BETA", "NU"]
-        }
-        return fig_dict
+    def get_computation_plot_fig_dict(self, convergence_in):
+        # todo the fig_dict could be more general to adapt to some situations, for now I simply put an if statement.
+        if convergence_in == "MSE":
+            fig_dict = {
+                'title': f"Convergence in MSE sense of the estimators, batches of {self.nb_of_guesses} realisations.",
+                'labels': ["Nb of Events", "compute_MSE of the Estimator"],
+                'xlabel': Graph_Estimator_Hawkes.evolution_name,
+                'ylabel':"MSE",
+                'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1,1), self.NU[0](0, 1,1)],
+                'name_parameters': ["ALPHA", "BETA", "NU"]
+            }
+            return fig_dict
+        else : raise Error_forbidden
 
     def rescale_time_plot(self, rescale_factor, times):
         # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.

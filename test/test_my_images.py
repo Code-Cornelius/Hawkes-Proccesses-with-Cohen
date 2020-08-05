@@ -20,7 +20,7 @@ import financial_functions
 import functions_networkx
 import plot_functions
 import recurrent_functions
-import errors.error_convergence
+import errors.Error_convergence
 import classes.class_estimator
 import classes.class_graph_estimator
 

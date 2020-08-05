@@ -20,7 +20,7 @@ class Estimator_Hawkes(Estimator):
                 raise ("Probleme, the columns of the dataframe do not match the estimator hawkes.")
         # if no df:
         else:
-            super().__init__(pd.DataFrame(columns=['variable', 'n', 'm',
+            super().__init__(pd.DataFrame(columns=['parameter', 'n', 'm',
                                                    'time estimation', 'weight function',
                                                    'value', 'T_max', 'time_burn_in', 'true value', 'number of guesses']))
 
@@ -35,7 +35,7 @@ class Estimator_Hawkes(Estimator):
         # the output format is list of lists with on each line [ans_N, ans_A, ans_B],
         # and on every single additional dimension, the separator.
         ## separators is a list, of the estimators to gather together.
-        separators = ['variable', 'm', 'n']
+        separators = ['parameter', 'm', 'n']
         M = self.DF["m"].max() + 1
         ans_dict = {}
 
@@ -66,7 +66,7 @@ class Estimator_Hawkes(Estimator):
 #
 #  estimators = estimators.append(pd.DataFrame(
 #                             {"time estimation": T[i],
-#                              "variable": "alpha",
+#                              "parameter": "alpha",
 #                              "n": s,
 #                              "m": t,
 #                              "weight function": str(function_weight[i_weights].name),
@@ -76,7 +76,7 @@ class Estimator_Hawkes(Estimator):
 #
 # estimators = estimators.append(pd.DataFrame(
 #     {"time estimation": T[i],
-#      "variable": "nu",
+#      "parameter": "nu",
 #      "n": s,
 #      "m": 0,
 #      "weight function": str(function_weight[i_weights].name),

@@ -109,15 +109,15 @@ class Hawkes_process:
         my_colors = plt.cm.rainbow(np.linspace(0, 1, 2*self.M))
         for i_dim in range(self.M):
             xx_nu = [self.NU[i_dim](t, 1, 0) for t in tt]
-            aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param={"label": "nu", "color": "blue"}, tight = False)
+            aplot.uni_plot(nb_ax=i_dim, yy=xx_nu, xx=tt, dict_plot_param={"label": f"nu, {i_dim}", "color": "blue"}, tight = False)
             color = iter(my_colors)
             for j_dim in range(self.M):
                 c1 = next(color)
                 c2 = next(color)
                 xx_alpha = [self.ALPHA[i_dim][j_dim](t, 1, 0) for t in tt]
                 xx_beta = [self.BETA[i_dim][j_dim](t, 1, 0) for t in tt]
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": "alpha, {},{}.".format(i_dim, j_dim), "color": c1}, tight = False)
-                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": "beta, {},{}.".format(i_dim, j_dim), "color": c2}, tight = False)
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_alpha, xx=tt, dict_plot_param = {"label": f"alpha, {i_dim},{j_dim}.", "color": c1}, tight = False)
+                aplot.uni_plot(nb_ax=i_dim, yy=xx_beta, xx=tt, dict_plot_param = {"label": f"beta, {i_dim},{j_dim}.", "color": c2}, tight = False)
 
                 aplot.set_dict_fig(i_dim, {'title': "Evolution of the parameters, time in $\%$ of total; dimension : {}".format(i_dim), 'xlabel':'', 'ylabel':''})
             aplot.show_legend(i_dim)
