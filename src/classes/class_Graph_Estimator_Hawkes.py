@@ -120,8 +120,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         if convergence_in == "MSE":
             fig_dict = {
                 'title': f"Convergence in MSE sense of the estimators, batches of {self.nb_of_guesses} realisations.",
-                'labels': ["Nb of Events", "compute_MSE of the Estimator"],
-                'xlabel': Graph_Estimator_Hawkes.evolution_name,
+                'xlabel': "Nb of Events",
                 'ylabel':"MSE",
                 'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1,1), self.NU[0](0, 1,1)],
                 'name_parameters': ["ALPHA", "BETA", "NU"]
@@ -143,10 +142,11 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         '''
         return sum / self.nb_of_guesses
 
-    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, plot_param=None):
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
+        I draw the kernels iff I give plot_param.
 
         Args:
             separators:
@@ -156,8 +156,8 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
         '''
         super().draw_evolution_parameter_over_time(separators, separator_colour)
-        if plot_param is not None:
-            list_of_kernels, Times = plot_param
+        if kernel_plot_param is not None:
+            list_of_kernels, Times = kernel_plot_param
 
             list_of_plots = APlot.print_register()
             # on each plot

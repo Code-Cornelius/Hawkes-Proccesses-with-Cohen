@@ -15,12 +15,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 50
+        nb_of_times = 25
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
         print("width of the kernels: {}.".format(width_kernel))
-
-        HAWKSY = Hawkes_process(the_update_functions)
 
         estimator_kernel = Estimator_Hawkes()
         list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
@@ -105,7 +103,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         for i in range(len(Times)):
             list_of_kernels.append(my_opt_kernel)
         plot_param = list_of_kernels, Times
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param=plot_param)
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
+                                                         kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
         nb_of_times = 50
@@ -154,7 +153,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
         plot_param = list_of_kernels, Times
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function', plot_param=plot_param)
+        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
+                                                         kernel_plot_param=plot_param)
         estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
 
     def test_change_point_analysis(self):
