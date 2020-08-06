@@ -136,22 +136,25 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         '''
         rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
 
-        :param sum:
-        :param times:
-        :return:
+        Args:
+            sum:
+            times:
+
+        Returns:
+
         '''
         return sum / self.nb_of_guesses
 
-    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None):
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None, one_kernel_plot_param = None):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
-        I draw the kernels iff I give plot_param.
+        I draw the kernels iff I give kernel_plot_param.
 
         Args:
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
-
+            kernel_plot_param:     list_of_kernels, Times = kernel_plot_param
         Returns:
 
         '''
@@ -159,20 +162,44 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         if kernel_plot_param is not None:
             list_of_kernels, Times = kernel_plot_param
 
-            list_of_plots = APlot.print_register()
+            # here is all the plots I draw. I start at 1 bc I always plot the parameters as a first drawing.
+            list_of_plots = APlot.print_register()[1:]
             # on each plot
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % 6: # I don't want to plot all the kernels, so only one upon 3 are drawn.
-                        tt = [np.linspace(0, self.T_max, 10000)]
+                    if not number % (len(Times)//3): # I don't want to plot all the kernels, so only one upon 3 are drawn.
+                        tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
                                               dict_plot_param={"color": "m", "markersize": 0, "linewidth": 0.4,
-                                                               "linestyle": "--"})
+                                                               "linestyle": "--"}, tight = False)
                         lim_ = plots.axs[0].get_ylim()
                         plots.plot_vertical_line(a_time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
                                                  dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
-                                                                  "linestyle": "--"})
+                                                                  "linestyle": "--"}, tight = False)
+                name_file = 'double_estimation_result_{}'.format(counter)
+                plots.save_plot(name_save_file=name_file)
+
+        elif one_kernel_plot_param is not None:
+            list_of_kernels, Time = one_kernel_plot_param
+
+            # here is all the plots I draw. I start at 1 bc I always plot the parameters as a first drawing.
+            list_of_plots = APlot.print_register()[1:]
+            # on each plot
+            for counter, plots in enumerate(list_of_plots):
+                # for each eval point
+
+                colors = plt.cm.Dark2.colors  # Dark2 is qualitative cm and pretty dark cool colors.
+                for number, (kernel,color) in enumerate(zip(list_of_kernels, colors)):
+                        tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
+                        yy = kernel.eval(tt, Time, self.T_max)
+                        plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
+                                              dict_plot_param={"color": color, "markersize": 0, "linewidth": 0.7,
+                                                               "linestyle": "--"}, tight = False)
+                # lim_ = plots.axs[0].get_ylim()
+                # plots.plot_vertical_line(Time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
+                #                         dict_plot_param={"color": "k", "markersize": 0, "linewidth": 1,
+                #                         "linestyle": "--"})
                 name_file = 'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)

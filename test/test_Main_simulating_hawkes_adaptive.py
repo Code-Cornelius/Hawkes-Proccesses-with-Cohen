@@ -15,7 +15,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         plt.show()
 
     def test_over_the_time_simple(self):
-        nb_of_times = 25
+        to_be_simulated = True
+        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\5-kernels-over_the_time.csv'
+
+        nb_of_times = 50
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
         print("width of the kernels: {}.".format(width_kernel))
@@ -28,37 +31,50 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             Kernel(fct_biweight, name="biweight", a=-b, b=b),
             Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
                         ]
+        list_of_kernels = [  Kernel(fct_biweight, name="biweight small", a=-b/2, b=b/2),
+                             Kernel(fct_biweight, name="biweight medium", a=-b, b=b),
+                             Kernel(fct_biweight, name="biweight large", a=-b*1.5, b=b*1.5),
+                        ]
+
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
 
         total_nb_tries = len(Times) * len(list_of_kernels)
         actual_state = [0]  # initialization
 
-        @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
-                                                    multiplicator_factor=0.9,
-                                                    actual_state=actual_state)
-        def simulation():
-            print(''.join(["\n", "=" * 78]))
-            print(
-                f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
-                                                            nb_of_guesses=nb_of_guesses,
-                                                            kernel_weight=kernel, time_estimation=a_time, silent=silent)
+        if to_be_simulated:
+            @decorators_functions.prediction_total_time(total_nb_tries=total_nb_tries,
+                                                        multiplicator_factor=0.9,
+                                                        actual_state=actual_state)
+            def simulation():
+                print(''.join(["\n", "=" * 78]))
+                print(
+                    f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
+                functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
+                                                                nb_of_guesses=nb_of_guesses,
+                                                                kernel_weight=kernel, time_estimation=a_time, silent=silent)
 
-        count_times = 0
-        for a_time in Times:
-            count_kernels = 0
-            count_times += 1
-            print(HAWKSY(a_time, T))
-            for kernel in list_of_kernels:
-                count_kernels += 1
-                actual_state[0] += 1
-                simulation()
+            count_times = 0
+            for a_time in Times:
+                count_kernels = 0
+                count_times += 1
+                print(HAWKSY(a_time, T))
+                for kernel in list_of_kernels:
+                    count_kernels += 1
+                    actual_state[0] += 1
+                    simulation()
+            GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
+            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
+            estimator_kernel.DF.to_csv(trash_path,
+                                       index=False,
+                                       header=True)
+        else :
+            plot_param = list_of_kernels, Times[nb_of_times//2]
 
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function')
-        estimator_kernel.DF.to_csv(trash_path,
-                                   index=False,
-                                   header=True)
+            GRAPH_kernels = Graph_Estimator_Hawkes.from_path(path, the_update_functions)
+            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
+                                                             one_kernel_plot_param= plot_param)
+
+
 
     def test_over_the_time_adaptive_one(self):
         nb_of_times = 50
