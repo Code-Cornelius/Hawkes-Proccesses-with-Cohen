@@ -18,23 +18,31 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         to_be_simulated = True
         path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\5-kernels-over_the_time.csv'
 
-        nb_of_times = 50
+        if test_mode:
+            nb_of_times = 5
+        else :
+            nb_of_times = 50
+
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
         print("width of the kernels: {}.".format(width_kernel))
 
         estimator_kernel = Estimator_Hawkes()
-        list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-            Kernel(fct_truncnorm, name="large truncnorm", a= -b, b= b, sigma= b * 0.6),
-            #Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
-            Kernel(fct_top_hat, name="top-hat", a=-b, b=b),
-            Kernel(fct_biweight, name="biweight", a=-b, b=b),
-            Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
-                        ]
-        list_of_kernels = [  Kernel(fct_biweight, name="biweight small", a=-b/2, b=b/2),
-                             Kernel(fct_biweight, name="biweight medium", a=-b, b=b),
-                             Kernel(fct_biweight, name="biweight large", a=-b*1.5, b=b*1.5),
-                        ]
+
+        if test_mode :
+            list_of_kernels = [Kernel(fct_truncnorm, name="large truncnorm", a=-b, b=b, sigma=b * 0.6)]
+        else :
+            list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
+                Kernel(fct_truncnorm, name="large truncnorm", a= -b, b= b, sigma= b * 0.6),
+                #Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
+                Kernel(fct_top_hat, name="top-hat", a=-b, b=b),
+                Kernel(fct_biweight, name="biweight", a=-b, b=b),
+                Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
+                            ]
+            list_of_kernels = [  Kernel(fct_biweight, name="biweight small", a=-b/2, b=b/2),
+                                 Kernel(fct_biweight, name="biweight medium", a=-b, b=b),
+                                 Kernel(fct_biweight, name="biweight large", a=-b*1.5, b=b*1.5),
+                            ]
 
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
 
@@ -77,7 +85,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_one(self):
-        nb_of_times = 50
+        if test_mode:
+            nb_of_times = 3
+        else:
+            nb_of_times = 50
+
         width_kernel = 1 / 5 * T
         b = width_kernel / 2
 
@@ -123,7 +135,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                                          kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
-        nb_of_times = 50
+        if test_mode:
+            nb_of_times = 3
+        else:
+            nb_of_times = 50
+
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
         b = 450
