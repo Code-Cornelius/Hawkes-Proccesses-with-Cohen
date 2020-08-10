@@ -21,7 +21,7 @@ def choice_parameter(dim, styl):
             ALPHA = [[1.2]]
             BETA = [[2]]
             MU = [0.2]
-            T0, mini_T = 0, 60  # 50 jumps for my uni variate stuff
+            T0, mini_T = 0, 120  # 50 jumps for my uni variate stuff
         elif styl == 2:
             ALPHA = [[2.]]
             BETA = [[2.4]]
@@ -113,7 +113,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T = 3, 50 * mini_T
 else:
-    nb_of_guesses, T = 50,  120 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T = 50,  60 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 

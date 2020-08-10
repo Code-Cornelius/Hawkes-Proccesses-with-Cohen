@@ -48,6 +48,7 @@ def update_functions(case, PARAMETERS):
     M = len(MU)
     the_update_functions = functions_general_for_Hawkes.multi_list_generator(M)
 
+    # for 7500 jumps, do 210 with first sets of param dim 1
     if case == 0:
         for i in range(M):
             value = MU[i]
@@ -59,6 +60,7 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i,j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
 
+    # for 7500 jumps, do 60 with first sets of param dim 1
     if case == 1:
         for i in range(M):
             the_update_functions[0][i] = \
@@ -73,7 +75,7 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
 
-
+    # for 7500 jumps, do 100 with first sets of param dim 1
     elif case == 2:
         for i in range(M):
             the_update_functions[0][i] = \
@@ -87,14 +89,15 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in = time_burn_in), i = i, j = j)
 
+    # for 7500 jumps, do 100 with first sets of param dim 1
     elif case == 3:
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, i: moutain_jump(time, when_jump=0.7, a=2, b=MU[i],
-                                                                               base_value=MU[i] * 1.5, T_max=T_max, time_burn_in= time_burn_in), i = i)
+                partial(lambda time, T_max, time_burn_in, i: moutain_jump(time, when_jump=0.7, a=MU[i], b=MU[i],
+                                                                               base_value=MU[i] * 1., T_max=T_max, time_burn_in= time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, i, j: moutain_jump(time, when_jump=0.5, a=BETA[i, j]*0.7 - ALPHA[i, j],
+                    partial(lambda time, T_max, time_burn_in, i, j: moutain_jump(time, when_jump=0.5, a= 2* (BETA[i, j]*0.8 - ALPHA[i, j]),
                                                                                    b=ALPHA[i, j],
                                                                                    base_value=ALPHA[i, j] / 2,
                                                                                    T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
@@ -107,7 +110,7 @@ def update_functions(case, PARAMETERS):
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j],
                                                                                                        T_max=T_max,
                                                                                                        time_burn_in=time_burn_in), i = i, j = j)
-
+    # for 7500 jumps, do 60 with first sets of param dim 1
     elif case == 4:
         for i in range(M):
             the_update_functions[0][i] = \

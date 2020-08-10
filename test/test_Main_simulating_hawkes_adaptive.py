@@ -16,7 +16,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_simple(self):
         to_be_simulated = True
-        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\5-kernels-over_the_time.csv'
+        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\3-kernels-over_the_time.csv'
 
         if test_mode:
             nb_of_times = 5

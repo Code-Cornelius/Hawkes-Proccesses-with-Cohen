@@ -286,7 +286,7 @@ class Hawkes_process:
             if T_max is not None:
                 # print part
                 if not silent:
-                    if round(last_jump, -1) % 500 == 0 and round(last_jump, -1) != last_print:
+                    if round(last_jump, -1) % 800 == 0 and round(last_jump, -1) != last_print:
                         last_print = round(last_jump, -1)
                         print(f"Time {round(last_jump, -1)} out of total time : {T_max}.")
                 # IF YOU ARE TOO BIG IN TIME:
