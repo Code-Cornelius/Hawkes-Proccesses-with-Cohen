@@ -177,7 +177,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                         lim_ = plots.axs[0].get_ylim()
                         plots.plot_vertical_line(a_time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
                                                  dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
-                                                                  "linestyle": "--"}, tight = False)
+                                                                  "linestyle": "--"})
                 name_file = 'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)
 

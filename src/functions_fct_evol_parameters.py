@@ -79,10 +79,10 @@ def update_functions(case, PARAMETERS):
     elif case == 2:
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, i: one_jump(time, 0.7, MU[i]/3, 2*MU[i], T_max, time_burn_in= time_burn_in), i = i)
+                partial(lambda time, T_max, time_burn_in, i: one_jump(time, 0.7, MU[i], 1.7*MU[i], T_max, time_burn_in= time_burn_in), i = i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, i, j: one_jump(time, 0.4, ALPHA[i, j]/3, BETA[i, j]*0.7 - ALPHA[i, j]/3,
+                    partial(lambda time, T_max, time_burn_in, i, j: one_jump(time, 0.4, BETA[i, j]*0.7,  -0.5,
                                                                                T_max , time_burn_in = time_burn_in), i = i, j = j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
@@ -99,7 +99,7 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: moutain_jump(time, when_jump=0.5, a= 2* (BETA[i, j]*0.8 - ALPHA[i, j]),
                                                                                    b=ALPHA[i, j],
-                                                                                   base_value=ALPHA[i, j] / 2,
+                                                                                   base_value=ALPHA[i, j] /1.2,
                                                                                    T_max=T_max, time_burn_in= time_burn_in), i = i, j = j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.moutain_jump(time, when_jump=0.7, a=1.8,
