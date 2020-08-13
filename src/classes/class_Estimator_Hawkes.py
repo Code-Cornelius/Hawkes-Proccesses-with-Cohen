@@ -4,7 +4,7 @@
 ##### my libraries
 
 ##### other files
-from classes.class_kernel import *
+from src.classes.class_kernel import *
 
 
 class Estimator_Hawkes(Estimator):

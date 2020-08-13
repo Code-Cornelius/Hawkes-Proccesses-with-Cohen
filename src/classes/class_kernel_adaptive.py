@@ -24,7 +24,7 @@ import classes.class_graph_estimator
 
 np.random.seed(124)
 # other files
-from classes.class_kernel import *
+from src.classes.class_kernel import *
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

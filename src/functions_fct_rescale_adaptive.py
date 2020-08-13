@@ -23,7 +23,7 @@ import recurrent_functions
 import errors.Error_convergence
 import classes.class_estimator
 import classes.class_graph_estimator
-from classes.class_kernel import *
+from src.classes.class_kernel import *
 
 np.random.seed(124)
 

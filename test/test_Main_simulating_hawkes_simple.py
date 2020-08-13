@@ -4,11 +4,13 @@ import unittest
 ##### my libraries
 
 ##### other files
-from classes.class_Graph_Estimator_Hawkes import *
-from classes.class_hawkes_process import *
-from classes.class_kernel_adaptive import *
-import functions_for_MLE
-from functions_fct_evol_parameters import update_functions
+import numpy
+
+from src.classes.class_Graph_Estimator_Hawkes import *
+from src.classes.class_hawkes_process import *
+from src.classes.class_kernel_adaptive import *
+import src.functions_for_MLE
+from src.functions_fct_evol_parameters import update_functions
 
 np.random.seed(124)
 
@@ -99,6 +101,7 @@ M_PREC += 1
 silent = True
 test_mode = False
 
+
 # section ######################################################################
 #  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
@@ -113,18 +116,19 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T = 3, 50 * mini_T
 else:
-    nb_of_guesses, T = 50,  60 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T = 50, 100 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
 
 
 HAWKSY = Hawkes_process(the_update_functions)
+plt.show()
 # for not keeping the data, I store it in the bin:
-trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
+trash_path = '~/Desktop/N/out/estimators.csv'
 # for the first estimate in the adaptive streategy I store it there:
-first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_first.csv'
-second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_second.csv'
+first_estimation_path = '~/Desktop/N/out/estimators_first.csv'
+second_estimation_path = '~/Desktop/N/out/estimators_second.csv'
 
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
@@ -142,7 +146,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
     def test_simple_unique(self):
         _, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt = tt, plot_bool=False, silent=True)
         print(len(time_real[0]))
-        print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=False))
+        print(src.functions_for_MLE.call_newton_raph_MLE_opt(time_real, T, silent=False))
 
     def test_from_csv(self):
         graph_test = Graph_Estimator_Hawkes.from_path(
@@ -158,7 +162,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
-        functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
+        src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
         GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, the_update_functions)
         GRAPH_multi.draw_histogram()
 
@@ -178,7 +182,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             print("=" * 78)
             print(
                 f"Time : {count_times} out of : {len(TIMES)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
+            src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                             tt, nb_of_guesses, silent=silent)
         GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
         estimator_MSE.DF.to_csv(trash_path, index=False,
@@ -197,7 +201,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             tt = np.linspace(T0, times, M_PREC, endpoint=True)
             print(f"times {times}")
             start = time.time()
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, tt=tt,
+            src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             silent=silent)
             time_simulation = time.time() - start

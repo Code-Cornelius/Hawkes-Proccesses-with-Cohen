@@ -5,9 +5,9 @@ import warnings
 from errors.Error_convergence import *
 
 ##### other files
-from functions_my_newton_raphson import newtons_method_multi_MLE
-from functions_derivatives_MLE import *
-from classes.class_hawkes_process import *
+from src.functions_my_newton_raphson import newtons_method_multi_MLE
+from src.functions_derivatives_MLE import *
+from src.classes.class_hawkes_process import *
 
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.

@@ -4,8 +4,8 @@
 from classes.class_graph_estimator import *
 
 ##### other files
-from classes.class_kernel import *
-from functions_general_for_Hawkes import multi_list_generator
+from src.classes.class_kernel import *
+from src.functions_general_for_Hawkes import multi_list_generator
 
 np.random.seed(124)
 

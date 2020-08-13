@@ -5,7 +5,7 @@ import bisect
 from decorators_functions import Memoization
 
 ##### other files
-from classes.class_kernel import *
+from src.classes.class_kernel import *
 
 
 @Memoization(key_names=['m', 'k'])

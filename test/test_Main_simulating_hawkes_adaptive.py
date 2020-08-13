@@ -2,7 +2,7 @@
 import unittest
 import time
 
-import functions_fct_rescale_adaptive
+import src.functions_fct_rescale_adaptive
 from test.test_Main_simulating_hawkes_simple import *
 
 
@@ -57,7 +57,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                 print(''.join(["\n", "=" * 78]))
                 print(
                     f"Time : {count_times} out of : {len(Times)}. Kernel : {count_kernels} out of : {len(list_of_kernels)}.")
-                functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
+                src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
                                                                 nb_of_guesses=nb_of_guesses,
                                                                 kernel_weight=kernel, time_estimation=a_time, silent=silent)
 
@@ -93,11 +93,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = 1 / 5 * T
         b = width_kernel / 2
 
-        HAWKSY = Hawkes_process(the_update_functions)
-
         estimator_kernel = Estimator_Hawkes()
         #  put optimal kernel here
-        my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-b, b=b)
+        my_opt_kernel = Kernel(fct_biweight, name="Biweight {} width".format(width_kernel), a=-b, b=b)
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         actual_state = [0]  # initialization
 
@@ -108,7 +106,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         def simulation():
             print(''.join(["\n", "=" * 78]))
             print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
+            src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=my_opt_kernel, time_estimation=a_time,
                                                             silent=silent)
@@ -142,7 +140,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
-        b = 450
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, the_update_functions)
 
@@ -155,9 +152,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             # check that the times are agreeing with the one from the csv file.
             my_estimator.append(my_estimator_dict[a_time])
 
-        my_scaling = functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, my_estimator)
+        my_scaling = src.functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, my_estimator)
         # the kernel is taken as biweight.
-        list_of_kernels = functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
+        list_of_kernels = src.functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
         actual_state = [0]  # initialization
@@ -168,7 +165,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         def simulation(a_time, kernel):
             print(''.join(["\n", "=" * 78]))
             print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, tt=tt,
+            src.functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, tt=tt,
                                                             nb_of_guesses=nb_of_guesses,
                                                             kernel_weight=kernel, time_estimation=a_time,
                                                             silent=silent)
@@ -190,6 +187,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
 
     def test_change_point_analysis(self):
-        functions_change_point_analysis.change_point_plot(
+        src.functions_change_point_analysis.change_point_plot(
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
             width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
