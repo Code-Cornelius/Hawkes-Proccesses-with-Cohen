@@ -125,25 +125,3 @@ def update_functions(case, PARAMETERS):
                                                                          T_max=T_max,
                                                                          time_burn_in=time_burn_in), i = i, j = j)
     return the_update_functions
-
-
-
-
-# import numpy as np
-# from plot_functions import *
-#
-# list_1 = [constant_parameter, linear_growth, one_jump, moutain_jump, periodic_stop]
-# list_2 = [ {'constant' : 5}, {'a': 2,'b':4}, {'when_jump': 0.4, 'original_value':2, 'new_value':3},
-#                                           {'when_jump':0.7, 'a':2, 'b':1.5, 'base_value':0.5},
-#                                           {'base_value': 3,'a':1}]
-#
-# T_max = 1000
-# xx = np.linspace(0,T_max,100000)
-# for fct,param in zip(list_1, list_2):
-#     fct = np.vectorize(fct)
-#     yy = fct(xx, T_max = T_max, time_burn_in = 0, **param)
-#     aplot = APlot(how = (1,1))
-#     aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy, dict_plot_param = {"color" : "blue", "markersize": 0, "linewidth" : 2})
-#     aplot.set_dict_fig(0, {'title': '', 'xlabel':'', 'ylabel':''})
-#
-# plt.show()

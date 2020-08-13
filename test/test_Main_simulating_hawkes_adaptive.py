@@ -79,12 +79,16 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             plot_param = list_of_kernels, Times[nb_of_times//2]
 
             GRAPH_kernels = Graph_Estimator_Hawkes.from_path(path, the_update_functions)
+            # the parameter I am giving says to plot only one kernel on the graph.
             GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
                                                              one_kernel_plot_param= plot_param)
 
 
 
     def test_over_the_time_adaptive_one(self):
+        to_be_simulated = True
+        path = first_estimation_path
+
         if test_mode:
             nb_of_times = 3
         else:
@@ -93,46 +97,55 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = 1 / 5 * T
         b = width_kernel / 2
 
-        HAWKSY = Hawkes_process(the_update_functions)
-
         estimator_kernel = Estimator_Hawkes()
         #  put optimal kernel here
-        my_opt_kernel = Kernel(fct_biweight, name="Biweight", a=-b, b=b)
+        my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         actual_state = [0]  # initialization
 
+        if to_be_simulated:
+            @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
+                                                        multiplicator_factor=0.9,
+                                                        actual_state=actual_state)
+            def simulation():
+                print(''.join(["\n", "=" * 78]))
+                print(f"Time : {count_times} out of : {len(Times)}.")
+                functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
+                                                                nb_of_guesses=nb_of_guesses,
+                                                                kernel_weight=my_opt_kernel, time_estimation=a_time,
+                                                                silent=silent)
 
-        @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
-                                                    multiplicator_factor=0.9,
-                                                    actual_state=actual_state)
-        def simulation():
-            print(''.join(["\n", "=" * 78]))
-            print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_kernel, tt=tt,
-                                                            nb_of_guesses=nb_of_guesses,
-                                                            kernel_weight=my_opt_kernel, time_estimation=a_time,
-                                                            silent=silent)
 
+            ############################## first step
+            count_times = 0
+            for a_time in Times:
+                print(HAWKSY(a_time, T))
+                count_times += 1
+                actual_state[0] += 1
+                simulation()
 
-        ############################## first step
-        count_times = 0
-        for a_time in Times:
-            print(HAWKSY(a_time, T))
-            count_times += 1
-            actual_state[0] += 1
-            simulation()
+            estimator_kernel.to_csv(first_estimation_path,
+                                    index=False,
+                                    header=True)
 
-        estimator_kernel.to_csv(#first_estimation_path,
-                                trash_path,
-                                index=False,
-                                header=True)
-        GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
-        list_of_kernels = []
-        for i in range(len(Times)):
-            list_of_kernels.append(my_opt_kernel)
-        plot_param = list_of_kernels, Times
-        GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
-                                                         kernel_plot_param=plot_param)
+            GRAPH_kernels = Graph_Estimator_Hawkes(estimator_kernel, the_update_functions)
+            list_of_kernels = []
+            for i in range(len(Times)):
+                list_of_kernels.append(my_opt_kernel)
+            plot_param = list_of_kernels, Times
+            # I am plotting many kernels here.
+            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
+                                                             kernel_plot_param=plot_param)
+
+        else :
+            GRAPH_kernels = Graph_Estimator_Hawkes.from_path(path, the_update_functions)
+            list_of_kernels = []
+            for i in range(len(Times)):
+                list_of_kernels.append(my_opt_kernel)
+            plot_param = list_of_kernels, Times
+            # I am plotting many kernels here.
+            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
+                                                             kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
         if test_mode:
@@ -142,13 +155,12 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         width_kernel = 1 / 5. * T
         b = width_kernel / 2.
-        b = 450
         Times = np.linspace(0.05 * T, 0.95 * T, nb_of_times)
         estimator_kernel = Graph_Estimator_Hawkes.from_path(first_estimation_path, the_update_functions)
 
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
-        my_estimator_dict = estimator_kernel.mean(separator='time estimation')
+        my_estimator_dict = estimator_kernel.mean(separator='time estimation') #take back the value of the estimation at a given time.
         my_estimator = []
         # mean returns a dict, so I create my list of list:
         for a_time in Times:
@@ -188,6 +200,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
                                                          kernel_plot_param=plot_param)
         estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
+
+
 
     def test_change_point_analysis(self):
         functions_change_point_analysis.change_point_plot(
