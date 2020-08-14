@@ -128,9 +128,10 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             return fig_dict
         else : raise Error_forbidden
 
-    def rescale_time_plot(self, rescale_factor, times):
+
+    def rescale_time_plot(self, mini_T, times):
         # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.
-        return [times[i] // rescale_factor * 50 for i in range(len(times))]
+        return [times[i] // mini_T * 50 for i in range(len(times))]
 
     def rescale_sum(self, sum, times):
         '''
@@ -168,7 +169,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % (len(Times)//3): # I don't want to plot all the kernels, so only one upon 3 are drawn.
+                    if not number % (len(Times)//8): # I don't want to plot all the kernels, so only one upon 8 are drawn.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
