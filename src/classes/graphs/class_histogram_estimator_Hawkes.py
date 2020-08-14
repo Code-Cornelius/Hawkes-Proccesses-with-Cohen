@@ -13,6 +13,7 @@ from classes.class_Estimator_Hawkes import *
 
 # batch_estimation is one dataframe with the estimators.
 class Histogram_estimator_Hawkes(Histogram_estimator):
+    nb_of_bins = 60
 
     def __init__(self, estimator, fct_parameters):
         # BIANCA a way to have one constructor for all of them?
@@ -37,14 +38,23 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
         estimator.append(pd.read_csv(path))
         return cls(estimator, parameters)
 
-    def get_optimal_range_histogram(self, key, mean):
-        '''
-        by experience, the best range for parameters is the following.
-        It is then scaled up depending on the mean value.
+    # section ######################################################################
+    #  #############################################################################
+    # data
 
-        :param key:
-        :param mean:
-        :return:
+
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    def get_range_histogram(self, key, mean):
+        '''The best range for parameters is the following. It is then scaled up depending on the mean value.
+        Args:
+            key:
+            mean:
+
+        Returns:
+
         '''
         variable = key[0]
         if variable == "nu":
@@ -54,8 +64,8 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
 
     # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_plot_param_for_hist(self, key, mean):
-        range = self.get_optimal_range_histogram(key, mean)
-        dict_param = {'bins': 60,
+        range = self.get_range_histogram(key, mean)
+        dict_param = {'bins': Histogram_estimator_Hawkes.nb_of_bins,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': range,

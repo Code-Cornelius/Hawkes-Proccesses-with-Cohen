@@ -4,11 +4,9 @@
 
 ##### normal libraries
 import ruptures as rpt
-import pandas as pd
-import matplotlib.pyplot as plt
 
 ##### other files
-from classes.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.class_kernel import *
 
 

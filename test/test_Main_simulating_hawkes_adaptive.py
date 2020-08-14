@@ -79,8 +79,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
             GRAPH_kernels = Graph_Estimator_Hawkes.from_path(path, the_update_functions)
             # the parameter I am giving says to plot only one kernel on the graph.
-            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
-                                                             one_kernel_plot_param= plot_param)
+            GRAPH_kernels.draw(separator_colour='weight function',
+                               one_kernel_plot_param= plot_param)
 
 
 
@@ -145,8 +145,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                 list_of_kernels.append(my_opt_kernel)
             plot_param = list_of_kernels, Times
             # I am plotting many kernels here.
-            GRAPH_kernels.draw_evolution_parameter_over_time(separator_colour='weight function',
-                                                             kernel_plot_param=plot_param)
+            GRAPH_kernels.draw(separator_colour='weight function',
+                               kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
         if test_mode:

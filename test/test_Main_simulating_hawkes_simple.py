@@ -7,11 +7,11 @@ import recurrent_functions
 
 ##### other files
 import functions_for_MLE
-from classes.class_Graph_Estimator_Hawkes import *
-from classes.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
+from classes.graphs.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
-from classes.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
-from classes.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
+from classes.graphs.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
+from classes.graphs.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
 from functions_fct_evol_parameters import update_functions
 
 np.random.seed(124)
@@ -166,13 +166,13 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\super_0_first_trop_long.csv',
             the_update_functions)
 
-        #hist_test.draw_histogram()
+        hist_test.draw_histogram()
 
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         stat_test.convergence_estimators_limit(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
                                                computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
                                                fct_parameters = the_update_functions) # last parameter for hist.
-        #evol_test.draw_evolution_parameter_over_time(separator_colour='weight function')
+        evol_test.draw(separator_colour='weight function')
 
 
 
@@ -180,18 +180,18 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
     def test_simple_multi(self):
         estimator_multi = Estimator_Hawkes()
         functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
-        GRAPH_multi = Graph_Estimator_Hawkes(estimator_multi, the_update_functions)
-        GRAPH_multi.draw_histogram()
-
+        hist_test = Histogram_estimator_Hawkes(estimator_multi, the_update_functions)
+        hist_test.draw_histogram()
         estimator_multi.to_csv(trash_path, index=False, header=True)
 
     def test_MSE(self):
         estimator_MSE = Estimator_Hawkes()
-
-        TIMES = [10 * mini_T, 20 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
-                 50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 120 * mini_T,
-                 130 * mini_T, 140 * mini_T, 150 * mini_T, 160 * mini_T]
-        # TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T]
+        if test_mode:
+            TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T]
+        else:
+            TIMES = [10 * mini_T, 20 * mini_T, 30 * mini_T, 40 * mini_T, 45 * mini_T,
+                     50 * mini_T, 60 * mini_T, 75 * mini_T, 90 * mini_T, 100 * mini_T, 120 * mini_T,
+                     130 * mini_T, 140 * mini_T, 150 * mini_T, 160 * mini_T]
         count_times = 0
         for times in TIMES:
             tt = np.linspace(T0, times, M_PREC, endpoint=True)
@@ -201,11 +201,12 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
                 f"Time : {count_times} out of : {len(TIMES)}.")
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                             tt, nb_of_guesses, silent=silent)
-        GRAPH_MSE = Graph_Estimator_Hawkes(estimator_MSE, the_update_functions)
+        stat_test = Statistic_plot_estimator_Hawkes(estimator_MSE, the_update_functions)
+        stat_test.convergence_estimators_limit(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
+                                               computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
+                                               fct_parameters = the_update_functions) # last parameter for hist.
         estimator_MSE.DF.to_csv(trash_path, index=False,
                                 header=True)
-        GRAPH_MSE.convergence_estimators_limit(mini_T, TIMES, 'T_max', recurrent_functions.compute_MSE)
-
 
     def test_capabilities_test_optimization(self):
         estimator_MSE = Estimator_Hawkes()

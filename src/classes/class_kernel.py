@@ -1,7 +1,7 @@
 ##### normal libraries
 from inspect import signature  # used in the method eval of the class
-
 import scipy.stats  # functions of statistics
+import numpy as np
 ##### other files
 from classes.graphs.class_graph_estimator import *
 

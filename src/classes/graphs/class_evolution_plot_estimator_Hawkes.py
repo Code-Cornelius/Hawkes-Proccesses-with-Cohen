@@ -33,24 +33,64 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
         self.M = np.shape(self.ALPHA)[1]
         self.nb_of_guesses = estimator.DF['number of guesses'].max()
 
+
     @classmethod
     def from_path(cls, path, parameters):
+        '''
+        create another init that takes the same parameter, with the diff that it takes the path. Another constructor :
+
+        Args:
+            path:
+            parameters:
+
+        Returns:
+
+        '''
         # BIANCA a way to have one constructor for all of them?
         # path has to be raw. with \\
         estimator = Estimator_Hawkes()
         estimator.append(pd.read_csv(path))
         return cls(estimator, parameters)
 
+    # section ######################################################################
+    #  #############################################################################
+    # data
+
     @classmethod
-    def get_evolution_parameter(cls, data):
+    def get_evolution_name_unique_values(cls, data):
         return data[cls.evolution_name].unique()
 
     @classmethod
-    def get_evolution_extremes(cls, data):
+    def get_evolution_name_extremes(cls, data):
         values = data.groupby([cls.evolution_name])['value']
         return (values.min(), values.max())
 
-    def get_dict_fig_evolution_parameter_over_time(self, separators, key):
+    def get_evolution_name_true_value(self, data):
+        return self.get_evolution_name_specific_data(data, 'true value')
+
+
+    def get_evolution_name_plot_data(self, data):
+        return self.get_evolution_name_specific_data(data, 'value')
+
+
+    def get_evolution_name_specific_data(self, data, str):
+        '''
+        returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
+
+        Args:
+            data:
+            str:
+
+        Returns:
+
+        '''
+        return data.groupby([self.evolution_name])[str].mean().values
+
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    def get_dict_fig(self, separators, key):
         title = self.generate_title(names=separators,
                                     values=key,
                                     before_text="",
@@ -61,27 +101,8 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
                     'ylabel': "Estimation"}
         return fig_dict
 
-    def get_evolution_specific_data(self, data, str):
-        '''
-        returns the data grouped by the particular attribute,
-        and we focus on data given by column str, computing the means and returning an array.
-
-        :param data:
-        :param str:
-        :return:
-        '''
-        return data.groupby([self.evolution_name])[str].mean().values
-
-    #### create another init that takes the same parameter, with the diff that it takes the path.
-    # another constructor :
-    def get_evolution_true_value(self, data):
-        return self.get_evolution_specific_data(data, 'true value')
-
-    def get_evolution_plot_data(self, data):
-        return self.get_evolution_specific_data(data, 'value')
-
-    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None,
-                                           one_kernel_plot_param=None):
+    def draw(self, separators=None, separator_colour=None, kernel_plot_param=None,
+             one_kernel_plot_param=None):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
@@ -94,7 +115,7 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
         Returns:
 
         '''
-        super().draw_evolution_parameter_over_time(separators, separator_colour)
+        super().draw(separators, separator_colour)
         if kernel_plot_param is not None:
             list_of_kernels, Times = kernel_plot_param
 

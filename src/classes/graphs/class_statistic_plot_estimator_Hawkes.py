@@ -38,19 +38,9 @@ class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):
         estimator.append(pd.read_csv(path))
         return cls(estimator, parameters)
 
-    def get_computation_plot_fig_dict(self, convergence_in):
-        # todo the fig_dict could be more general to adapt to some situations, for now I simply put an if statement.
-        if convergence_in == "MSE":
-            fig_dict = {
-                'title': f"Convergence in MSE sense of the estimators, batches of {self.nb_of_guesses} realisations.",
-                'xlabel': "Nb of Events",
-                'ylabel': "MSE",
-                'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1, 1), self.NU[0](0, 1, 1)],
-                'name_parameters': ["ALPHA", "BETA", "NU"]
-            }
-            return fig_dict
-        else:
-            raise Error_forbidden
+    # section ######################################################################
+    #  #############################################################################
+    # data
 
     def rescale_time_plot(self, mini_T, times):
         # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.
@@ -68,3 +58,24 @@ class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):
 
         '''
         return sum / self.nb_of_guesses
+
+
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    def get_dict_fig(self, convergence_in):
+        # todo the fig_dict could be more general to adapt to some situations, for now I simply put an if statement.
+        if convergence_in == "MSE":
+            dict_fig = {
+                'title': f"Convergence in MSE sense of the estimators, batches of {self.nb_of_guesses} realisations.",
+                'xlabel': "Nb of Events",
+                'ylabel': "MSE",
+                'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1, 1), self.NU[0](0, 1, 1)],
+                'name_parameters': ["ALPHA", "BETA", "NU"]
+            }
+            return dict_fig
+        else:
+            raise Error_forbidden
+
+
