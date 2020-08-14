@@ -47,7 +47,7 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
     #  #############################################################################
     # plot
 
-    def get_range_histogram(self, key, mean):
+    def get_range(self, key, mean):
         '''The best range for parameters is the following. It is then scaled up depending on the mean value.
         Args:
             key:
@@ -63,8 +63,8 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
             return (0.6 * mean, 1.4 * mean)
 
     # TODO: make more general -- don't assume that the name will always be the first
-    def get_dict_plot_param_for_hist(self, key, mean):
-        range = self.get_range_histogram(key, mean)
+    def get_dict_param(self, key, mean):
+        range = self.get_range(key, mean)
         dict_param = {'bins': Histogram_estimator_Hawkes.nb_of_bins,
                       'label': 'Histogram',
                       'color': 'green',
@@ -73,7 +73,7 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
                       }
         return dict_param
 
-    def get_dict_fig_hist(self, separators, key):
+    def get_dict_fig(self, separators, key):
         title = self.generate_title(names=separators, values=key,
                                     before_text="Histogram for the estimator of a Hawkes Process;",
                                     extra_text="Time of simulation {}", extra_arguments=[self.T_max])
