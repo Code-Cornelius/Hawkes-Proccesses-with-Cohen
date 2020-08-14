@@ -6,10 +6,13 @@
 ##### other files
 from classes.class_kernel import *
 
+# section ######################################################################
+#  #############################################################################
+# code:
 
 class Estimator_Hawkes(Estimator):
-    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in', 'true value',
-                'number of guesses'}
+    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in',
+                         'true value', 'number of guesses'}
 
     # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
@@ -20,7 +23,7 @@ class Estimator_Hawkes(Estimator):
             if Estimator_Hawkes.set_column_hawkes.issubset(df.columns):
                 super().__init__(df)
             else:
-                raise("Probleme, the columns of the dataframe do not match the estimator hawkes.")
+                raise ("Probleme, the columns of the dataframe do not match the estimator hawkes.")
         # if no df:
         else:
             super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.set_column_hawkes)))
@@ -30,7 +33,6 @@ class Estimator_Hawkes(Estimator):
         # path has to be raw. with \\
         df = pd.read_csv(path)
         return cls(df)
-
 
     def mean(self, separator=None):
         # the output format is list of lists with on each line [ans_N, ans_A, ans_B],
@@ -43,7 +45,6 @@ class Estimator_Hawkes(Estimator):
         # if separator is not None:
         #     for str in separator: separators.append(str)
 
-
         global_dict, keys = self.groupby_DF(separator)
         for key in keys:
             data = global_dict.get_group(key)
@@ -53,14 +54,14 @@ class Estimator_Hawkes(Estimator):
             for i in range(M):
                 ans_N.append(dict_of_means[('nu', i, 0)])
                 for j in range(M):
-                    if not j: # if j == 0
+                    if not j:  # if j == 0
                         ans_A.append([])
                         ans_B.append([])
                     # we append to this new small list the j's.
                     ans_A[i].append(dict_of_means[('alpha', i, j)])
                     ans_B[i].append(dict_of_means[('beta', i, j)])
             # i get triple list like usually.
-            ans_dict[ key ] = [ans_N, ans_A, ans_B]
+            ans_dict[key] = [ans_N, ans_A, ans_B]
         return ans_dict
 
 # example:

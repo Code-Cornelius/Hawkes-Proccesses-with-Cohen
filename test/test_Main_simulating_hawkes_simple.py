@@ -1,17 +1,19 @@
 ##### normal libraries
 import unittest
 
+
+
 ##### my libraries
 
+
 ##### other files
+import functions_for_MLE
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
-import functions_for_MLE
 from classes.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
 from classes.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
-from functions_fct_evol_parameters import update_functions, constant_parameter, linear_growth, one_jump, moutain_jump, \
-    periodic_stop
+from functions_fct_evol_parameters import update_functions
 
 np.random.seed(124)
 
@@ -20,7 +22,7 @@ def choice_parameter(dim, styl):
     # dim choses how many dimensions
     # styl choses which variant of the parameters.
     if dim == 1:
-        if styl ==1:
+        if styl == 1:
             ALPHA = [[1.2]]
             BETA = [[2]]
             MU = [0.2]
@@ -35,7 +37,7 @@ def choice_parameter(dim, styl):
             BETA = [[2]]
             MU = [0.5]
             T0, mini_T = 0, 15  # 50 jumps for my uni variate stuff
-        elif styl ==4:
+        elif styl == 4:
             ALPHA = [[1]]
             BETA = [[4]]
             MU = [0.2]

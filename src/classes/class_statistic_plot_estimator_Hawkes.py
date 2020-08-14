@@ -2,14 +2,13 @@
 
 
 ##### my libraries
-from classes.class_Estimator_Hawkes import *
-from classes.class_kernel import *
-from errors import Error_forbidden
-from classes.class_statistic_plot_estimator import *
+
 
 
 ##### other files
-
+from classes.class_Estimator_Hawkes import *
+from classes.class_statistic_plot_estimator import *
+from errors import Error_forbidden
 
 # batch_estimation is one dataframe with the estimators.
 class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):

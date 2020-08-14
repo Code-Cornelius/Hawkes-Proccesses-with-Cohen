@@ -1,7 +1,3 @@
-##### normal libraries
-import unittest
-import time
-
 import functions_fct_rescale_adaptive
 from test.test_Main_simulating_hawkes_simple import *
 

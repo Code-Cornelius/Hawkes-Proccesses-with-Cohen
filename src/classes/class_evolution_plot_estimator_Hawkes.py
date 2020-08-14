@@ -2,17 +2,19 @@
 
 
 ##### my libraries
+
+
+##### other files
 from classes.class_evolution_plot_estimator import *
 
 from classes.class_Estimator_Hawkes import Estimator_Hawkes
 from classes.class_kernel import *
-from errors import Error_forbidden
 
 
-##### other files
+# section ######################################################################
+#  #############################################################################
+# code:
 
-
-# batch_estimation is one dataframe with the estimators.
 class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
     evolution_name = 'time estimation'
 

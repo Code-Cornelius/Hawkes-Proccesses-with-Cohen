@@ -1,37 +1,20 @@
 ##### normal libraries
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import numpy as np  # maths library and arrays
-import statistics as stat
-import pandas as pd  # dataframes
-import seaborn as sns  # envrionement for plots
-from matplotlib import pyplot as plt  # ploting
-import scipy.stats  # functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  # allows to time event
-import warnings
-import math  # quick math functions
-import cmath  # complex functions
 from inspect import signature  # used in the method eval of the class
+import scipy.stats  # functions of statistics
+
 
 ##### my libraries
-import plot_functions
-import decorators_functions
-import classical_functions
-import recurrent_functions
-from classes.class_estimator import *
+
+
+##### other files
 from classes.class_graph_estimator import *
 
 np.random.seed(124)
 
 
-##### other files
-
-
 # section ######################################################################
 #  #############################################################################
 # some information
-
-
 
 
 # -------------------------------------------------------------------------------------------------------
@@ -173,7 +156,6 @@ def fct_epa(T_t, length_elements_T_t, eval_point, a=-300, b=300):
         xx[(xx < -1) | (xx > 1)] = 1
         output.append(3 / 4 * (1 - xx * xx) * 2 / (b - a))  # kernel * scaling ; delta in my formulas
     return output
-
 
 # section ######################################################################
 #  #############################################################################

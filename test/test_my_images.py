@@ -1,34 +1,14 @@
 # normal libraries
 import unittest
-
-import numpy as np  # maths library and arrays
-import statistics as stat
-import pandas as pd  # dataframes
-import seaborn as sns  # envrionement for plots
-from matplotlib import pyplot as plt  # ploting
-import scipy.stats  # functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  # allows to time event
-import warnings
-import math  # quick math functions
-import cmath  # complex functions
+import recurrent_functions
 
 # my libraries
-import classical_functions
-import decorators_functions
-import financial_functions
-import functions_networkx
 from plot_functions import *
-import recurrent_functions
-import errors.Error_convergence
-import classes.class_estimator
-import classes.class_graph_estimator
+# other files
+from functions_fct_evol_parameters import *
 
 np.random.seed(124)
 
-
-# other files
-from functions_fct_evol_parameters import *
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Test_images(unittest.TestCase):
@@ -52,7 +32,8 @@ class Test_images(unittest.TestCase):
         print(np.sum(zz * mesh))
 
         my_plot.uni_plot(0, xx, zz, dict_plot_param={'color': 'r', 'label': 'KDE'})
-        my_plot.set_dict_fig(0, {'xlabel': 'Time $t$', 'ylabel': 'Probability', 'title': 'KDE estimation, fixed size kernel'})
+        my_plot.set_dict_fig(0, {'xlabel': 'Time $t$', 'ylabel': 'Probability',
+                                 'title': 'KDE estimation, fixed size kernel'})
         my_plot.show_legend()
 
         ############################## 2
@@ -66,7 +47,8 @@ class Test_images(unittest.TestCase):
 
         my_plot.uni_plot(0, xx, zz, dict_plot_param={'color': 'r', 'label': 'KDE'})
         my_plot.set_dict_fig(0,
-                             {'xlabel': 'Time $t$', 'ylabel': 'Probability', 'title': 'KDE estimation, adaptive size kernel'})
+                             {'xlabel': 'Time $t$', 'ylabel': 'Probability',
+                              'title': 'KDE estimation, adaptive size kernel'})
         my_plot.show_legend()
 
         print(np.sum(zz * mesh))
@@ -131,7 +113,8 @@ class Test_images(unittest.TestCase):
                              {'xlabel': 'Time $t$', 'ylabel': 'Probability',
                               'title': 'Kernel represented as function of the time'})
         my_plot.set_dict_fig(1,
-                             {'xlabel': 'Time event $t_i$', 'ylabel': '', 'title': 'Kernel represented as function of events $t_i$'})
+                             {'xlabel': 'Time event $t_i$', 'ylabel': '',
+                              'title': 'Kernel represented as function of events $t_i$'})
         my_plot.show_legend()
 
     def test_image_CKDE(self):
@@ -149,11 +132,11 @@ class Test_images(unittest.TestCase):
                          dict_plot_param={'color': 'g', 'label': 'Estimation point',
                                           'linestyle': '--', 'linewidth': 2,
                                           'markersize': 0})
-        yy = (recurrent_functions.phi_numpy(xx, -4, 3) + recurrent_functions.phi_numpy(xx, 1, 1))/2
-        my_plot.uni_plot(0, xx, yy,  dict_plot_param={'color': 'r', 'label': 'Kernel for $t_i = 0$'})
+        yy = (recurrent_functions.phi_numpy(xx, -4, 3) + recurrent_functions.phi_numpy(xx, 1, 1)) / 2
+        my_plot.uni_plot(0, xx, yy, dict_plot_param={'color': 'r', 'label': 'Kernel for $t_i = 0$'})
 
         ############### right
-        zz = (recurrent_functions.phi_numpy(-xx, -4, 3) + recurrent_functions.phi_numpy(-xx, 1, 1))/2
+        zz = (recurrent_functions.phi_numpy(-xx, -4, 3) + recurrent_functions.phi_numpy(-xx, 1, 1)) / 2
         my_plot.uni_plot(1, [0 for _ in xx],
                          np.linspace(-0.004, max_x, len(xx)),
                          dict_plot_param={'color': 'g', 'label': 'Estimation point',
@@ -161,26 +144,24 @@ class Test_images(unittest.TestCase):
                                           'markersize': 0})
         my_plot.uni_plot(1, xx, zz, dict_plot_param={'color': 'r', 'label': 'Kernel for $t = 0$'})
 
-
         my_plot.set_dict_fig(0,
                              {'xlabel': 'Time t', 'ylabel': 'Probability',
                               'title': 'Kernel represented as function of the time'})
         my_plot.set_dict_fig(1,
-                             {'xlabel': 'Time event $t_i$', 'ylabel': '', 'title': 'Kernel represented as function of events $t_i$'})
+                             {'xlabel': 'Time event $t_i$', 'ylabel': '',
+                              'title': 'Kernel represented as function of events $t_i$'})
         my_plot.show_legend()
-
-
 
     def test_my_geometric_kernel(self):
         # des listes de 50 éléments
-        liste_1 = np.full(50,13)
-        liste_2 = np.linspace(2,24,50)
+        liste_1 = np.full(50, 13)
+        liste_2 = np.linspace(2, 24, 50)
         liste_3 = np.append(liste_2[:25], liste_1[25:])
-        liste_4 = np.append( np.full(25,2) , np.full(25,20) )
-        my_sin  = 50*np.sin( np.linspace(0,11/2*math.pi, 35) ) + 100
-        liste_5 = np.append(my_sin, np.full(15,1))
+        liste_4 = np.append(np.full(25, 2), np.full(25, 20))
+        my_sin = 50 * np.sin(np.linspace(0, 11 / 2 * math.pi, 35)) + 100
+        liste_5 = np.append(my_sin, np.full(15, 1))
 
-        my_list = [ liste_1, liste_2, liste_3, liste_4, liste_5 ]
+        my_list = [liste_1, liste_2, liste_3, liste_4, liste_5]
         print(liste_1)
         print(liste_2)
         print(liste_3)
@@ -189,7 +170,7 @@ class Test_images(unittest.TestCase):
 
         from scipy.stats.mstats import gmean
         print(my_list)
-        for i,l in enumerate(my_list):
+        for i, l in enumerate(my_list):
             print("{} value is {}. min {} max {}.".format(i, gmean(l), np.quantile(l, 0.15), np.quantile(l, 0.85)))
 
     def test_form_evol_functions(self):
@@ -209,4 +190,3 @@ class Test_images(unittest.TestCase):
             aplot.set_dict_fig(0, {'title': '', 'xlabel': '', 'ylabel': ''})
 
         plt.show()
-

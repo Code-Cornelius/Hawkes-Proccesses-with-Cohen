@@ -2,12 +2,13 @@
 
 
 ##### my libraries
-from classes.class_Estimator_Hawkes import *
-from classes.class_kernel import *
+
+# errors:
 from errors import Error_forbidden
 
 ##### other files
-
+from classes.class_Estimator_Hawkes import *
+from classes.class_kernel import *
 
 
 # batch_estimation is one dataframe with the estimators.
@@ -16,7 +17,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     def __init__(self, estimator, fct_parameters):
 
-        #TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
+        # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
         Graph_Estimator.__init__(self, estimator, ['parameter', 'm', 'n'])
 
@@ -65,27 +66,26 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         return dict_param
 
     def get_dict_fig_hist(self, separators, key):
-        title = self.generate_title(names = separators, values = key, before_text = "Histogram for the estimator of a Hawkes Process;",
+        title = self.generate_title(names=separators, values=key,
+                                    before_text="Histogram for the estimator of a Hawkes Process;",
                                     extra_text="Time of simulation {}", extra_arguments=[self.T_max])
         fig_dict = {'title': title,
                     'xlabel': "Estimation",
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict
 
-
     ################################ hist
 
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
-        title = self.generate_title(names = separators,
-                                    values = key,
-                                    before_text = "",
-                                    extra_text = "Only 5-95% of the interval is shown, batches of {} simulations, time: 0 until {}",
-                                    extra_arguments = [self.nb_of_guesses, self.T_max])
+        title = self.generate_title(names=separators,
+                                    values=key,
+                                    before_text="",
+                                    extra_text="Only 5-95% of the interval is shown, batches of {} simulations, time: 0 until {}",
+                                    extra_arguments=[self.nb_of_guesses, self.T_max])
         fig_dict = {'title': "Evolution of the estimation, " + title,
                     'xlabel': 'Time',
                     'ylabel': "Estimation"}
         return fig_dict
-
 
     @staticmethod
     def get_evolution_parameter(data):
@@ -121,13 +121,13 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             fig_dict = {
                 'title': f"Convergence in MSE sense of the estimators, batches of {self.nb_of_guesses} realisations.",
                 'xlabel': "Nb of Events",
-                'ylabel':"MSE",
-                'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1,1), self.NU[0](0, 1,1)],
+                'ylabel': "MSE",
+                'parameters': [self.ALPHA[0][0](0, 1, 1), self.BETA[0][0](0, 1, 1), self.NU[0](0, 1, 1)],
                 'name_parameters': ["ALPHA", "BETA", "NU"]
             }
             return fig_dict
-        else : raise Error_forbidden
-
+        else:
+            raise Error_forbidden
 
     def rescale_time_plot(self, mini_T, times):
         # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.
@@ -146,7 +146,8 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         '''
         return sum / self.nb_of_guesses
 
-    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None, one_kernel_plot_param = None):
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None, kernel_plot_param=None,
+                                           one_kernel_plot_param=None):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
@@ -169,12 +170,13 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % (len(Times)//8): # I don't want to plot all the kernels, so only one upon 8 are drawn.
+                    if not number % (
+                            len(Times) // 8):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
                                               dict_plot_param={"color": "m", "markersize": 0, "linewidth": 0.4,
-                                                               "linestyle": "--"}, tight = False)
+                                                               "linestyle": "--"}, tight=False)
                         lim_ = plots.axs[0].get_ylim()
                         plots.plot_vertical_line(a_time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
                                                  dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
@@ -192,12 +194,12 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                 # for each eval point
 
                 colors = plt.cm.Dark2.colors  # Dark2 is qualitative cm and pretty dark cool colors.
-                for number, (kernel,color) in enumerate(zip(list_of_kernels, colors)):
-                        tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
-                        yy = kernel.eval(tt, Time, self.T_max)
-                        plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
-                                              dict_plot_param={"color": color, "markersize": 0, "linewidth": 0.7,
-                                                               "linestyle": "--"}, tight = False)
+                for number, (kernel, color) in enumerate(zip(list_of_kernels, colors)):
+                    tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
+                    yy = kernel.eval(tt, Time, self.T_max)
+                    plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
+                                          dict_plot_param={"color": color, "markersize": 0, "linewidth": 0.7,
+                                                           "linestyle": "--"}, tight=False)
                 # lim_ = plots.axs[0].get_ylim()
                 # plots.plot_vertical_line(Time, np.linspace(0, lim_[-1] * 0.9, 5), nb_ax=0,
                 #                         dict_plot_param={"color": "k", "markersize": 0, "linewidth": 1,
