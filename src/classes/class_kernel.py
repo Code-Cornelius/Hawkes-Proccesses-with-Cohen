@@ -53,33 +53,33 @@ class Kernel:
 
     # the name is for identification in plots
     def __init__(self, fct_kernel, name=' no name ', **kwargs):
-        self.fct_kernel = fct_kernel
-        self.name = name
+        self._fct_kernel = fct_kernel
+        self._name = name
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        return repr(self.fct_kernel)
+        return repr(self._fct_kernel)
 
     def eval(self, T_t, eval_point, T_max):
         length_elements_T_t = [len(T_t[i]) for i in range(len(T_t))]
         # ans is the kernel evaluated on the jumps
-        ans = self.fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
+        ans = self._fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
                               **{k: self.__dict__[k] for k in self.__dict__ if
-                                 k in signature(self.fct_kernel).parameters})
+                                 k in signature(self._fct_kernel).parameters})
         # ans is a list of np arrays. It is normalized such that it is a kernel.
         # then I want to scale every vector.
         # The total integral should be T_max, so I multiply by T_max
 
         # If it isn't fct plain, then I have to scale.
-        if self.fct_kernel.__name__ != 'fct_plain':
+        if self._fct_kernel.__name__ != 'fct_plain':
 
             # I want to rescale the results for the kernels that are not covering seen part. For that reason,
             # I compute the integral of the kernel, and scale accordingly.
             # todo the linspace shouldn't be 0 T_max but the point at which I start the simulation...
             tt_integral = [np.linspace(0, T_max, 10000)]
-            yy = self.fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
+            yy = self._fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
                                  **{k: self.__dict__[k] for k in self.__dict__ if
-                                    k in signature(self.fct_kernel).parameters})
+                                    k in signature(self._fct_kernel).parameters})
             integral = classical_functions.trapeze_int(tt_integral[0],
                                                        yy[0])  # yy[0] bc function gives back a list of arrays.
 
@@ -89,6 +89,30 @@ class Kernel:
                 # I also divide by the sum, the vector is normalized, however, possibly we're on the edge and we need to take that into account.
                 # print("inside kernel debug, that's my integral : {}. Name : {}.".format(np.sum(ans[i][:-1] ) * T_max / (len(ans[i])-1), self.fct_kernel.__name__) )
         return ans
+
+
+    # section ######################################################################
+    #  #############################################################################
+    # getters setters
+    @property
+    def fct_kernel(self):
+        return self._fct_kernel
+
+    @fct_kernel.setter
+    def fct_kernel(self, new_fct_kernel):
+        self._fct_kernel = new_fct_kernel
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, new_name):
+        if isinstance(new_name, str ):
+                self._name = new_name
+        else:
+            raise Error_type_setter(f'Argument is not an string.')
+
 
 
 def fct_top_hat(T_t, length_elements_T_t, eval_point, a=-200, b=200):
