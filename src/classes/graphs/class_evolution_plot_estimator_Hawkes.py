@@ -108,14 +108,18 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
         I draw the kernels iff I give kernel_plot_param.
 
+        kernel_plot_param for drawing over a list of kernels, one_kernel_plot for drawing the kernels in the middle.
+
         Args:
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
             kernel_plot_param:     list_of_kernels, Times = kernel_plot_param
+            one_kernel_plot_param
         Returns:
 
         '''
-        super().draw(separators, separator_colour)
+        #we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
+        _, coloured_keys = super().draw(separators, separator_colour)
         if kernel_plot_param is not None:
             list_of_kernels, Times = kernel_plot_param
 
@@ -125,8 +129,7 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % (
-                            len(Times) // 8):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
+                    if not number % (len(Times) // 8):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
@@ -149,7 +152,19 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
                 # for each eval point
 
                 colors = plt.cm.Dark2.colors  # Dark2 is qualitative cm and pretty dark cool colors.
-                for number, (kernel, color) in enumerate(zip(list_of_kernels, colors)):
+
+                # we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
+                for number, (kernel_name, color) in enumerate(zip(coloured_keys, colors)):
+                    # basically, we retrieve the name and find the matching kernel.
+                    kernel_counter = 0
+                    kernel = None
+                    while kernel is None and kernel_counter < len(list_of_kernels):
+                        if list_of_kernels[kernel_counter].name == kernel_name:
+                            kernel = list_of_kernels[kernel_counter]
+                        else:
+                            kernel_counter +=1
+                    if kernel_counter > len(list_of_kernels):
+                        raise("The kernels given and ploted are not matching.")
                     tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
                     yy = kernel.eval(tt, Time, self.T_max)
                     plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
