@@ -1,5 +1,9 @@
 import functions_fct_rescale_adaptive
 from test.test_Main_simulating_hawkes_simple import *
+import decorators_functions
+import functions_change_point_analysis
+
+
 
 
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):

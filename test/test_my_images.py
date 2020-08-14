@@ -1,9 +1,9 @@
 # normal libraries
 import unittest
 import recurrent_functions
-
+import matplotlib.pyplot as plt
 # my libraries
-from plot_functions import *
+import plot_functions
 # other files
 from functions_fct_evol_parameters import *
 
@@ -185,7 +185,7 @@ class Test_images(unittest.TestCase):
         for fct, param in zip(list_1, list_2):
             fct = np.vectorize(fct)
             yy = fct(xx, T_max=T_max, time_burn_in=0, **param)
-            aplot = APlot(how=(1, 1))
+            aplot = plot_functions.APlot(how=(1, 1))
             aplot.uni_plot(nb_ax=0, xx=xx, yy=yy, dict_plot_param={"color": "blue", "markersize": 0, "linewidth": 2})
             aplot.set_dict_fig(0, {'title': '', 'xlabel': '', 'ylabel': ''})
 
