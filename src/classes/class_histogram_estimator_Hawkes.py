@@ -48,9 +48,9 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
         '''
         variable = key[0]
         if variable == "nu":
-            return (0.1, 2 * mean)
+            return (0.1, 1.5 * mean)
         else:
-            return (0.5 * mean, 1.5 * mean)
+            return (0.6 * mean, 1.4 * mean)
 
     # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_plot_param_for_hist(self, key, mean):
