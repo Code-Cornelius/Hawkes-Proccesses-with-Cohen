@@ -29,6 +29,14 @@ class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):
         self.M = np.shape(self.ALPHA)[1]
         self.nb_of_guesses = estimator.DF['number of guesses'].max()
 
+    @classmethod
+    def from_path(cls, path, parameters):
+        # BIANCA a way to have one constructor for all of them?
+        # path has to be raw. with \\
+        estimator = Estimator_Hawkes()
+        estimator.append(pd.read_csv(path))
+        return cls(estimator, parameters)
+
     def get_computation_plot_fig_dict(self, convergence_in):
         # todo the fig_dict could be more general to adapt to some situations, for now I simply put an if statement.
         if convergence_in == "MSE":

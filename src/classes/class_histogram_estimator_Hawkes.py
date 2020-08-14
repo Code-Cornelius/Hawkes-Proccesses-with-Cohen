@@ -29,6 +29,14 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
         self.M = np.shape(self.ALPHA)[1]
         self.nb_of_guesses = estimator.DF['number of guesses'].max()
 
+    @classmethod
+    def from_path(cls, path, parameters):
+        # BIANCA a way to have one constructor for all of them?
+        # path has to be raw. with \\
+        estimator = Estimator_Hawkes()
+        estimator.append(pd.read_csv(path))
+        return cls(estimator, parameters)
+
     def get_optimal_range_histogram(self, key, mean):
         '''
         by experience, the best range for parameters is the following.

@@ -3,6 +3,8 @@
 
 ##### my libraries
 from classes.class_evolution_plot_estimator import *
+
+from classes.class_Estimator_Hawkes import Estimator_Hawkes
 from classes.class_kernel import *
 from errors import Error_forbidden
 
@@ -28,6 +30,14 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
         self.T_max = estimator.DF["T_max"].max()
         self.M = np.shape(self.ALPHA)[1]
         self.nb_of_guesses = estimator.DF['number of guesses'].max()
+
+    @classmethod
+    def from_path(cls, path, parameters):
+        # BIANCA a way to have one constructor for all of them?
+        # path has to be raw. with \\
+        estimator = Estimator_Hawkes()
+        estimator.append(pd.read_csv(path))
+        return cls(estimator, parameters)
 
     @classmethod
     def get_evolution_parameter(cls, data):
