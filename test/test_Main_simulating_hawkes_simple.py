@@ -6,7 +6,6 @@ import unittest
 ##### other files
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_hawkes_process import *
-from classes.class_kernel_adaptive import *
 import functions_for_MLE
 from functions_fct_evol_parameters import update_functions, constant_parameter, linear_growth, one_jump, moutain_jump, \
     periodic_stop
@@ -106,7 +105,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(0, PARAMETERS)
+the_update_functions = update_functions(2, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
@@ -114,7 +113,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T = 3, 50 * mini_T
 else:
-    nb_of_guesses, T = 50,  120 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T = 50,  80 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 

@@ -86,8 +86,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_one(self):
-        to_be_simulated = True
+        to_be_simulated = False
         path = first_estimation_path
+        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_2_first.csv'
+
 
         if test_mode:
             nb_of_times = 3
