@@ -169,7 +169,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         hist_test.draw_histogram()
 
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
-        stat_test.convergence_estimators_limit(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
+        stat_test.draw(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
                                                computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
                                                fct_parameters = the_update_functions) # last parameter for hist.
         evol_test.draw(separator_colour='weight function')
