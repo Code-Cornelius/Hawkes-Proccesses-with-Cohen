@@ -8,21 +8,22 @@ from classes.class_kernel import *
 
 
 class Estimator_Hawkes(Estimator):
+    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in', 'true value',
+                'number of guesses'}
+
     # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
     def __init__(self, df=None):
+
         if df is not None:
             # test that the good columns are given.
-            if {'variable', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in', 'true value',
-                'number of guesses'}.issubset(df.columns):
+            if Estimator_Hawkes.set_column_hawkes.issubset(df.columns):
                 super().__init__(df)
             else:
-                raise ("Probleme, the columns of the dataframe do not match the estimator hawkes.")
+                raise("Probleme, the columns of the dataframe do not match the estimator hawkes.")
         # if no df:
         else:
-            super().__init__(pd.DataFrame(columns=['parameter', 'n', 'm',
-                                                   'time estimation', 'weight function',
-                                                   'value', 'T_max', 'time_burn_in', 'true value', 'number of guesses']))
+            super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.set_column_hawkes)))
 
     @classmethod
     def from_path(cls, path):
