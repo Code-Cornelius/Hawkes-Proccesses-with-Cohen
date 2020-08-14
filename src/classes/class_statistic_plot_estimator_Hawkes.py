@@ -5,7 +5,7 @@
 
 
 
-from classes.class_statistic_plot_estimator import *
+from classes.graphs.class_statistic_plot_estimator import *
 from errors import Error_forbidden
 
 ##### other files

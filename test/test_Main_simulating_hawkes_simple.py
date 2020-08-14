@@ -225,7 +225,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             time_simulation = time.time() - start
             vect_time_simulation[i] = time_simulation / nb_of_guesses
 
-        aplot = APlot(how=(1, 1))
+        aplot = plot_functions.APlot(how=(1, 1))
         aplot.uni_plot(nb_ax=0, xx=T_plot, yy=vect_time_simulation)
         aplot.set_dict_fig(0, {
             'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(

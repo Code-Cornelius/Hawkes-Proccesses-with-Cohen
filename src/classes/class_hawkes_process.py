@@ -1,11 +1,16 @@
 ##### normal libraries
 import math
-
+import matplotlib.pyplot as plt
+import numpy as np
 ##### other files
 from classes.class_kernel import *
 from functions_general_for_Hawkes import multi_list_generator
 
 ##### my libraries
+import classical_functions
+import plot_functions
+
+
 
 np.random.seed(124)
 
@@ -28,6 +33,8 @@ def CDF_LEE(U, lambda_value, delta):
         return INFINITY
     else:
         return -1 / delta * np.log(1 + delta / lambda_value * np.log(1 - U))
+
+
 
 
 def exp_kernel(alpha, beta, t):
@@ -104,7 +111,7 @@ class Hawkes_process:
 
     def plot_parameters_hawkes(self):
         # I m printing the evolution of the parameters there.
-        aplot = APlot(how=(1, self.M))
+        aplot = plot_functions.APlot(how=(1, self.M))
         tt = np.linspace(0, 1, 1000)
         my_colors = plt.cm.rainbow(np.linspace(0, 1, 2 * self.M))
         for i_dim in range(self.M):

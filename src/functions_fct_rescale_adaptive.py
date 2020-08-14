@@ -1,6 +1,6 @@
 # normal libraries
 import math  # quick math functions
-
+import numpy as np
 from scipy.stats.mstats import gmean
 
 # other files

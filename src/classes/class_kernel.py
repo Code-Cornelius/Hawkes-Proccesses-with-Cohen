@@ -3,7 +3,7 @@ from inspect import signature  # used in the method eval of the class
 
 import scipy.stats  # functions of statistics
 ##### other files
-from classes.class_graph_estimator import *
+from classes.graphs.class_graph_estimator import *
 
 ##### my libraries
 

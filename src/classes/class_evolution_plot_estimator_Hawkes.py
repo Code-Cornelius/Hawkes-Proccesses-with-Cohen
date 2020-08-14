@@ -5,7 +5,7 @@
 
 
 ##### other files
-from classes.class_evolution_plot_estimator import *
+from classes.graphs.class_evolution_plot_estimator import *
 
 from classes.class_Estimator_Hawkes import Estimator_Hawkes
 from classes.class_kernel import *

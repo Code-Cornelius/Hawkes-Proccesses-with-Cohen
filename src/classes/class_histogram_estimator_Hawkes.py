@@ -5,7 +5,7 @@
 ##### my libraries
 
 
-from classes.class_histogram_estimator import *
+from classes.graphs.class_histogram_estimator import *
 
 ##### other files
 from classes.class_Estimator_Hawkes import *
