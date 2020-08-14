@@ -1,7 +1,6 @@
 ##### normal libraries
-import unittest
 import time
-
+import unittest
 
 ##### my libraries
 import recurrent_functions

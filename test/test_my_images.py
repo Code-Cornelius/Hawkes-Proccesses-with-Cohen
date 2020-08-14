@@ -1,9 +1,11 @@
 # normal libraries
 import unittest
-import recurrent_functions
+
 import matplotlib.pyplot as plt
 # my libraries
 import plot_functions
+import recurrent_functions
+
 # other files
 from functions_fct_evol_parameters import *
 

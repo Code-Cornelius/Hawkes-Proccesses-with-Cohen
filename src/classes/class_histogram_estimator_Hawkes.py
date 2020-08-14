@@ -5,9 +5,11 @@
 ##### my libraries
 
 
+from classes.class_histogram_estimator import *
+
 ##### other files
 from classes.class_Estimator_Hawkes import *
-from classes.class_histogram_estimator import *
+
 
 # batch_estimation is one dataframe with the estimators.
 class Histogram_estimator_Hawkes(Histogram_estimator):

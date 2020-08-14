@@ -1,11 +1,9 @@
-from classical_functions import *
-
-import functions_for_MLE
-
 import csv
 
+from classical_functions import *
 from functions_networkx import *
 
+import functions_for_MLE
 '''
 ############# tests ####################
 alpha = 3

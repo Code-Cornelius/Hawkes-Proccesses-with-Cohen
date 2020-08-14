@@ -1,13 +1,11 @@
 ##### normal libraries
 from inspect import signature  # used in the method eval of the class
+
 import scipy.stats  # functions of statistics
-
-
-##### my libraries
-
-
 ##### other files
 from classes.class_graph_estimator import *
+
+##### my libraries
 
 np.random.seed(124)
 

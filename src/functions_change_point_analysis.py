@@ -5,12 +5,12 @@
 ##### normal libraries
 import ruptures as rpt
 
-
-##### my libraries
-
 ##### other files
 from classes.class_Graph_Estimator_Hawkes import *
 from classes.class_kernel import *
+
+
+##### my libraries
 
 
 def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_multi_plot_name=None):

@@ -1,11 +1,11 @@
 ##### normal libraries
 import math
 
-##### my libraries
-
 ##### other files
 from classes.class_kernel import *
 from functions_general_for_Hawkes import multi_list_generator
+
+##### my libraries
 
 np.random.seed(124)
 

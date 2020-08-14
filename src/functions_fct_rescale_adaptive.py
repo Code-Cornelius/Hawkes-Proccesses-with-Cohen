@@ -1,13 +1,12 @@
 # normal libraries
 import math  # quick math functions
+
 from scipy.stats.mstats import gmean
-
-# my libraries
-
-
 
 # other files
 from classes.class_kernel import *
+
+# my libraries
 
 np.random.seed(124)
 

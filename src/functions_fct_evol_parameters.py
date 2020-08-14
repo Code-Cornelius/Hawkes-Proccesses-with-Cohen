@@ -1,14 +1,14 @@
 import math
-import numpy as np
 from functools import partial
 
-# all of those functions are simply function that returns one element.
-
-# be sure that the behaviour for values bigger than T_max is ok.
-# Sometimes, I need the function for values slightly bigger than T_max (last event).
-
+import numpy as np
 
 import functions_general_for_Hawkes
+
+
+# all of those functions are simply function that returns one element.
+# be sure that the behaviour for values bigger than T_max is ok.
+# Sometimes, I need the function for values slightly bigger than T_max (last event).
 
 
 def constant_parameter(time, constant, T_max=0, time_burn_in=0):
