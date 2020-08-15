@@ -59,7 +59,7 @@ def rescaling_kernel_processing(times, first_estimate):
 
     # test that it works for multidimensional.
     # print(first_estimate)
-    # first_estimate = [[[0.1] , [[1.5,1.5],[1.5,1.5]] , [[5,5],[5,5]] ]]
+    # first_estimate = [[0.1] , [[1.5,1.5],[1.5,1.5]] , [[5,5],[5,5]] ]
     # print(first_estimate)
 
     for i in range(len(times)):

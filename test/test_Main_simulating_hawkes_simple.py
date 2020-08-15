@@ -109,7 +109,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(2, PARAMETERS)
+the_update_functions = update_functions(3, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
@@ -117,7 +117,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T = 3, 50 * mini_T
 else:
-    nb_of_guesses, T = 50,  80 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T = 50,  100 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T, M_PREC, endpoint=True)
 
@@ -181,7 +181,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         estimator_multi = Estimator_Hawkes()
         functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
         hist_test = Histogram_estimator_Hawkes(estimator_multi, the_update_functions)
-        hist_test.draw_histogram()
+        hist_test.draw()
         estimator_multi.to_csv(trash_path, index=False, header=True)
 
     def test_MSE(self):
@@ -202,7 +202,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                             tt, nb_of_guesses, silent=silent)
         stat_test = Statistic_plot_estimator_Hawkes(estimator_MSE, the_update_functions)
-        stat_test.convergence_estimators_limit(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
+        stat_test.draw(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
                                                computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
                                                fct_parameters = the_update_functions) # last parameter for hist.
         estimator_MSE.DF.to_csv(trash_path, index=False,
