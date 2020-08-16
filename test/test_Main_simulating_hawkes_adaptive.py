@@ -147,7 +147,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
-        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_3_first.csv'
+        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_0_first.csv'
+
+        considered_param = ['nu','alpha','beta']
 
         if test_mode:
             nb_of_times = 3
@@ -161,17 +163,17 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         # by looking at the previous estimation, we deduce the scaling
         # for that I take back the estimate
+        # there is a probelm of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
         my_estimator_dict = estimator_kernel.mean(separator='time estimation') #take back the value of the estimation at a given time.
-        #work-in-progress:
-        # round each key for an integer
-        my_estimator = []
+        my_estimator_dict = {int(key): my_estimator_dict[key] for key in my_estimator_dict.keys() }
+        list_of_estimation = []
         # mean returns a dict, so I create my list of list:
         for a_time in Times:
-            # work-in-progress:
-            # round each a_time for an integer
-            my_estimator.append(my_estimator_dict[a_time])
+            a_time = int(a_time)
+            list_of_estimation.append(my_estimator_dict[a_time])
 
-        my_scaling = functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, my_estimator)
+        my_scaling = functions_fct_rescale_adaptive.rescaling_kernel_processing(Times, list_of_estimation, considered_param)
+        print('the scaling : ', my_scaling)
         # the kernel is taken as biweight.
         list_of_kernels = functions_fct_rescale_adaptive.creator_list_kernels(my_scaling, b)
 
