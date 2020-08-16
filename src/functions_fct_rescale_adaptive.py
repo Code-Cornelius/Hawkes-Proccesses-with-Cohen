@@ -14,21 +14,24 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.2):
+def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.2, silent = True):
     if L is None:
         L = np.quantile(value_at_each_time, 0.15)
-    print("Left boundary : ", L)
     if R is None:
         R = np.quantile(value_at_each_time, 0.95)
-    print("Right boundary : ", R)
+
+    if not silent:
+        print("Left boundary : ", L)
+    if not silent:
+        print("Right boundary : ", R)
+
     xx = value_at_each_time - G
-    # xx[ (xx < -math.pi) | (xx > math.pi) ] = math.pi
 
     ans = 0
     scaling1 = math.pi / (G - L)
     scaling2 = math.pi / (R - G)
     # I fix the part outside of my interest, to be the final value, h. This part corresponds to math.pi.
-    # I also need the scaling by +50 given by math.pi
+    # I also need the scaling by +h/2 given by math.pi
 
     # xx2 and xx3 are the cosinus, but they are different cosinus.
     # So I fix them where I don't want them to move at 0 and then I can add the two functions.
@@ -39,19 +42,28 @@ def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.2):
     ans += - (h - l) / 2 * np.cos(my_xx2)
     ans += - (h - l) / 2 * np.cos(my_xx3)
 
-    ans += l  # avoid infinite width kernel
+    ans += l  # avoid infinite width kernel, with a minimal value.
     return ans
 
 
-def classical_rescale(times, G=10., gamma=0.5):
+def AKDE_scaling(times, G=10., gamma=0.5):
     xx = times
     print("classical_rescale", xx)
     ans = np.power(xx / G, -gamma)
     print("classical_rescale", ans)
     return ans
 
+def rescale_min_max(vect):
+    the_max = max(vect)
+    the_min = min(vect)
+    the_mean = classical_functions.mean_list(vect)
+    ans = [ (vect[i] - the_mean) /(the_max - the_min) + 1  for i in range(len(vect))]
+    return ans
 
-def rescaling_kernel_processing(times, first_estimate,considered_param):
+
+def rescaling_kernel_processing(times, first_estimate,considered_param, silent = True):
+    #todo change considered param for the tol and which_moving_parameters
+
     # on the first entry, I get the time, on the second entry I get nu alpha or beta, then it s where in the matrix.
     #considered_param should be which parameters are important to consider.
 
@@ -91,37 +103,62 @@ def rescaling_kernel_processing(times, first_estimate,considered_param):
                     vect_of_estimators[M + M * M + i + j].append(first_estimate[k][2][i][j])
 
 
-    def rescale_min_max(vect):
-        the_max = max(vect)
-        the_min = min(vect)
-        the_mean = classical_functions.mean_list(vect)
-        ans = [ (vect[i] - the_mean) /(the_max - the_min) + 1  for i in range(len(vect))]
-        return ans
-
     # perhaps not include the betas
     rescale_vector = [0]* (total_M)
     for i in range(total_M):
         rescale_vector[i] = rescale_min_max(vect_of_estimators[i])
-    print("vect  :", vect_of_estimators)
 
-    print("interm :", rescale_vector)
     for j in range(len(times)):
         ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(total_M)] , 2)
-    print("the norms ", ans)
     # I compute the geometric mean from our estimator.
     G = gmean(ans)
-    print('mean : ', G)
-    scaling_factors = my_rescale_sin(ans, G=G)
+    if not silent:
+        print("vect  :", vect_of_estimators)
+        print("interm :", rescale_vector)
+        print("the norms ", ans)
+        print('mean : ', G)
+    scaling_factors = my_rescale_sin(ans, G=G, silent = silent)
     return scaling_factors
 
 
-def creator_list_kernels(my_scalings, previous_scaling):
+def creator_list_kernels(my_scalings, previous_width):
     # the kernel is taken as biweight.
     list_of_kernels = []
     for scale in my_scalings:
-        new_scaling = previous_scaling / scale
+        new_scaling = previous_width / scale
         list_of_kernels.append(Kernel(fct_biweight, name="biweight", a=-new_scaling, b=new_scaling))
     return list_of_kernels
+
+
+def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, silent = True):
+    # by looking at the previous estimation, we deduce the scaling
+    # for that I take back the estimate
+    # there is a problem of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
+    my_estimator_dict = my_estimator_mean_dict.mean(separator='time estimation')  # take back the value of the estimation at a given time.
+    my_estimator_dict = {int(key): my_estimator_dict[key] for key in my_estimator_dict.keys()}
+    list_of_estimation = []
+    # mean returns a dict, so I create my list of list:
+    for a_time in Times:
+        a_time = int(a_time)
+        list_of_estimation.append(my_estimator_dict[a_time])
+
+    my_scaling = rescaling_kernel_processing(Times, list_of_estimation, considered_param, silent = silent)
+    if not silent:
+        print('the scaling : ', my_scaling)
+    # the kernel is taken as biweight.
+    list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_width=half_width)
+    return list_of_kernels
+
+
+
+
+
+# section ######################################################################
+#  #############################################################################
+# test
+
+
+
 
 ############ test adaptive window
 # T_t = [np.linspace(0.1,100,10000)]
