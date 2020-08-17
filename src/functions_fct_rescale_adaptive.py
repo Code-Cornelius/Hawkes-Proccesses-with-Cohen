@@ -14,14 +14,14 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=3, l=0.2, silent = True):
+def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent = True):
     if not G: # G == 0, it happens if no norm computed.
         return np.full(len(value_at_each_time), 1)
 
     if L is None:
-        L = np.quantile(value_at_each_time, 0.15)
+        L = np.quantile(value_at_each_time, 0.02)
     if R is None:
-        R = np.quantile(value_at_each_time, 0.95)
+        R = np.quantile(value_at_each_time, 0.98)
 
     if not silent:
         print("Left boundary : ", L)
@@ -73,7 +73,7 @@ def check_evoluating(vector, tol):
 
     '''
     the_mean = classical_functions.mean_list(vector)
-    if all(element < the_mean + tol for element in vector) and all(element > the_mean - tol for element in vector):
+    if all(element < the_mean * (1+ tol) for element in vector) and all(element > the_mean*(1-tol) for element in vector):
         return False
     return True
 
@@ -149,7 +149,7 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
     # for that I take back the estimate
     # there is a problem of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
 
-    #tolerance is by how much the dimension has to move in order to consider that it is worth updating wrt to it.
+    #tolerance is by how much the dimension has to move in order to consider that it is worth updating wrt to it. Tol is % of base value.
 
     my_estimator_dict = my_estimator_mean_dict.mean(separator='time estimation')  # take back the value of the estimation at a given time.
     my_estimator_dict = {int(key): my_estimator_dict[key] for key in my_estimator_dict.keys()}
