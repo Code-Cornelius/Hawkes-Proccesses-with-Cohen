@@ -163,7 +163,7 @@ class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
                             kernel = list_of_kernels[kernel_counter]
                         else:
                             kernel_counter +=1
-                    if kernel_counter > len(list_of_kernels):
+                    if kernel_counter > len(list_of_kernels): # if he hasn't found the kernel, there is an error.
                         raise("The kernels given and ploted are not matching.")
                     tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
                     yy = kernel.eval(tt, Time, self.T_max)
