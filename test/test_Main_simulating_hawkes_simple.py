@@ -73,6 +73,9 @@ def choice_parameter(dim, styl):
         MU = [0.2, 0.2, 0.2, 0.2, 0.2]
         T0, mini_T = 0, 5
 
+    else :
+        raise("HAAAAAA")
+
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
                                                                                                 dtype=np.float)  # I precise the type because he might think the np.array is int type.
     PARAMETERS = [MU.copy(), ALPHA.copy(), BETA.copy()]

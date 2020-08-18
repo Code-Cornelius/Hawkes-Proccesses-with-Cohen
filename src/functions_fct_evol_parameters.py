@@ -57,10 +57,12 @@ def update_functions(case, PARAMETERS):
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, ALPHA[i, j], T_max=T_max,
-                                                                                       time_burn_in=time_burn_in), i=i, j=j)
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max,
-                                                                                       time_burn_in=time_burn_in), i=i,j=j)
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
 
     # for 7500 jumps, do 70 with first sets of param dim 1
     if case == 1:
@@ -73,31 +75,40 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: linear_growth(time, BETA[i, j] * 0.8 - ALPHA[i, j],
                                                                                   ALPHA[i, j], T_max,
-                                                                                  time_burn_in=time_burn_in), i=i, j=j)  # it goes up to BETA 90%
+                                                                                  time_burn_in=time_burn_in), i=i,
+                            j=j)  # it goes up to BETA 90%
 
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.linear_growth(time, 3, BETA[i, j], T_max, time_burn_in = time_burn_in)
                 the_update_functions[2][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max, time_burn_in=time_burn_in), i=i, j=j)
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max,
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
 
     # for 7500 jumps, do 80 with first sets of param dim 1
     elif case == 2:
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, i: one_jump(time, 0.7, MU[i], 1.7 * MU[i], T_max,time_burn_in=time_burn_in), i=i)
+                partial(lambda time, T_max, time_burn_in, i: one_jump(time, 0.7, MU[i], 1.7 * MU[i], T_max,
+                                                                      time_burn_in=time_burn_in), i=i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, i, j: one_jump(time, 0.4, BETA[i, j] * 0.7, -0.5,T_max, time_burn_in=time_burn_in), i=i,j=j)
+                    partial(lambda time, T_max, time_burn_in, i, j: one_jump(time, 0.4, BETA[i, j] * 0.7, -0.5, T_max,
+                                                                             time_burn_in=time_burn_in), i=i, j=j)
                 # the_update_functions[2][i][j] = \
                 #     lambda time, T_max, time_burn_in: functions_fct_evol_parameters.one_jump(time, 0.4, BETA[i, j], BETA[i, j], T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max,time_burn_in=time_burn_in), i=i,j=j)
+                    partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j], T_max=T_max,
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
 
     # for 7500 jumps, do 100 with first sets of param dim 1
     elif case == 3:
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, i: moutain_jump(time, when_jump=0.7, a=MU[i], b=MU[i], base_value=MU[i] * 1., T_max=T_max,time_burn_in=time_burn_in), i=i)
+                partial(lambda time, T_max, time_burn_in, i: moutain_jump(time, when_jump=0.7, a=MU[i], b=MU[i],
+                                                                          base_value=MU[i] * 1., T_max=T_max,
+                                                                          time_burn_in=time_burn_in), i=i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: moutain_jump(time, when_jump=0.5,
@@ -113,7 +124,9 @@ def update_functions(case, PARAMETERS):
                 #                                                                    T_max=T_max, time_burn_in= time_burn_in)
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j],
-                                                                                       T_max=T_max, time_burn_in=time_burn_in), i=i, j=j)
+                                                                                       T_max=T_max,
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
     # for 7500 jumps, do 65 with first sets of param dim 1
     elif case == 4:
         for i in range(M):
@@ -131,5 +144,6 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[2][i][j] = \
                     partial(lambda time, T_max, time_burn_in, i, j: constant_parameter(time, BETA[i, j],
                                                                                        T_max=T_max,
-                                                                                       time_burn_in=time_burn_in), i=i, j=j)
+                                                                                       time_burn_in=time_burn_in), i=i,
+                            j=j)
     return the_update_functions

@@ -14,8 +14,8 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent = True):
-    if not G: # G == 0, it happens if no norm computed.
+def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent=True):
+    if not G:  # G == 0, it happens if no norm computed.
         return np.full(len(value_at_each_time), 1)
 
     if L is None:
@@ -56,12 +56,14 @@ def AKDE_scaling(times, G=10., gamma=0.5):
     print("classical_rescale", ans)
     return ans
 
+
 def rescale_min_max(vect):
     the_max = max(vect)
     the_min = min(vect)
     the_mean = classical_functions.mean_list(vect)
-    ans = [ (vect[i] - the_mean) /(the_max - the_min) + 1  for i in range(len(vect))]
+    ans = [(vect[i] - the_mean) / (the_max - the_min) + 1 for i in range(len(vect))]
     return ans
+
 
 def check_evoluating(vector, tol):
     ''' if all values of the vector are inside the tube mean +/- tol, return false.
@@ -73,26 +75,28 @@ def check_evoluating(vector, tol):
 
     '''
     the_mean = classical_functions.mean_list(vector)
-    if all(element < the_mean * (1+ tol) for element in vector) and all(element > the_mean*(1-tol) for element in vector):
+    if all(element < the_mean * (1 + tol) for element in vector) and all(
+            element > the_mean * (1 - tol) for element in vector):
         return False
     return True
 
-def rescaling_kernel_processing(times, first_estimate,considered_param, tol = 0, silent = True):
-    #todo change considered param for the tol and which_moving_parameters
+
+def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, silent=True):
+    # todo change considered param for the tol and which_moving_parameters
 
     # on the first entry, I get the time, on the second entry I get nu alpha or beta, then it s where in the matrix.
-    #considered_param should be which parameters are important to consider.
+    # considered_param should be which parameters are important to consider.
 
     # ans is my vector of normes. Each value is for one time.
     ans = np.zeros(len(times))
 
-    #times and first_estimate same length.
+    # times and first_estimate same length.
     # I need to pick the good parameters and rescale them accordingly.
 
     # the dimension of the data.
     M = len(first_estimate[0][0])
-    total_M = 2*M*M + M
-    include_estimation = [False]* total_M
+    total_M = 2 * M * M + M
+    include_estimation = [False] * total_M
     # I am creating a vector with 2M*M + M entries, each one is going to be scaled, and this is the parameters I am using afterwards.
     vect_of_estimators = [[] for _ in range(total_M)]
     for k in range(len(times)):
@@ -106,13 +110,13 @@ def rescaling_kernel_processing(times, first_estimate,considered_param, tol = 0,
         # check the parameters I need to check.
         if i < M and 'nu' in considered_param:
             include_estimation[i] = True
-        elif i < M + M*M and 'alpha' in considered_param:
+        elif i < M + M * M and 'alpha' in considered_param:
             include_estimation[i] = True
         elif 'beta' in considered_param:
             include_estimation[i] = True
 
         if include_estimation[i]:
-            if not check_evoluating(vect_of_estimators[i],tol): # we don't keep the True
+            if not check_evoluating(vect_of_estimators[i], tol):  # we don't keep the True
                 include_estimation[i] = False
     if not silent:
         print("which dim to include for norm : ", include_estimation)
@@ -123,15 +127,15 @@ def rescaling_kernel_processing(times, first_estimate,considered_param, tol = 0,
             rescale_vector.append(rescale_min_max(vect_of_estimators[i]))
 
     for j in range(len(times)):
-        ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector) )], 2)
+        ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
     # I compute the geometric mean from our estimator.
     G = gmean(ans)
     if not silent:
         print("vect  :", vect_of_estimators)
-        #print("interm :", rescale_vector)
+        # print("interm :", rescale_vector)
         print("the norms ", ans)
-        #print('mean : ', G)
-    scaling_factors = my_rescale_sin(ans, G=G, silent = silent)
+        # print('mean : ', G)
+    scaling_factors = my_rescale_sin(ans, G=G, silent=silent)
     return scaling_factors
 
 
@@ -144,14 +148,15 @@ def creator_list_kernels(my_scalings, previous_width):
     return list_of_kernels
 
 
-def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, tol = 0.1, silent = True):
+def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, tol=0.1, silent=True):
     # by looking at the previous estimation, we deduce the scaling
     # for that I take back the estimate
     # there is a problem of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
 
-    #tolerance is by how much the dimension has to move in order to consider that it is worth updating wrt to it. Tol is % of base value.
+    # tolerance is by how much the dimension has to move in order to consider that it is worth updating wrt to it. Tol is % of base value.
 
-    my_estimator_dict = my_estimator_mean_dict.mean(separator='time estimation')  # take back the value of the estimation at a given time.
+    my_estimator_dict = my_estimator_mean_dict.mean(
+        separator='time estimation')  # take back the value of the estimation at a given time.
     my_estimator_dict = {int(key): my_estimator_dict[key] for key in my_estimator_dict.keys()}
     list_of_estimation = []
     # mean returns a dict, so I create my list of list:
@@ -160,8 +165,8 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
         list_of_estimation.append(my_estimator_dict[a_time])
 
     my_scaling = rescaling_kernel_processing(
-        times = Times, first_estimate = list_of_estimation,
-        considered_param = considered_param, tol = tol, silent = silent)
+        times=Times, first_estimate=list_of_estimation,
+        considered_param=considered_param, tol=tol, silent=silent)
     if not silent:
         print('the scaling : ', my_scaling)
     # the kernel is taken as biweight.
