@@ -139,12 +139,16 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, 
     return scaling_factors
 
 
-def creator_list_kernels(my_scalings, previous_width):
+def creator_list_kernels(my_scalings, previous_half_width):
     # the kernel is taken as biweight.
     list_of_kernels = []
     for scale in my_scalings:
-        new_scaling = previous_width / scale
-        list_of_kernels.append(Kernel(fct_biweight, name="biweight", a=-new_scaling, b=new_scaling))
+        new_scaling = previous_half_width / scale
+        list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {previous_half_width} width",
+                                      a=-new_scaling, b=new_scaling))
+        #list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {2*new_scaling} width",
+        #                              a=-new_scaling, b=new_scaling)) # I would have put the scaling but that would have been a problem.
+        # for plots. So I keep it simple with the previous width.
     return list_of_kernels
 
 

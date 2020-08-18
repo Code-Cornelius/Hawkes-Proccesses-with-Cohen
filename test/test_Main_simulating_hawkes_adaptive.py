@@ -166,7 +166,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                  considered_param = considered_param, half_width = b, tol = 0.1, silent=silent)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
-        adaptive_estimator_kernel = estimator_kernel
         actual_state = [0]  # initialization
 
         @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
@@ -183,11 +182,11 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         ############################## second step
         count_times = 0
 
-        # for a_time, kernel in zip(Times, list_of_kernels):
-        #     print(HAWKSY(a_time, T_max))
-        #     count_times += 1
-        #     actual_state[0] += 1
-        #     simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent)
+        for a_time, kernel in zip(Times, list_of_kernels):
+            print(HAWKSY(a_time, T_max))
+            count_times += 1
+            actual_state[0] += 1
+            simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent)
 
         evol_kernels = Evolution_plot_estimator_Hawkes(adaptive_estimator_kernel, the_update_functions)
         plot_param = list_of_kernels, Times
