@@ -33,7 +33,8 @@ def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent=T
     ans = 0
     scaling1 = math.pi / (G - L)
     scaling2 = math.pi / (R - G)
-    # I fix the part outside of my interest, to be the final value, h. This part corresponds to math.pi.
+    # I fix the part outside of my interest, to be the final value, h.
+    # This part corresponds to math.pi.
     # I also need the scaling by +h/2 given by math.pi
 
     # xx2 and xx3 are the cosinus, but they are different cosinus.
@@ -82,9 +83,8 @@ def check_evoluating(vector, tol):
 
 
 def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, silent=True):
-    # todo change considered param for the tol and which_moving_parameters
-
-    # on the first entry, I get the time, on the second entry I get nu alpha or beta, then it s where in the matrix.
+    # on the first entry, I get the time, on the second entry I get nu alpha or beta,
+    # then it s where in the matrix.
     # considered_param should be which parameters are important to consider.
 
     # ans is my vector of normes. Each value is for one time.
@@ -97,7 +97,8 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, 
     M = len(first_estimate[0][0])
     total_M = 2 * M * M + M
     include_estimation = [False] * total_M
-    # I am creating a vector with 2M*M + M entries, each one is going to be scaled, and this is the parameters I am using afterwards.
+    # I am creating a vector with 2M*M + M entries, each one is going to be scaled,
+    # and this is the parameters I am using afterwards.
     vect_of_estimators = [[] for _ in range(total_M)]
     for k in range(len(times)):
         for i in range(M):
