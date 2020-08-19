@@ -175,7 +175,7 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
     if not silent:
         print('the scaling : ', my_scaling)
     # the kernel is taken as biweight.
-    list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_width=half_width)
+    list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_half_width=half_width)
     return list_of_kernels
 
 
