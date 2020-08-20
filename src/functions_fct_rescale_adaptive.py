@@ -16,7 +16,8 @@ np.random.seed(124)
 
 def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent=True):
     if not G:  # G == 0, it happens if no norm computed.
-        return np.full(len(value_at_each_time), 1)
+    #then it has to return 0.01 such that it widen all the kernels.
+        return np.full(len(value_at_each_time), 0.01)
 
     if L is None:
         L = np.quantile(value_at_each_time, 0.02)
