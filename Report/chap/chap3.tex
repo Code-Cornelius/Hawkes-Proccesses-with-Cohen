@@ -1,0 +1,112 @@
+\chapter{Estimation: Advanced Glance on the Question}
+\section{Weighted MLE}
+\subsection{Theory of Weighting}
+Following the computations from \cite{Ozaki} and \cite{Likelihood_Hawkes} about the likelihood function of a Hawkes process, we get a formula for a multidimensional ($ M \in \mathbb N^*$) Hawkes process, defined on the interval $[0,T]$, with jumps at times: $ \forall m \leq M: 0 < t_{1}^m \cdots < t_{n_m}^m \leq T $.
+
+We recall that $ \Tau^m $ is referring to the list history, including the jumps' time $( t_{1}^m, \cdots , t_{n_m}^m ) $, and the marks; $\Theta$ represents the set of parameters of the process. Finally, the superscript visible on $L^m$ is mentioned in order to avoid confusion between each likelihood function of each marginal process (with respect to the multi-dimensional Hawkes process). The marginal log-likelihood reads (cf. eq. (\ref{eq:intensity_lambda})):
+
+
+\begin{equation}
+\ln L^m( \Theta \mid \Tau ) = - \int_0^T \lambda^{m} ( s \mid \Theta , \Tau ) ds + \int_0^T \ln \lambda^{m}( s \mid \Theta , \Tau ) d N_s^m \label{eq:log_likelihood}
+\end{equation}
+
+
+
+In section II from \cite{weighted_likelihood}, and by coining the weight function $w$\footnote{also called in the following kernel. We will introduce a difference of realm between the two in the next section in footnote \ref{section:diff_kernel_weights}. Since the difference is quite subtle, we use weights, kernel and window interchangeably.}, they define the weighted estimating equation as:
+
+\begin{equation}
+\ln W L ( \Theta \mid \{ X_1, \cdots, X_n \} ) = \sum_1^n  w(X_i) \ln f( X_i \mid \Theta ) 
+\end{equation}
+
+We emphasize on the notation WL to highlight the spirit of the weighted likelihood estimation problem, which is different from the classic likelihood estimation problem.
+
+
+In our case scenario, we add up a time dependence upon the kernel, and replace the $\sequence{X_i}$'s by $\sequence{t_i}$'s.
+
+
+Remember that we had from eq. (\ref{eq:ln_multi}):
+ 
+\begin{equation}
+\ln L( \Theta \mid \Tau ) = \sum_1^M \ln L^m( \Theta \mid \Tau )
+\end{equation}
+
+And this is also true for the weighted likelihood. Hence, focusing on our marginal weighted likelihood, the estimating equation reduces to:
+
+
+
+\begin{align}
+\ln W L^m( \Theta \mid \Tau ) &= - \int_0^T w(s) \lambda^{m} ( s \mid \Theta , \Tau ) ds + \int_0^T w(s) \ln \lambda^{m} ( s \mid \Theta , \Tau ) d N_s^m  
+\label{eq:weighted_log_likelihood} \\
+&=  - \int_0^T w(s) \lambda^{m} ( s \mid \Theta , \Tau )  ds +  \sum^{n_m}_i  w(t_i) \ln \lambda^{m} ( t_i \mid \Theta , \Tau )  \label{eq:weighted_log_likelihood2} 
+\end{align}
+
+Notice how if all the weights are equal to unity, then the resulting estimator is the usual maximum likelihood estimator, i.e. if $w \equiv 1$, then eq. (\ref{eq:weighted_log_likelihood}) becomes eq. (\ref{eq:log_likelihood}). We wrote down explicitly eq. (\ref{eq:weighted_log_likelihood2}) in order to emphasize how the kernel function becomes random through the jumps' time $t_i$. 
+
+Weighting should be a way to rescale the information at our disposal. For that reason, we restrict the set of considered kernels to be of norm $T$:
+
+$$\Omega_w := \{ w \colon \mathbb R \to \mathbb R, \text{ such that : } \norm{w}_{L^1 } = T \} $$
+
+By this, we ensure that we conserve, using the physical expression, the energy of each integrand. Also, notice that for the non-weighted case, when $w \equiv 1$, its norm is equal to $T$. That's the reason why we fix the value of the norm of every kernel inside $\Omega_w$ to $T$. Also, we do not need any other restriction on the considered functions. However, one usually considers fixing as well the positivity of kernel and its first moments, for identifiability reasons. Those conditions ensure that the kernels are densities, an enjoyable feature when one estimates densities. 
+
+\subsection{Advantage and Notation of WMLE}
+
+The idea behind using weighted likelihood is that by using a non-constant weight function, solving for the maximum likelihood estimator given by eq. (\ref{eq:weighted_log_likelihood}) can potentially outperform the one given by eq. (\ref{eq:log_likelihood}). 
+
+Let's think about the two extreme cases: 
+
+\begin{enumerate}
+\item a constant kernel considers all the jumps equally and hence, computes an estimator that is equal to the average of the whole simulation time $[0,T]$.
+\item a kernel that considers only a small region will give a very precise estimate for that given region, but with much more variability over the time.
+\end{enumerate}
+
+This phenomenon is due to the well-known bias/variance trade-off.
+\label{section:bias-variance_trade-off}
+
+Essentially, we want to take advantage of the fact that a larger weight w(s) gives to observations in the infinitesimal region $ds$ more influence on the estimation process. This would allow us to estimate parameters that are time dependent by adding that dependence within kernels. Now the main question shall be which kernel should we chose. Recall what Silverman said in \cite{Silverman} at page 43:
+
+\vspace{0.5cm}
+\textit{It should never be forgotten that the appropriate choice of smoothing parameter will always be influenced by the purpose for which the density estimate is to be used. }
+\vspace{0.5cm}
+
+
+\label{section:kernel_weights_first_conversation}
+In the rest of the chapter, we delve into the choice of such windows in order to optimize the performances of the WMLE. Our aim being to estimate parameters that are time dependent, we add that dependency to the WMLE through the kernel, which should be written consequently $w_t$. However, for clarity, it will be kept as $w$. We need to mention an important matter in order to avoid any confusion. Our weight function is evaluated at the points $\sequence{t_i}$ when the jumps of the Hawkes process occur. Also, the time dependence is introduced by centring the kernel around $t$ by a classic substitution: 
+
+$$w(t_i) \to w(  t_i - t ) $$
+
+For the same reasons as not underlying $t$ as a subscript, we are not going to write this change of variable inside $w$, in the exact same way we did so far. The times $t$ at which we want to estimate the parameters can't be coined as $\sequence{t_i}$ since it is already our notation for the jumps' time. Hence, we will write these times as $\sequencetime$.
+
+In the following, we are going to delve into the theory of KDE, where it is common to use the letter $K$ instead of $w$. Also, the objective is slightly different. KDE's aim is to find the estimate of a function $f$ evaluated at the point $t$ by using kernels centred around $t_i$. For that reason, people are using kernels with the following substitution:
+
+$$ K(t) \to K(t - t_i)$$
+
+Hence, in order to avoid confusion, we keep for a few theoretical sections the notation $K$ for kernels, within which we write the substitution. Later, we do propose a definition in section \ref{section:equivalence_bi_rep} that splits the two objects into distinct concepts.
+
+
+\subsection{WMLE Algorithm}
+It could be possible to parametrize the MLE we are using. However, we are not changing at the essence, the algorithm from the previous chapter. 
+
+The necessary adaptation one has to do is to multiply the contribution of each jump to the log-likelihood by the corresponding weight. This is a given, as long as the weights are $\alpha, \beta, \nu$-independent\footnote{Ensuring that the derivatives do not change, up to a multiplicative constant.}. 
+
+The idea of mixing the dependency of the parameters inside the weights in order to improve performances is something that could be done. It would basically be parametrizing the MLE. If for instance we are estimating the parameter at $t_2$ with $t_1 < t_2$, an idea could be to use the already done estimation at $t_1$ for computing the estimation at $t_2$.
+
+
+
+
+
+\section{Choice of the Window}
+
+We mentioned our wish of estimating the parameters with some time-dependence. By inspiring ourselves from kernel density estimation (KDE) theory, we hope to be also able to estimate correctly the evolution of the parameters through time. The main difference between KDE and our task is that our estimate won't be a density function\footnote{Hence, the integral of the function does not have to yield $1$. However, notice that the condition set on our model ensures that all parameters are positive, thus, the functions are always positive}. 
+
+In the following, we consider solely $1$-D kernels, which are weighting the maximum likelihood estimation\footnote{Kernels are by definition density functions usually coined in the literature by the symbol $K$. On the other hand, we are interested in weights $w$. For the following theoretical bit, we keep the notation from KDE since it is where the ideas come from. However, without loss of generality, one can scale kernels in order to get weights back. Thus, kernels are to weights what probability measures are to measures\label{section:diff_kernel_weights}.}. The latter leads to a parameter $\theta^* \in \Theta$, the MLE, which belongs to $\mathbb R^{m+2 m^2}$. We shall also underline on the variable the dependency on time $t$ with a subscript, which comes from the evaluation of the kernel at a precise time. If the variable $t$ was continuous, we would hence have a function $$\theta^*_t \colon \mathbb R  \to R^{m+2 m^2} $$
+
+We would like to find the such best function, with respect to certain criteria, with respect to the choice of the kernel. For the theoretical part, we will look at a real-valued function $f$ without loss of generality. Indeed, defining an operator on $f$ is equivalent to define an operator on $\norm{\theta^*_t}$ where $\norm{\cdot}$ is any norm equipping $\mathbb R$.
+\label{section:multi_to_uni}
+\label{section:kernel_to_weights}
+
+
+
+
+
+
+

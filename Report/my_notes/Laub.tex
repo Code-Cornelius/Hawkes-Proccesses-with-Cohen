@@ -1,0 +1,92 @@
+\documentclass[11pt]{book}
+\input{configuration} % various packages needed for maths etc.
+
+
+
+\begin{document}
+\frontmatter
+\pagestyle{front}
+
+\mainmatter
+\pagestyle{main}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{birth immigration process}
+
+\begin{theoreme}{A}
+$$0 < n   := \int_0^{\infty} \mu (s) ds < 1  $$ 
+
+and 
+
+$$\int_0^{\infty} s \mu(s) ds < \infty $$
+
+then the number of HP arrivals in $[0,t]$ is asymptotically normally distributed.
+\end{theoreme}
+
+We say that the direct offspring of the natural process are called the first-generation, and their offspring belong to the second-generation and so on. The union of all generations bigger than $1$ are naturally called the descendants.
+
+We can compute the branching ratio. It is defined as the $L^1$ norm of the underlying process and in the case of an exponentially decaying intensity we get:
+
+$$ n = \frac{\alpha}{\beta} $$
+
+It is possible to inspire from the immigration-birth representation in order to simulate the process.
+
+
+
+\section{stationarity}
+
+the term `stationary' has many different meanings in probability theory. In this context the HP is stationary when the jump process $(dN(t) : t \geq 0)$, which takes values in $\{0; 1\}$, is
+weakly stationary. This means that $\E[dN(t)]$ and $\Cov(dN(t)$; $dN(t+s))$ do not depend on $t$. Stationarity
+in this sense does not imply stationarity of $N(\cdot)$ or stationarity of the inter-arrival times [25]. One
+consequence of stationarity is that $\lambda^* ( \cdot )$ will have a long term mean.
+25 is P.A. Lewis, Journal of Sound and Vibration 12(3), 353 (1970)
+
+
+Asmussen in 24. S. Asmussen, Applied Probability and Queues, 2nd edn. Applications of Mathematics: Stochastic Modelling and
+Applied Probability (Springer, 2003) is showing $$\E [ \lambda(t) ] \to_{t \to \infty } \frac{\nu}{1-n}$$
+
+and when $n < 1$, thr autocovariance defined as $$ R( \tau ) = \Cov \left ( \frac{dN(t)}{dt}, \frac{dN(t)}{dt} \right )= \frac{\alpha \beta \lambda ( 2 \beta - \alpha ) }{2 ( \beta - \alpha ) ^2 }  e^{- ( \beta - alpha ) \tau }  $$
+
+
+
+\section{markov}
+
+Apparently $(N(t), \lambda(t \mid \mathcal F_{t^-} ))$ is markovian, cf the phd thesis. 
+
+\cleardoublepage% le corps du document est terminé
+\appendix
+\pagestyle{back}
+
+
+
+
+
+\backmatter
+\end{document}
