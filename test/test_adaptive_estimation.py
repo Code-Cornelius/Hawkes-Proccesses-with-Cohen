@@ -103,7 +103,7 @@ M_PREC += 1
 #  #############################################################################
 # simulation
 
-silent = False
+silent = True
 test_mode = False
 
 # section ######################################################################
@@ -120,7 +120,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T_max = 3, 50 * mini_T
 else:
-    nb_of_guesses, T_max = 50, 120 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, 80 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
@@ -181,7 +181,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
 
 
-    def test_simple_multi(self):
+    def test_simple_estimation_multi(self):
         estimator_multi = Estimator_Hawkes()
         functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
         hist_test = Histogram_estimator_Hawkes(estimator_multi, the_update_functions)

@@ -1,7 +1,7 @@
 import decorators_functions
 import functions_change_point_analysis
 import functions_fct_rescale_adaptive
-from test.test_Main_simulating_hawkes_simple import *
+from test.test_adaptive_estimation import *
 
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
@@ -10,6 +10,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def tearDown(self):
         plt.show()
+    # TODO 21/08/2020 nie_k:  over the time
+    # TODO draw over he time
+
+    # TODO same for one, two and full estimation.
 
     def test_over_the_time_simple(self):
         to_be_simulated = False
@@ -150,8 +154,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     def test_over_the_time_adaptive_two(self):
         to_be_simulated = True
         path = second_estimation_path
-        path_1 = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\super_0_first.csv'
-        path_2 = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\super_3_second.csv'
+        path_1 = '/first_estimation/super_2_first.csv'
+        path_2 = '/first_estimation/super_3_second.csv'
 
         considered_param = ['nu','alpha','beta']
 
