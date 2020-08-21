@@ -87,7 +87,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     def test_over_the_time_adaptive_one(self):
         to_be_simulated = True
         path = first_estimation_path
-        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_4_first.csv'
+        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_2_first.csv'
 
 
         if test_mode:
@@ -148,7 +148,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two(self):
-        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_4_first.csv'
+        to_be_simulated = True
+        path = second_estimation_path
+        path_1 = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\super_0_first.csv'
+        path_2 = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\super_3_second.csv'
 
         considered_param = ['nu','alpha','beta']
 
@@ -160,7 +163,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         width_kernel = 1 / 5. * T_max
         b = width_kernel / 2.
         Times = np.linspace(0.05 * T_max, 0.95 * T_max, nb_of_times)
-        estimator_kernel = Estimator_Hawkes.from_path(path)
+        estimator_kernel = Estimator_Hawkes.from_path(path_1)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
                                  considered_param = considered_param, half_width = b, tol = 0.1, silent=silent)
@@ -168,31 +171,38 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         adaptive_estimator_kernel = Estimator_Hawkes()
         actual_state = [0]  # initialization
 
-        @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
-                                                    multiplicator_factor=0.9,
-                                                    actual_state=actual_state)
-        def simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent):
-            print(''.join(["\n", "=" * 78]))
-            print(f"Time : {count_times} out of : {len(Times)}.")
-            functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, tt=tt,
-                                                            nb_of_guesses=nb_of_guesses,
-                                                            kernel_weight=kernel, time_estimation=a_time,
-                                                            silent=silent)
+        if to_be_simulated:
+            @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
+                                                        multiplicator_factor=0.9,
+                                                        actual_state=actual_state)
+            def simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent):
+                print(''.join(["\n", "=" * 78]))
+                print(f"Time : {count_times} out of : {len(Times)}.")
+                functions_for_MLE.multi_estimations_at_one_time(HAWKSY, adaptive_estimator_kernel, tt=tt,
+                                                                nb_of_guesses=nb_of_guesses,
+                                                                kernel_weight=kernel, time_estimation=a_time,
+                                                                silent=silent)
 
-        ############################## second step
-        count_times = 0
+            ############################## second step
+            count_times = 0
 
-        for a_time, kernel in zip(Times, list_of_kernels):
-            print(HAWKSY(a_time, T_max))
-            count_times += 1
-            actual_state[0] += 1
-            simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent)
+            for a_time, kernel in zip(Times, list_of_kernels):
+                print(HAWKSY(a_time, T_max))
+                count_times += 1
+                actual_state[0] += 1
+                simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent)
 
-        evol_kernels = Evolution_plot_estimator_Hawkes(adaptive_estimator_kernel, the_update_functions)
-        plot_param = list_of_kernels, Times
-        evol_kernels.draw(separator_colour='weight function', kernel_plot_param=plot_param)
-        adaptive_estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
+            evol_kernels = Evolution_plot_estimator_Hawkes(adaptive_estimator_kernel, the_update_functions)
+            plot_param = list_of_kernels, Times
+            evol_kernels.draw(separator_colour='weight function', kernel_plot_param=plot_param)
+            adaptive_estimator_kernel.to_csv(second_estimation_path, index=False, header=True)
 
+        else :
+            evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_2, the_update_functions)
+            plot_param = list_of_kernels, Times
+            # I am plotting many kernels here.
+            evol_graph.draw(separator_colour='weight function',
+                               kernel_plot_param=plot_param)
 
 
 

@@ -43,7 +43,7 @@ def choice_parameter(dim, styl):
             T0, mini_T = 0, 45  # 50 jumps for my uni variate stuff
 
 
-    if dim == 2:
+    elif dim == 2:
         if styl ==1:
             ALPHA = [[2, 1],
                      [1, 2]]
@@ -51,7 +51,7 @@ def choice_parameter(dim, styl):
                     [4, 7]]
             MU = [0.2, 0.2]
             T0, mini_T = 0, 70
-        if styl == 2:
+        elif styl == 2:
             ALPHA = [[2, 2],
                      [1, 2]]
             BETA = [[5, 3],
@@ -59,7 +59,7 @@ def choice_parameter(dim, styl):
             MU = [0.4, 0.3]
             T0, mini_T = 0, 12
 
-    if dim == 5:
+    elif dim == 5:
         ALPHA = [[2, 1, 0.5, 0.5, 0.5],
                  [1, 2, 0.5, 0.5, 0.5],
                  [0, 0, 0.5, 0, 0],
@@ -74,7 +74,7 @@ def choice_parameter(dim, styl):
         T0, mini_T = 0, 5
 
     else :
-        raise("HAAAAAA")
+        raise Exception("HAAAAAA")
 
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
                                                                                                 dtype=np.float)  # I precise the type because he might think the np.array is int type.
@@ -103,7 +103,7 @@ M_PREC += 1
 #  #############################################################################
 # simulation
 
-silent = True
+silent = False
 test_mode = False
 
 # section ######################################################################
@@ -112,7 +112,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(4, PARAMETERS)
+the_update_functions = update_functions(0, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
@@ -120,7 +120,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T_max = 3, 50 * mini_T
 else:
-    nb_of_guesses, T_max = 50, 65 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, 120 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
@@ -128,10 +128,11 @@ tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
 HAWKSY = Hawkes_process(the_update_functions)
 # for not keeping the data, I store it in the bin:
-trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators.csv'
+trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators.csv'
+
 # for the first estimate in the adaptive streategy I store it there:
-first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_first.csv'
-second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\estimators_second.csv'
+first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators_first.csv'
+second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators_second.csv'
 
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
