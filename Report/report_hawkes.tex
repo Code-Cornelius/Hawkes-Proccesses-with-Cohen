@@ -901,15 +901,19 @@ We recommand taking $h$ as $2.5$, $l$ as $0.2$; $L$ as the $2$-quantile and $R$ 
 
 One can see how the function $g$ looks like on fig. \ref{fig:new_scaling}. We offer here one implementation in python:
 
-\begin{verbatim}
 
+\begin{verbatim}
 def mean_list(my_list):
     # the default behaviour if list is empty, it returns 0.
     return float(sum(my_list)) / max(len(my_list), 1)
     
     
-def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent=True):
-    if not G:  # G == 0, it happens if no norm computed.
+def my_rescale_sin(value_at_each_time, L=None, R=None, h=2.5, l=0.2 / 2, silent=True):
+    if any(value_at_each_time != 0):
+        # I compute the geometric mean from our estimator.
+        G = gmean(value_at_each_time)
+
+    else :  # G == 0, it happens if no norm computed.
     #then it has to return 0.01 such that it widen all the kernels.
         return np.full(len(value_at_each_time), 0.01)
 
@@ -928,13 +932,12 @@ def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2, silent=T
     ans = 0
     scaling1 = math.pi / (G - L)
     scaling2 = math.pi / (R - G)
-    # I fix the part outside of my interest,
-    #to be the final value, h. This part corresponds to math.pi.
+    # I fix the part outside of my interest, to be the final value, h.
+    # This part corresponds to math.pi.
     # I also need the scaling by +h/2 given by math.pi
 
     # xx2 and xx3 are the cosinus, but they are different cosinus.
-    # So I fix them where I don't want them to move at 0 
-    #and then I can add the two functions.
+    # So I fix them where I don't want them to move at 0 and then I can add the two functions.
     my_xx2 = np.where((xx * scaling1 > -math.pi) & (xx * scaling1 < 0),
                       xx * scaling1, math.pi)  # left
     my_xx3 = np.where((xx * scaling2 > 0) & (xx * scaling2 < math.pi),
@@ -1006,6 +1009,9 @@ However, one can apply the geometric mean on the norms of the estimators. By def
 
 $$\theta = (\theta_1, \theta_2, \cdots, \theta_n ) \implies 
 \norm{\theta}_{l^2} = \left ( \sum^n_1 \theta_i^2 \right )^{\frac 1 2}$$ 
+
+Please remember that in our case, $\theta$ is time dependant so taking the norm over $\theta$ recovers a function from $[0,T]$ to $\R$. Hence, if we allow $t$ to take only certain given values, $\norm{\theta_t}_{l^2}$ can be seen as a sequence.
+
 
 \begin{remarque}
 A particular care of scaling the parameters should not be skipped. Indeed, not scaling the parameters could lead to the classic problem of data-sciences related to feature normalization. The features with high magnitudes will weigh in a lot more in the distance calculations than features with low magnitudes, in particular for euclidean distance.
@@ -1139,7 +1145,7 @@ Following the algorithm \ref{algo:adaptive1}, we write our final version of the 
 \begin{itemize}
 \item rescale the weights $t$ instead of the kernels $t_i$, for computational reasons,
 \item usage of the norm upon the estimate $\theta^*$\footnote{after rescaling the different coefficients as suggested.},
-\item change the rescale function $g$ defined in eq. (\ref{eq:new_g}). The function $g$ is seen as a two-dimensional function; the rest of the parameters are taken as suggested: $L = 0.1$-quantile, $R = 0.9$-quantile, $h = 100$, $l = 0.01$.
+\item change the rescale function $g$ defined in eq. (\ref{eq:new_g}). The function $g$ is seen as a two-dimensional function; the rest of the parameters are fixed.
 \end{itemize}
 
 
@@ -1148,11 +1154,11 @@ We then get the new scaling parameters:
 
 \begin{equation}
 \forall t \in \sequencetime, \qquad \lambda_{t} :=  
-g \left (\norm{\widetilde{\theta_t}}_{l^2}, 
-G_{\norm{\widetilde{\theta_t}}_{l^2}} \right)   
+g \left (\norm{\widetilde{\theta_{t}}}_{l^2}, 
+G_{\norm{\widetilde{\theta_{\cdot}}}_{l^2}} \right)   
 \end{equation}
 
-and  $ G_{\norm{\widetilde{\theta_t}}_{l^2}} $ is based upon the sequence $\{ \norm{\widetilde{\theta_t}}_{l^2} \} $
+and  $ G_{\norm{\widetilde{\theta_{\cdot}}}_{l^2}} $ is based upon the sequence $\{ \norm{\widetilde{\theta_{\cdot}}}_{l^2} \} $
 
 
 The algorithm becomes:
@@ -1269,7 +1275,7 @@ We observe an expected improvement. It isn't directly induced by $g$, but by the
 \subsection{Linear growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_1_alpha}, \ref{fig:first_estimate_1_beta}, \ref{fig:first_estimate_1_nu}.
 
-Let's first give a look to how the kernels are evolving with the first estimate. On fig. \ref{fig:impact_g_linear} a very nice, perhaps expected, shape. The kernels in the center of the linear growth are all very wide\footnote{They are wide and it makes sense. Both sides compensate each other, the parameters in the middle appear like being the average of the whole observed period.}, and on the side narrower. At the core, it is the behaviour one could expect.
+Let's first give a look to how the kernels are evolving with the first estimate. On fig. \ref{fig:impact_g_linear}, we see the expected behaviour for the evolution of the kernels. Extreme values are estimated with smaller kernels, and values close to the mean with wider kernels\footnote{They are wide and it makes sense. Both sides compensate each other, the parameters in the middle appear like being the average of the whole observed period.}. At the core, it is the behaviour one could expect.
 
 \begin{figure}
 \centering
@@ -1279,7 +1285,12 @@ Let's first give a look to how the kernels are evolving with the first estimate.
 \end{figure}
 
 
-The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}, \ref{fig:second_estimate_1_beta}, \ref{fig:second_estimate_1_nu}. It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends.
+The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}, \ref{fig:second_estimate_1_beta}, \ref{fig:second_estimate_1_nu}. It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big.
+
+
+
+
+
 
 
 \subsection{Simple jump}
@@ -1302,7 +1313,18 @@ The second step's plots is displayed with fig. \ref{fig:second_estimate_2_alpha}
 \willdo{to simulate and write}
 The figures are drawn in apendix as: \ref{fig:first_estimate_3_alpha}, \ref{fig:first_estimate_3_beta}, \ref{fig:first_estimate_3_nu}.
 
+The first estimate struggle to capture accuratly the jump. There is a transition phase between the two behaviours that could be improved. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to the size of the kernel.
+
 The second step's plots is displayed with fig. fig. \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
+
+We see that the jump is way better estimated. The transition i
+
+
+
+
+
+
+
 
 \begin{itemize}
 \item the jump was estimated very smoothly. And the transition isn't very clear, for alpha the estimate lowers roughly around the jump while for parameter nu, it lowers way before the jump.

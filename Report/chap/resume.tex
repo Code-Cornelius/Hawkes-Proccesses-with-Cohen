@@ -1,5 +1,11 @@
 \begin{abstract}\addcontentsline{toc}{chapter}{Abstract}
-This paper sums-up the different methods for simulating Poisson point processes and in particular Hawkes processes. We remind the definition of those in a first part. A conclusive comparison of some of the classical methods is available in appendix. We also deal with Hawkes' parameters estimation. We wanted to introduce a systematic method for time-dependant parameters estimation relying on kernel estimation. Our ideas come from KDE's theory. Finally, we were interested in how change point analysis can be integrated in that domain, when there are discontinuities in the parameters' function.
+This paper sums-up the different methods for simulating Poisson point processes in order to be able to simulate Hawkes processes. We remind the definition of those in a first part. 
+
+A conclusive comparison of some of the classical methods (up to 2020) is available in appendix. 
+
+We also deal with Hawkes' parameters estimation. We wanted to introduce a systematic method for time-dependant parameters estimation relying on kernel estimation. Our ideas come from KDE's theory. We introduce a new function that is able to detect local changes in time-estimation and reduce the window's size in order to have more precise estimate. The new function is described in theorem \ref{thrm:new_g} and the adaptive algorithm in algorithm \ref{algo:adaptive2}.
+
+Finally, we were interested in how change point analysis can be integrated in that domain, when there are discontinuities in the parameters' function.
 
 \end{abstract}
 
