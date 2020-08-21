@@ -14,8 +14,12 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-def my_rescale_sin(value_at_each_time, G, L=None, R=None, h=2.5, l=0.2/2, silent=True):
-    if not G:  # G == 0, it happens if no norm computed.
+def my_rescale_sin(value_at_each_time, L=None, R=None, h=2.5, l=0.2 / 2, silent=True):
+    if any(value_at_each_time != 0):
+        # I compute the geometric mean from our estimator.
+        G = gmean(value_at_each_time)
+
+    else :  # G == 0, it happens if no norm computed.
     #then it has to return 0.01 such that it widen all the kernels.
         return np.full(len(value_at_each_time), 0.01)
 
@@ -130,14 +134,12 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, 
 
     for j in range(len(times)):
         ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
-    # I compute the geometric mean from our estimator.
-    G = gmean(ans)
     if not silent:
         print("vect  :", vect_of_estimators)
         # print("interm :", rescale_vector)
         print("the norms ", ans)
         # print('mean : ', G)
-    scaling_factors = my_rescale_sin(ans, G=G, silent=silent)
+    scaling_factors = my_rescale_sin(ans, silent=silent)
     return scaling_factors
 
 
