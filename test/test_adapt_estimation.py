@@ -1,7 +1,7 @@
 import decorators_functions
 import functions_change_point_analysis
 import functions_fct_rescale_adaptive
-from test.test_adaptive_estimation import *
+from test.test_simple_estimation import *
 
 if test_mode:
     nb_of_times = 5
@@ -27,10 +27,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     #  #############################################################################
     # tests
 
-    # TODO 21/08/2020 nie_k:  over the time
-    # TODO draw over he time
-
-    # TODO same for one, two and full estimation.
 
     def test_over_the_time_simple_simulate(self):
         print("width of the kernels: {}.".format(width_kernel))
@@ -160,7 +156,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_one_draw(self):
         path = first_estimation_path
-        path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\super_2_first.csv'
+        path = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
 
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
@@ -176,7 +172,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                            kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two_simulate(self):
-        path_for_first_simul = '/first_estimation/super_2_first.csv'
+        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_2_first.csv'
 
         considered_param = ['nu','alpha','beta']
 
@@ -219,8 +215,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_two_draw(self):
-        path_for_first_simul = '/first_estimation/super_2_first.csv'
-        path_for_second_simul = '/first_estimation/super_3_second.csv'
+        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
+        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_second.csv'
 
         considered_param = ['nu','alpha','beta']
 
