@@ -19,8 +19,8 @@ def my_rescale_sin(value_at_each_time, L=0.02, R=0.98, h=2.5, l=0.2 / 2, silent=
         # I compute the geometric mean from our estimator.
         G = gmean(value_at_each_time)
 
-    else :  # G == 0, it happens if no norm computed.
-    #then it has to return 0.01 such that it widen all the kernels.
+    else:  # G == 0, it happens if no norm computed.
+        # then it has to return 0.01 such that it widen all the kernels.
         return np.full(len(value_at_each_time), 0.01)
 
     L_quant = np.quantile(value_at_each_time, L)
@@ -70,14 +70,14 @@ def rescale_min_max(vect):
 
 
 def check_evoluating(vector, tol):
-    ''' if all values of the vector are inside the tube mean +/- tol, return false.
+    """ if all values of the vector are inside the tube mean +/- tol, return false.
     Args:
         vector:
         tol:
 
     Returns:
 
-    '''
+    """
     the_mean = classical_functions.mean_list(vector)
     if all(element < the_mean * (1 + tol) for element in vector) and all(
             element > the_mean * (1 - tol) for element in vector):
@@ -148,13 +148,14 @@ def creator_list_kernels(my_scalings, previous_half_width):
         new_scaling = previous_half_width / scale
         list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {previous_half_width} width",
                                       a=-new_scaling, b=new_scaling))
-        #list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {2*new_scaling} width",
+        # list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {2*new_scaling} width",
         #                              a=-new_scaling, b=new_scaling)) # I would have put the scaling but that would have been a problem.
         # for plots. So I keep it simple with the previous width.
     return list_of_kernels
 
 
-def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, L, R, h, l, tol=0.1, silent=True):
+def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, L, R, h, l, tol=0.1,
+                             silent=True):
     # by looking at the previous estimation, we deduce the scaling
     # for that I take back the estimate
     # there is a problem of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
@@ -172,22 +173,16 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
 
     my_scaling = rescaling_kernel_processing(
         times=Times, first_estimate=list_of_estimation,
-        considered_param=considered_param, tol = tol, L=L, R=R, h=h, l=l, silent=silent)
+        considered_param=considered_param, tol=tol, L=L, R=R, h=h, l=l, silent=silent)
     if not silent:
         print('the scaling : ', my_scaling)
     # the kernel is taken as biweight.
     list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_half_width=half_width)
     return list_of_kernels
 
-
-
-
-
 # section ######################################################################
 #  #############################################################################
 # test
-
-
 
 
 ############ test adaptive window

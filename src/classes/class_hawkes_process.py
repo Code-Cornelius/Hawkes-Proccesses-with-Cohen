@@ -1,7 +1,6 @@
 ##### normal libraries
 import math
 import matplotlib.pyplot as plt
-import numpy as np
 ##### other files
 from classes.class_kernel import *
 from functions_general_for_Hawkes import multi_list_generator
@@ -9,8 +8,6 @@ from functions_general_for_Hawkes import multi_list_generator
 ##### my libraries
 import classical_functions
 import plot_functions
-
-
 
 np.random.seed(124)
 
@@ -35,14 +32,12 @@ def CDF_LEE(U, lambda_value, delta):
         return -1 / delta * np.log(1 + delta / lambda_value * np.log(1 - U))
 
 
-
-
 def exp_kernel(alpha, beta, t):
     return alpha * np.exp(- beta * t)
 
 
 def lewis_non_homo(max_time, actual_time, max_nu, fct_value, **kwargs):
-    '''
+    """
 
     Args:
         max_time: in order to avoid infinite loop.
@@ -53,13 +48,13 @@ def lewis_non_homo(max_time, actual_time, max_nu, fct_value, **kwargs):
 
     Returns:
 
-    '''
+    """
     arrival_time = 0
     while actual_time + arrival_time < max_time:
         U = np.random.rand(1)
         arrival_time += CDF_exp(U, max_nu)
         D = np.random.rand(1)
-        if (D <= fct_value(actual_time + arrival_time, **kwargs) / max_nu):
+        if D <= fct_value(actual_time + arrival_time, **kwargs) / max_nu:
             return arrival_time
     return INFINITY
 
@@ -83,12 +78,13 @@ class Hawkes_process:
     nb_points_burned = 6000
     points_burned = np.linspace(0, time_burn_in, nb_points_burned)
 
-    #### problem with the tt, perhaps think about getting rid of it.
     def __init__(self, the_update_functions):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
 
-        self.the_update_functions = the_update_functions.copy()  # without the copy, if I update the the_update_functions inside HP, it also updates the the_update_functions outside of the object.
+        self.the_update_functions = the_update_functions.copy()
+        # without the copy, if I update the the_update_functions inside HP,
+        # it also updates the the_update_functions outside of the object.
         self.ALPHA = self.the_update_functions[1]
         self.BETA = self.the_update_functions[2]
         self.NU = self.the_update_functions[0]
@@ -137,13 +133,14 @@ class Hawkes_process:
                     'xlabel': '', 'ylabel': ''})
             aplot.show_legend(i_dim)
 
-    # if plot bool  then draw the path of the simulation.
     def simulation_Hawkes_exact_with_burn_in(self, tt, nb_of_sim=100000,
                                              plot_bool=True,
-                                             silent=True):  # 100 000 is just a safe guard in order to not stuck the computer.
-
+                                             silent=True):
+        # 100 000 is just a safe guard in order to not stuck the computer.
+        # if plot bool  then draw the path of the simulation.
         # I want to add burn in, je dois simuler plus longtemps et effacer le début.
-        # en gros je fais une simul sur T + un param, genre 100, et je cherche intensity et jump après 100 jusqu'à T+100.
+        # en gros je fais une simul sur T + un param, genre 100,
+        # et je cherche intensity et jump après 100 jusqu'à T+100.
         tt_burn = np.append(Hawkes_process.points_burned, tt + Hawkes_process.time_burn_in)
         T_max = tt[-1]
 
@@ -188,8 +185,8 @@ class Hawkes_process:
         while condition:
             # aa is the matrix of the a_m^i. Each column represents one i, each row a m, just the way the equations are written.
             aa = np.zeros((self.M, self.M + 1))
-            ################## first loop over the m_dims.
-            ################## second loop over where from.
+            # first loop over the m_dims.
+            # second loop over where from.
             for m_dims in range(self.M):
                 for i_where_from in range(self.M + 1):
                     if i_where_from == 0:
@@ -200,7 +197,8 @@ class Hawkes_process:
                                                                   self.NU[m_dims],
                                                                   T_max=T_max,
                                                                   time_burn_in=Hawkes_process.time_burn_in)
-                    # cases where the other processes can have an impact. If not big enough, it can't: ( spares some computations )
+                    # cases where the other processes can have an impact. If not big enough, it can't:
+                    # ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
                         aa[m_dims, i_where_from] = INFINITY
                     # cases where it is big enough:
@@ -212,7 +210,8 @@ class Hawkes_process:
                                                                                                Hawkes_process.time_burn_in))
             # next_a_index indicates the dimension in which the jump happens.
             if self.M > 1:
-                # it is tricky : first find where the min is (index) but it is flatten. So I recover coordinates with unravel index.
+                # it is tricky : first find where the min is (index) but it is flatten.
+                # So I recover coordinates with unravel index.
                 # I take [0] bc I only care about where the excitation comes from.
                 next_a_index = np.unravel_index(np.argmin(aa, axis=None), aa.shape)[0]
             # otherwise, excitation always from 0 dim.
@@ -235,7 +234,7 @@ class Hawkes_process:
 
             if T_max is not None:  # and not already_added:
                 # already_added = True
-                if (last_jump < T_max + Hawkes_process.time_burn_in):
+                if last_jump < T_max + Hawkes_process.time_burn_in:
                     T_t[next_a_index].append(last_jump)
             # if nb_of_sim is not None and not already_added:
             #     if (counter < nb_of_sim - 1):
@@ -262,23 +261,25 @@ class Hawkes_process:
                 for i_line in range(self.M):
                     for j_column in range(self.M):
                         for i_times in range(first_index_time, len(tt_burn)):
-                            # this is when there is the jump. It means the time is exactly smaller but the next one bigger.
+                            # this is when there is the jump.
+                            # It means the time is exactly smaller but the next one bigger.
                             if tt_burn[i_times - 1] <= last_jump and tt_burn[i_times] > last_jump:
-                                # I filter the lines on which I add the jump. I add the jump to the process iff the value appears on the relevant line of the alpha.
+                                # I filter the lines on which I add the jump.
+                                # I add the jump to the process iff the value appears on the relevant line of the alpha.
                                 if i_line == next_a_index:
                                     # todo change function ALPHA BETA
-                                    small_lambdas[i_line, j_column, i_times] = self.ALPHA[
-                                                                                   i_line][j_column](last_jump, T_max,
-                                                                                                     Hawkes_process.time_burn_in) * np.exp(
-                                        - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * (
-                                                tt_burn[i_times] - last_jump))
+                                    small_lambdas[i_line, j_column, i_times] = \
+                                        self.ALPHA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * \
+                                        np.exp(
+                                            - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in)
+                                            * (tt_burn[i_times] - last_jump))
                                 # since we are at the jump, one doesn't have to look further.
                                 # break is going out of time loop.
                                 break
                             # the window of times I haven't updated.
                             # I am updating all the other times.
                             # todo change function BETA
-                            if tt_burn[i_times] > previous_jump and tt_burn[i_times] < last_jump:
+                            if previous_jump < tt_burn[i_times] < last_jump:
                                 small_lambdas[i_line, j_column, i_times] += small_lambdas[
                                                                                 i_line, j_column, i_times - 1] * np.exp(
                                     - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * (

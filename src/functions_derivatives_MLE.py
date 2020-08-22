@@ -7,14 +7,18 @@ from decorators_functions import Memoization
 ##### other files
 from classes.class_kernel import *
 
+# section ######################################################################
+#  #############################################################################
+# R FUNCTIONS
+
 
 @Memoization(key_names=['m', 'k'])
 def denomR(m, k, T_t, ALPHA, BETA, MU):
     constant = 0
     _, M = np.shape(ALPHA)
-    for j in range(M): # no need to optimise because M is small
+    for j in range(M):  # no need to optimise because M is small
         constant += ALPHA[m, j] * R(m=m, n=j, k=k + 1, T_t=T_t, BETA=BETA)  # +1 for i, starts at 1.
-    return (MU[m] + constant)
+    return MU[m] + constant
 
 
 # R, dont forget to put k as k+1 in the loops
@@ -23,7 +27,7 @@ def denomR(m, k, T_t, ALPHA, BETA, MU):
 def R(m, n, k, T_t, BETA, end=-10):
     constant = 0
     # M AND N STARTS AT 0 AND FINISH AT M-1.
-    #if k < 1:
+    # if k < 1:
     #    raise Exception("k < 1 problem in R.")
     if k == 1:
         if m == n:
@@ -45,7 +49,7 @@ def R(m, n, k, T_t, BETA, end=-10):
         # bisect left is perfect for that. If I have
         # [3,4,5,6,7] ask for 3 I get 0, ask for 3.1 I get 1.
         # PROBLEM !!! in case: [3,5] ; [2,4] ask for 3 I get -1.
-        #
+        # so I shift by -1
         end = bisect.bisect_left(T_t[n], T_t[m][k - 1]) - 1
 
     # if end == - 1 it means there is no value inside the list n that is bigger than t_i^m.
@@ -53,6 +57,7 @@ def R(m, n, k, T_t, BETA, end=-10):
         return 0
 
     # thats the sum on the right. We are above the inequalities so we only check for the lower bound.
+    i = -1 #making sure the variable exists, though i should always be created.
     for i in range(end, -1, -1):
         if T_t[m][k - 2] <= T_t[n][i]:
             constant += np.exp(-BETA[m, n] * (T_t[m][k - 1] - T_t[n][i]))
@@ -95,16 +100,20 @@ def compute_R_dashes(m, n, T_t, BETA, end=0):
 
 
 previous_Rs_dash = {}
+
+
 # here the k has to be shifted
 def get_R_dash(m, n, k, T_t, BETA, end=-10):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if (m, n) not in previous_Rs_dash:
         compute_R_dashes(m, n, T_t, BETA, end=end)
 
-    return previous_Rs_dash[(m, n)][k-1]
+    return previous_Rs_dash[(m, n)][k - 1]
 
 
 previous_Rs_dash_dash = {}
+
+
 # here the k has to be shifted
 def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
@@ -112,8 +121,8 @@ def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
         compute_R_dashes(m, n, T_t, BETA, end=end)
     return previous_Rs_dash_dash[(m, n)][k - 1]
 
-
-
+# section ######################################################################
+#  #############################################################################
 # first derivative
 def del_L_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
@@ -133,7 +142,6 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 
 def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
-
     my_jumps = T - np.array(T_t[n])
     ANS1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
     ANS2 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
@@ -145,35 +153,8 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
     return ALPHA[m, n] / (BETA[m, n] * BETA[m, n]) * ANS1 - ALPHA[m, n] / (BETA[m, n]) * ANS2 - ANS3
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# section ######################################################################
+#  #############################################################################
 # second derivatives
 def del_L_mu_mu(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
@@ -252,7 +233,8 @@ def del_L_beta_alpha_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     vector_R = np.array([R(m=m, n=n_dash, k=i + 1, T_t=T_t, BETA=BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_denomR = np.array(
-        [denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])  # in denomR the i is already shifted.
+        [denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in
+         range(len(T_t[m]))])  # in denomR the i is already shifted.
     ANS = ALPHA[m, n] * np.sum(w[m] * vector_R_dash * vector_R * np.reciprocal(
         vector_denomR * vector_denomR))  # in denomR the i is already shifted.
     return ANS
@@ -296,77 +278,42 @@ def del_L_beta_beta_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     return 0
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# global functions for MLE
-def special_matrix_creator_rect(size, function_diag, function_sides, **kwargs):
+# section ######################################################################
+#  #############################################################################
+# MATRIX CREATOR
+def matrix_creator_rect(size, function_diag, function_sides, **kwargs):
     matrix = np.zeros((size, size * size))
     for ii in range(size):
         for jj in range(size * size):
-            if ii * size - 1 < jj and jj < (ii + 1) * size:
+            if ii * size - 1 < jj < (ii + 1) * size:
                 matrix[ii, jj] = function_diag(m=jj // size,
                                                n=jj % size,
-                                               n_dash=0, # no n_dash...
+                                               n_dash=0,  # no n_dash...
                                                **kwargs)
             else:
                 matrix[ii, jj] = function_sides(m=jj // size,
                                                 n=jj % size,
-                                                n_dash=0, # no n_dash...
+                                                n_dash=0,  # no n_dash...
                                                 **kwargs)
     return matrix
 
 
-# This is for the diagonal of the second order derivative
-def special_matrix_creator_square(size, function_diag, function_sides, function_wings, **kwargs):
-    # RED is creating the elements of the diagonal of the matrix of matrices.
-    def red(size, function_diag, function_sides, i, j, **kwargs):
-        # i and j are the top left element nb
-        matrix = np.zeros((size, size))
-        for ii in range(size):
-            for jj in range(size):
-                if ii == jj:
-                    matrix[ii, jj] = function_diag(n=i + ii, n_dash=j, **kwargs) # no need for n_dash in that case...
-                else :
-                    matrix[ii, jj] = function_sides(n=i + ii, n_dash=j + jj, **kwargs)
-        return matrix
+# RED is creating the elements of the diagonal of the matrix of matrices.
+# It is the square matrix inside the big square matrices.
+def small_square_matrix(size, function_diag, function_sides, i, j, **kwargs):
+    # i and j are the top left element nb
+    matrix = np.zeros((size, size))
+    for ii in range(size):
+        for jj in range(size):
+            if ii == jj:
+                matrix[ii, jj] = function_diag(n=i + ii, n_dash=j, **kwargs)  # no need for n_dash in that case...
+            else:
+                matrix[ii, jj] = function_sides(n=i + ii, n_dash=j + jj, **kwargs)
+    return matrix
 
+
+# This is for the diagonal of the second order derivative
+def matrix_creator_square(size, function_diag, function_sides, function_wings, **kwargs):
     # I GO THROUGHT THE MATRIX BLUE. I discriminate diagonal and upper triangular matrix.
     # THe lower triangular matrix is filled by transposition
 
@@ -376,7 +323,7 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
         for jj in range(size):
             if size * jj + size * ii < size * size:
                 if jj == 0:
-                    matrix[size * ii:size * ii + size, size * ii + size * jj:size * ii + size * jj + size] = red(
+                    matrix[size * ii:size * ii + size, size * ii + size * jj:size * ii + size * jj + size] = small_square_matrix(
                         size, function_diag, function_sides, (size * ii) % size, (size * jj + size * ii) % size, m=ii,
                         **kwargs)
                 elif ii < jj:
@@ -387,6 +334,7 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
                                                                                                   n_dash=ii * size + iii,
                                                                                                   **kwargs)
     # I DONT WANT TO COPY BC APART FROM DIAG, ELEMENTS ARE NOT EQUAL
+    # THAT S THE CODE FROM BEFORE
     # copy upper and lower part
     # for ii in range(size * size):
     #     for jj in range(size * size):
@@ -396,24 +344,7 @@ def special_matrix_creator_square(size, function_diag, function_sides, function_
     return matrix
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# function usef inside first_derivative for clearing all memoization's dict.
+# function used inside first_derivative for clearing all memoization's dict.
 def dict_clear():
     R.clear()
     previous_Rs_dash.clear()
@@ -442,7 +373,7 @@ def likelihood(T_t, ALPHA, BETA, MU, T):
             inside_big_third_sum = MU[i]
             for j in range(M):
                 inside_big_third_sum += ALPHA[i, j] * R(m=i, n=j, k=k + 1, T_t=T_t, BETA=BETA)
-        value_i += np.log(inside_big_third_sum)
+        value_i += np.log(inside_big_third_sum) #T_t never empty
         ans += value_i
     return ans
 
@@ -481,19 +412,19 @@ def second_derivative(T_t, ALPHA, BETA, MU, T, w):
         diag_matrices[i] = del_L_mu_mu(i, i, 0, T_t, ALPHA, BETA, MU, T, w)
 
     A = np.diag(diag_matrices)
-    B = special_matrix_creator_rect(M, del_L_alpha_mu, del_L_alpha_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
-                                    w=w)
-    C = special_matrix_creator_rect(M, del_L_beta_mu, del_L_beta_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
-                                    w=w)
+    B = matrix_creator_rect(M, del_L_alpha_mu, del_L_alpha_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
+                            w=w)
+    C = matrix_creator_rect(M, del_L_beta_mu, del_L_beta_mu_dif, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU, T=T,
+                            w=w)
     D = np.transpose(B)
-    E = special_matrix_creator_square(M, del_L_alpha_alpha, del_L_alpha_alpha_dif, del_L_alpha_alpha_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
-    F = special_matrix_creator_square(M, del_L_beta_alpha, del_L_beta_alpha_dif, del_L_beta_alpha_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
+    E = matrix_creator_square(M, del_L_alpha_alpha, del_L_alpha_alpha_dif, del_L_alpha_alpha_dif_dif, T_t=T_t,
+                              ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
+    F = matrix_creator_square(M, del_L_beta_alpha, del_L_beta_alpha_dif, del_L_beta_alpha_dif_dif, T_t=T_t,
+                              ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
     G = np.transpose(C)
     H = np.transpose(F)
-    I = special_matrix_creator_square(M, del_L_beta_beta, del_L_beta_beta_dif, del_L_beta_beta_dif_dif, T_t=T_t,
-                                      ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
+    I = matrix_creator_square(M, del_L_beta_beta, del_L_beta_beta_dif, del_L_beta_beta_dif_dif, T_t=T_t,
+                              ALPHA=ALPHA, BETA=BETA, MU=MU, T=T, w=w)
     ans = np.zeros((M + 2 * M ** 2, M + 2 * M ** 2))
     lim1 = M - 1
     lim2 = M ** 2 + M - 1
