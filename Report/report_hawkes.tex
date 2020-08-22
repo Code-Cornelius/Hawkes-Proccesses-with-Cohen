@@ -372,12 +372,13 @@ $$H_{1,3} = $$
 \item In particular, creating the Hessian was a riddle. We haven't found a clever way to write it properly. The author's idea was that we only need to create the upper part of the Hessian, and that there are two types of groups of derivatives: the square and the rectangles, as appearing in the previous subsection.
 \item As mentioned, the computational bottleneck makes the algorithms slow. For that reason, the rest of the program has to be optimized in order to compensate that lack of performances. In particular, Python is a slow language. We heavily rely on numpy, a library with which all the numerical computations are made in C.
 \item One shall also introduce some burn-in period before the actual useful part of the simulation of the process; cf. subsection \ref{subsection:burn}.
+\item The optimization algorithm for solving the problem of minimization might be an issue, as mentionned in subsection \ref{subsection:challenge}. We tried to use the in-built optimization functions from the library \textbf{scipy}, but they were not resiliant enough for the dimensionality of the problem. Such algorithms would get stuck because of the unsmooth nature of the problem. For that reason, we built our own newton-raphson algorithm, using the classical algorithm (based upon line search methods) and Armijo Rule for the step size, whenever the algorithm reaches a certain amount of steps. Indeed, Armijo Rule requires the evaluation of the function and it is quite expensive, as well as in most cases, unnecessary.
 \item Certain sets of parameters lead to unprecise results. In particular, boundarie cases (as $\alpha = \beta$) are problematic, as well as sets of parameters with not enough events occuring during the simulation. The observed interval should be adapted to the parameters. In other words, it is less interesting to talk about the interval [0,T] for simulations than rather the number of events occuring on that interval.
 \end{itemize}
 
 With regards to computational optimization, we mainly made usage of numpy for computations involving long vectors. In particular, using the built-in function for exponential makes running much faster. 
 
-We also used this trick for computing $R,R',R''$. One can actually compute R' and R'' at the same time in order to spare some redundant computations. Finally, by using a matrix notation (through the function "np.subtract.outer(,)"), numpy can compute those quantities for all the dimensions (in the multi-dimensional case) at once. The code would look like this:
+We also used this trick for computing $R,R',R''$. One can actually compute R' and R'' at the same time in order to spare some redundant computations. Finally, by using a matrix notation (through the function \textbf{np.subtract.outer($\cdot,\cdot$)}), numpy can compute those quantities for all the dimensions (in the multi-dimensional case) at once. The code would look like this:
 
 \begin{verbatim}
 def compute_R_dashes(m, n, T_t, BETA):
@@ -689,13 +690,13 @@ and  $ G_{\widetilde{f_i}} $ is based upon the sequence $ \sequence{ \widetilde{
 \begin{algorithm}[H]
 \label{algo:adaptive1}
 \SetAlgoLined
-1. \quad Find a pilot estimate coined $\widetilde{f}$. We use the optimal kernel from section \ref{section:FWW}, which for a kernel $K^*$ and a bandwidth $h^*$ is of the form $$ (t, t_i) \to \frac 1 {h^*} K^* \left ( \frac{t - t_i}{h^*} \right ) $$ 
+1. \quad Find a pilot estimate coined $\widetilde{f}$. We use the arbitrary kernel from section \ref{section:FWW}, which for a kernel $K^*$ and a bandwidth $h^*$ is of the form $$ (t, t_i) \to \frac 1 {h^*} K^* \left ( \frac{t - t_i}{h^*} \right ) $$ 
 
 2. \quad $\forall t_i \in \sequence{t_i}$, when we estimated the pilot estimate $\widetilde{f}$, create the local width factor $\lambda_{t_i}$ according to eq. (\ref{eq:local_width_factor}). 
 
 3. \quad Find the final estimate $\hat{f}$ by using a different kernel for each $t_i$. $\forall t \in \sequencetime $, the new kernel shall be of the form:
 $$ (t, t_i) \to \frac 1 {\lambda_{t_i} h^*} K^* \left ( \frac{t - t_i}{\lambda_{t_i} h^*} \right )$$ 
-\caption{Adaptive Kernel Estimation}
+\caption{Adaptive Kernel Estimation.}
 \end{algorithm}
 
 
@@ -793,14 +794,14 @@ $$ \ln W L^m( \Theta \mid \Tau ) = - \int_0^T \lambda^{m} ( s \mid \Theta , \Tau
 \begin{figure}
 \centering
 \includegraphics[width = 1.00 \textwidth]{../imag/chap3/CKDE.png}
-\caption{Comparison of the two equivalent representations for symmetric kernels.}
+\caption{Comparison of the two equivalent representations for symmetric kernels. The graphs share the same y-scale. On the left, one observe three kernels as function of the time and evaluated for specific $t_i$. On the right, the weight function is plotted, as a function of the events' time, for a fixed time $t$ ( $t= 0$, corresponding to the green line on the left), as well as the sum of the three points at which we evaluated the weight function. We observe that both representations lead to the same value.}
 \label{fig:CKDE}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width = 1.00 \textwidth]{../imag/chap3/CKDE2.png}
-\caption{Comparison of the two equivalent representations for asymmetric kernels.}
+\caption{Kernels as function of the first or of the second argument. One is the symmetric version of the other with respect to the green dotted line.}
 \label{fig:CKDE2}
 \end{figure}
 
@@ -845,7 +846,7 @@ The two definition are linked through those equalities
 \begin{figure}
 \centering
 \includegraphics[width = 0.95 \textwidth]{../imag/chap3/my_new_funct.png}
-\caption{Scaling output depending on how close the estimate is to the geometric mean. The lower branch ends at $2$, the mean is $10$ and the upper branch finishes at $75$. We constructed the function as a two sinusoidal branches function.}
+\caption{Scaling output depending on how close the estimate is to the geometric mean. The lower branch ends at $2$, the mean is $10$ and the upper branch finishes at $75$. We constructed the function as a two sinusoïdal branches function.}
 \label{fig:new_scaling}
 \end{figure}
 
@@ -862,7 +863,7 @@ The originally used $g$ function can be written like eq. (\ref{eq:old_g}) and is
 g(x,G, \gamma) =  \left ( \frac x G \right ) ^{-\gamma}
 \end{equation}
 
-We call the function $g$ the rescale function. We want to find a better rescale function, that suits better our needs. We propose the following function:
+We call the function $g$ a rescale function. We want to find a better rescale function, that suits better our needs. We propose the following function:
 
 
 \begin{theoreme}[label = thrm:new_g]{New $g$ rescale function}
@@ -875,10 +876,10 @@ g(x, G, L,R,h,l) &=   \frac {h-l} 2 \left (2
 \quad & v = \frac{x - G}{R- G} \pi \notag
 \end{align}
 
-where $G$ shall correspond to the geometric mean of the pilot estimate, $L$ (resp. $U$) is taken in the following as the $0.02$-quantile (resp. $0.98$-quantile). $h,l$ are added as the parameter of scaling.
+$G$ is the junction point between the two branches. $L$ and $R$ are the end of the varying part and hence outside $[L,R]$, the value of the function $g$ is fixed. It is clear that L < G < R for the function to be well defined. We search for conditions in subsection \ref{subsection:self-defin}.
 \end{theoreme}
 
-
+$G$ shall correspond to the geometric mean of the pilot estimate, $L$ (resp. $R$) is taken in the following as the $0.02$-quantile (resp. $0.98$-quantile). $h,l$ are added as the parameter of scaling.
 
 Recall that $p$-quantile for an ordered serie of length $n$ is defined as being equal to its $\lceil{np}\rceil$-value\footnote{$\lceil{\cdot}\rceil$ is the ceil-function.}.
 
@@ -889,20 +890,20 @@ What has been done here is that we created on a function that:
 
 \begin{itemize}
 \item equals to $l$ in $G$, 
-\item behaves smoothly along the line, quadratically near the ends of the branches and linearly in the middle (since it is a cosinus),
+\item behaves smoothly along the line, quadratically near the ends of the branches and linearly in the middle (since the function is formed of cosinus),
 \item equals $h$ for extreme values,
 \item is easily adaptable to the first estimation, by modifying $L$ and $R$,
 \item through the substitution $u,v$, one can easily interpret R and L as the values at which the branches are reaching their final values. Choosing L and R as quantiles allows the user to choose how much data is considered as extreme. 
 \end{itemize}
 
 \begin{remarque}
-We recommand taking $h$ as $2.5$, $l$ as $0.2$; $L$ as the $2$-quantile and $R$ as $98$-quantile. Those values worked very well for us.
+We recommand taking $h$ as $2.5$, $l$ as $0.2$; $L$ as the $2\%$-quantile and $R$ as $98\%$-quantile. Those values worked very well for us.
 \end{remarque}
 
 One can see how the function $g$ looks like on fig. \ref{fig:new_scaling}. We offer here one implementation in python:
 
 
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\footnotesize]
 def mean_list(my_list):
     # the default behaviour if list is empty, it returns 0.
     return float(sum(my_list)) / max(len(my_list), 1)
@@ -947,14 +948,15 @@ def my_rescale_sin(value_at_each_time, L=None, R=None, h=2.5, l=0.2 / 2, silent=
 
     ans += l  # avoid infinite width kernel, with a minimal value.
     return ans
-\end{verbatim}
+\end{Verbatim}
 
 
 \begin{remarque}
-We notice that chosing the quantiles as $2$ and $98$ isn't too extreme. The function $g$ is flat on the sides and though having only $4\%$ of the values being considered as extrems is low, the number of points having the kernels narrowed is actually much bigger in practice. Putting $10-90$ did actually yielded half of the kernel being narrowed extremely.
+We notice that chosing the quantiles as $2\%$ and $98\%$ isn't too extreme. The function $g$ is flat on the sides and though having only $4\%$ of the values being considered as extrems is low, the number of points having the kernels narrowed is actually much bigger in practice, due to the flat behaviour of $g$ near the end of the branches. Putting $10-90$ did actually yielded half of the kernel being narrowed extremely.
 \end{remarque}
 
 \subsection{Is The Rescale Function Well-Defined ?}
+\label{subsection:self-defin}
 
 \willprecise{ do a better job here }
 
@@ -1022,7 +1024,10 @@ A particular care of scaling the parameters should not be skipped. Indeed, not s
 
 As mentioned in the previous subsection, we might have to apply some scaling to the estimates. We chose a classical positive mean-scaling:
 
-$$ \forall i \in  \llbracket 1, M \rrbracket, \qquad  \widetilde{\theta_i } = \frac{\theta_i - \mean \theta }{\max(\theta) - \min(\theta) } + 1 $$
+\begin{equation}
+\forall i \in  \llbracket 1, M \rrbracket, \qquad  \widetilde{\theta_i } = \frac{\theta_i - \mean \theta }{\max(\theta) - \min(\theta) } + 1 
+\label{rescale-function}
+\end{equation}
 
 It makes sense as we care about how the values are extremes in comparison to each others. The scaling is also linear and thus does not change essentially the distribution\footnote{Unlike normalization.}. The classical mean-scaling does not involve the additional $+1$, and its values lie in $[-1,1]$. The shift ensures a positive value, which is very important in order to keep the order of norms: minimals norms for low estimation; maximal norms for high estimation.
 
@@ -1032,7 +1037,7 @@ A problem appear with non-moving parameters. Worst case scenario is when there i
 
 We offer here an implementation of what we just said. 
 
-\begin{verbatim}
+\begin{Verbatim}[fontsize=\footnotesize]
 def rescale_min_max(vect):
     the_max = max(vect)
     the_min = min(vect)
@@ -1042,13 +1047,7 @@ def rescale_min_max(vect):
 
 
 def check_evoluating(vector, tol):
-    ''' if all values of the vector are inside the tube mean +/- tol, return false.
-    Args:
-        vector:
-        tol:
-
-    Returns:
-
+    ''' if all values of the vector are inside the tube mean +/- 
     '''
     the_mean = classical_functions.mean_list(vector)
     if all(element < the_mean * (1 + tol) for element in vector) and all(
@@ -1114,7 +1113,7 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, 
         # print('mean : ', G)
     scaling_factors = my_rescale_sin(ans, G=G, silent=silent)
     return scaling_factors
-\end{verbatim}
+\end{Verbatim}
 
 \subsection{Number of Kernels to Rescale}
 As exposed in section \ref{section:equivalence_bi_rep}, both representation of the kernels are equivalent. The first one (kernels as functions of the events) is rampant throughout KDE theory, though we believe the second one is more intuitive in our case scenario.
@@ -1129,9 +1128,12 @@ We shall take advantage of the double representation in order to reduce computat
 There is a problem related to numerical computations. Since the interval of observed data is not infinite, there might be points where we are processing estimation, at which the support of the kernel is not strictly included inside the simulation interval. One solution would be to estimate at points for which kernels are fully included inside the interval. However, it means there are points for which we can't estimate the parameters, and it then means we lose a lot of data. On the other hand, we saw that there is a quadratic tendency in the complexity of the estimation algorithm, so we really need to use as much data as possible instead of wasting it. A solution is scaling up the kernels in order to keep the integral of it equal to $T$, as mentioned in the constraint. Then, the shape is only partially the one set, but the "energy" is conserved and the estimate is correct. One can see the impact of such scaling on fig. \ref{fig:scaling_kernels}. In order to scale up, the author did compute the numerical integral of the kernel and scale accordingly.
 
 Also, we also mentionned the burn-in period as being compulsory in order to reach some kind of stationary behaviour for the process. It can be difficult to incorporate this period of time while skipping it for the estimation and adapt the kernels; one should be extremely careful with it.
+
+
+
 \begin{figure}
 \centering
-\includegraphics[width = 0.99 \textwidth]{../imag/chap2/impact_edge_kernel.png}
+\includegraphics[width = 0.90 \textwidth]{../imag/chap2/impact_edge_kernel.png}
 \caption{Shape of the kernel, depending on where it is located on the interval $[0,T]$; here $T = 2000$.}
 \label{fig:scaling_kernels}
 \end{figure}
@@ -1143,6 +1145,7 @@ Also, we also mentionned the burn-in period as being compulsory in order to reac
 Following the algorithm \ref{algo:adaptive1}, we write our final version of the adaptive weighting algorithm. The major changes that we apply are:
 
 \begin{itemize}
+\item rescale the parameters if necessary according to the equation (\ref{rescale-function}), for each dimension, excluding the dimensions that are non evoluating,
 \item rescale the weights $t$ instead of the kernels $t_i$, for computational reasons,
 \item usage of the norm upon the estimate $\theta^*$\footnote{after rescaling the different coefficients as suggested.},
 \item change the rescale function $g$ defined in eq. (\ref{eq:new_g}). The function $g$ is seen as a two-dimensional function; the rest of the parameters are fixed.
@@ -1175,7 +1178,7 @@ The algorithm becomes:
 
 $\forall t \in [0,T]$, the new weight shall be of the form:
 $$ (t, t_i) \to \frac 1 {\lambda_{t} h^*} w^* \left ( \frac{t - t_i}{\lambda_{t} h^*} \right )$$ 
-\caption{Adaptive Kernel Estimation}
+\caption{Hawkes Adaptive Time Dependant Estimation of Parameters (HATDEP).}
 \end{algorithm}
 
 
@@ -1188,7 +1191,7 @@ $$ (t, t_i) \to \frac 1 {\lambda_{t} h^*} w^* \left ( \frac{t - t_i}{\lambda_{t}
 \chapter{Numerical Results}
 
 \section{Presentation}
-This section is for presenting some empirical observation from the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We first precise our settings, then the results and we try to give some meaningful observations and interpretations.
+This section is for presenting some empirical observations à propos the new adaptive algorithm using the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We first precise our settings, then the results and we try to give some meaningful observations and interpretations. It yields some critical ideas about how to chose the parameters.
 
 \section{Considered Evolution for the Parameters}
 \begin{figure}
@@ -1215,7 +1218,7 @@ This section is for presenting some empirical observation from the new introduce
 We are going to consider a few evolution functions for the parameters. We want to see how different functions influences the results. We chose constant parameters, linear evolution, one-jump evolution (piece-wise constant), linear evolution combined with one-jump evolution and finally a sinusoidal evolution followed by a constant value. In the three last, there is a breakpoint in the function: either a jump, or the stop of a periodic behaviour. This choice is motivated for change-point analysis in 
 chapter \ref{chap:change_point}. We observe the basic functions in figure \ref{fig:evol_functions}.
 
-Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_interact} how the parameters evolve with respect to each other. Those coefficients are the one we use for the simulations. 
+Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_interact} how the parameters evolve with respect to each other. Those coefficients are the one we use for the simulations. We observe the process over an interval $[0,T]$ which corresponds to roughly 7500 jumps. This number of event is quite important, and allows us to observe almost asymptotic behaviour for our estimation. At the same time, such high number of jumps is not making the simulation too long for them to not be doable. We estimated for each of the 50 points on [0.05*T,0.95 * T]\footnote{We chosed to skip the 5$\%$ at the boundaries of the simulation. That way, we hope to minimize the effect of boundaries on the estimation.}  50 times; hence each plot represents the conclusion of 2500 simulations. The data is available in CSV files available on the github of the project (cf. in appendix section \ref{csv-files}).
 
 \begin{figure}
 \centering
@@ -1253,9 +1256,9 @@ Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_int
 \section{Naïve Estimation}
 As a first array of trials, we consider our recommanded parameters: $L$ and $R$ defined respectively as being the $2$ and $98$ quantiles; $h$ and $l$ being respectively $2.5$ and $0.2$. 
 
-We are also going to use $1/5$ of the total observation length as being the width for the kernels of the first estimate, following the recommandation from section \ref{subsection:optimal_width}. 
+We are also going to use $1/5$ of the total observation length as being the width for the kernels of the first estimate, following the recommandation from section \ref{subsection:optimal_width} of using an arbitrary kernel width. This width is quite big relatively to the total number of jumps, and we could have used a smaller one. However, we want to observe the behaviour under non perfect condition of the adaptive algorithm.
 
-\subsection{Constant parameters}
+\subsection{Constant Parameters}
 The figures are drawn in apendix as: \ref{fig:first_estimate_0_alpha}, \ref{fig:first_estimate_0_beta}, \ref{fig:first_estimate_0_nu}. 
 
 
@@ -1270,9 +1273,14 @@ We previously mentionned how the scaling is interfering with rescaling the kerne
 
 The second step's plots is displayed with fig. \ref{fig:second_estimate_0_alpha}, \ref{fig:second_estimate_0_beta}, \ref{fig:second_estimate_0_nu}
 
-We observe an expected improvement. It isn't directly induced by $g$, but by the scaling tolerance we introduced. It deals very well with such trends.
+We observe an expected improvement. It isn't directly induced by $g$, but by the scaling tolerance we introduced. It deals very well with such trends. The kernels seem to be varying a lot but one should be careful about the scale on the right: the kernels are pretty flat.
 
-\subsection{Linear growth}
+\textbf{Conclusion:} constant parameters should be treated differently then the rest. We deal with it with a tolerance threshold.
+
+
+
+
+\subsection{Linear Growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_1_alpha}, \ref{fig:first_estimate_1_beta}, \ref{fig:first_estimate_1_nu}.
 
 Let's first give a look to how the kernels are evolving with the first estimate. On fig. \ref{fig:impact_g_linear}, we see the expected behaviour for the evolution of the kernels. Extreme values are estimated with smaller kernels, and values close to the mean with wider kernels\footnote{They are wide and it makes sense. Both sides compensate each other, the parameters in the middle appear like being the average of the whole observed period.}. At the core, it is the behaviour one could expect.
@@ -1285,18 +1293,20 @@ Let's first give a look to how the kernels are evolving with the first estimate.
 \end{figure}
 
 
-The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}, \ref{fig:second_estimate_1_beta}, \ref{fig:second_estimate_1_nu}. It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big.
+The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}, \ref{fig:second_estimate_1_beta}, \ref{fig:second_estimate_1_nu}. It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big for this case scenario / an original kernel width too small.
+
+
+\textbf{Conclusion:} Hawkes Adaptive Time Dependant Estimation of Parameters should be done with a few widths for the first estimate, in the exact same manner as for KDE estimation. 
 
 
 
 
-
-
-
-\subsection{Simple jump}
+\subsection{Simple Jump}
 \willdo{to simulate and write}
 
 The figures are drawn in apendix as: \ref{fig:first_estimate_2_alpha}, \ref{fig:first_estimate_2_beta}, \ref{fig:first_estimate_2_nu}.
+
+We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is the length of the kernel. Over the two phases, we observe small kernels, and during the jump bigger kernels.
 
 The second step's plots is displayed with fig. \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
 
@@ -1308,43 +1318,42 @@ The second step's plots is displayed with fig. \ref{fig:second_estimate_2_alpha}
 \end{figure}
 
 
+\textbf{Conclusion:}
 
-\subsection{Linear growth and jump}
-\willdo{to simulate and write}
+
+
+
+
+\subsection{Linear Growth and Jump}
 The figures are drawn in apendix as: \ref{fig:first_estimate_3_alpha}, \ref{fig:first_estimate_3_beta}, \ref{fig:first_estimate_3_nu}.
 
-The first estimate struggle to capture accuratly the jump. There is a transition phase between the two behaviours that could be improved. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to the size of the kernel.
+The first estimate struggles to capture accuratly the jump in the parameters' function. There is a transition phase between the two behaviours which could be shortened. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to the size of the kernel.
 
-The second step's plots is displayed with fig. fig. \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
+The second step's plots is displayed with fig.  \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
 
-We see that the jump is way better estimated. The transition i
+We see that the jump is way better estimated. The transition reduces to around 600 but more importantly, one clearly distinguishes the two phases. Also, we observe that the adaptive algorithm did increase the phenomena appearing in the first graph: alpha was estimated close to the jump (and after the adaptive process, even closer) while for nu, the jump was detected too early, and it increased with the adaptive. So the algorithm is pinpointing some underlying phenomenas, as expected.
 
+Another thing to consider is that the jump isn't perfectly located, but it is a dimensionality problem. The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for alpha and nu are at different times, it isn't clear how to adapt in the best fashion. Here, the algorithm has increased the kernels for all points in between the two jumps, making the left side of the jump for alpha as well as the right side of the jump for nu very precise. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
 
+Also, we notice a small bump in the first estimations. It is due to the value of $l$ being too big: a large kernel is suppose to appear for values close to the mean, however, for such values, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line.
 
+A last comment, there is a spike in beta's estimation, that is simply due to an overwhelmingly high estimate and to an effect of batch-mean, that can happen due to the estimation used method. It is totally random, and should be considered as extreme noise.
 
+\textbf{Conclusion:} The algorithm is limited to low dimensional problems. The minimum of the rescale function should be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period.
 
-
-
-
-\begin{itemize}
-\item the jump was estimated very smoothly. And the transition isn't very clear, for alpha the estimate lowers roughly around the jump while for parameter nu, it lowers way before the jump.
-\item the adaptive improves how accurate the jump is noticeable for alpha as well as for nu. For alpha, the jump is sharper at left, and for nu sharper on the right. This is due to the dimensionality of the problem. Since the same kernels are used for all parameters' estimation, it is complicated to fit the perfect size at all times when different parameters need different kernels. Overall, the two jumps are better localized, and the function is sharper, though it was not intended for that aim. 
-\item This comes at the price of having slightly less precise estimates elsewhere, mainly because the kernels are narrower, but also we notice an interesting phenomena: for the estimate of alpha for example, the first estimates are over-estimating the true value. This is due to the fact that the kernel is bigger (since the value is close to the geometric mean), but though the geometric mean is computed over the whole observation window, the kernel is only taking into account part of it. 
-\item We observe here that the value $l$, parameter of $g$ should actually be smaller than the ratio used for the width. That way, the kernel would consider more data.
-\end{itemize}
-
-\subsection{Sinusoïdal growth}
-\willdo{to simulate and write}
+\subsection{Sinusoïdal Growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_4_alpha}, \ref{fig:first_estimate_4_beta}, \ref{fig:first_estimate_4_nu}.
+
+The first estimate struggles to capture the variability of the sinus. We have blatantly used a too wide kernel. However, it is interesting to see how the algorithm would react to it.
+
+We observe on our test image \ref{fig:impact_g_sin} that high peak values have narrow kernels and that the stationary phase after 6000 has the low narrow kernels. Then we expect the high points to be precise but the fact that no small kernels are left for the low points of the sinus might be an issue for a precise estimation.
 
 The second step's plots is displayed with fig. \ref{fig:second_estimate_4_alpha}, \ref{fig:second_estimate_4_beta}, \ref{fig:second_estimate_4_nu}.
 
-\begin{itemize}
-\item changing point better captured
-\item rupture between behaviours seems to be noticed by $g$ and behaves differently on both sides.
-\item the ups are way more accurate, though the the downs are smoothed (by wide kernels). It seems that since the first estimate wasn't able to capture precisely the low part, the function $g$ smoothed out that behaviour even more. The solution we will try is to put smaller kernels from the beginning.
-\item Also, the function is way less smooth. Before, one could definetely recognise a sinus function, though shifted. Now, it has some weird spikes at some points. We do believe it is because of the too wide first kernels.
-\end{itemize}
+Now we observe that the changing point at 6000 is better captured. However, on the other hand, since we scale the kernel accordingly, it also means the lower parts of the sinus are missed, while the upper parts aren't. We would have observed a different behaviour if the final value of the parameters would have centred with respect to the sinus. In order to compensate for that, one should increase the number of kernels for low-extremal values (the parameter 	L), as well as used smaller kernels from the beginning; that should take into account the variability of the function.
+
+\textbf{Conclusion:} Depending on the expected behaviour of the function, whether there are many low points or many high points, one should adapt the quantiles $L$ and $R$.
+
 
 \begin{figure}
 \centering
@@ -1356,10 +1365,16 @@ The second step's plots is displayed with fig. \ref{fig:second_estimate_4_alpha}
 
 
 
-\section{Second approach}
-We learnt that the first width is crucial in the result of the second estimate. We also learnt that depending on the first width, $l$ should change. 
+\section{Second Approach}
+We are going to redo the sinusoïdal growth and apply the teaching: 
 
+\begin{enumerate}
+\item we learnt that the first width is crucial in the result of the second estimate; we replace 1/5 by 1/8 for the width of the first kernels,
+\item We also learnt that depending on the first width, $l$ should change; so we fix $l = 1/16$, in other words the percent of total length of used data divided by two,
+\item Finally, depending on the shape of the parameters' function, one could adapt $L$ and $R$; we change $L$ to be 5$\%$.
+\end{enumerate}
 
+\subsection{Sinusoïdal Growth}
 
 
 

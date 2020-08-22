@@ -33,7 +33,7 @@ Ozaki in \cite{Ozaki} in section 3 mentions three methods for finding the maximu
 \begin{itemize}
 \item Gradient and Hessian (Newton-Raphson method)
 \item Gradient (Davidon's procedure)
-\item only the likelihood function (direct method)
+\item Only the likelihood function (direct method)
 \end{itemize}
 
 
@@ -203,7 +203,7 @@ In continuous time, where we work with respect to a complete, as well as, filter
 Under regularity condition of the adapted process (finite variation and cadlag), the compensator $\Lambda $ is defined with $\Lambda_0=0$, such that $X-\Lambda$ is a local martingale. 
 
 
-\begin{theoreme}{Existence of compensator}
+\begin{theoreme}{Existence of Compensator}
 The processes for which a compensator exists are precisely the special semimartingales or, equivalently, the locally integrable semimartingales. 
 \end{theoreme}
 
@@ -278,6 +278,7 @@ One iteration of the algorithm corresponds to do...
 \end{theoreme}
 
 \subsection{Implementation and Optimization}
+\label{subsection:challenge}
 It can be quite challenging to use this algorithm for Hawkes Processes. First, there is a computational bottleneck due to the computation of the expressions of $R, R', R''$, defined in subsection \ref{subsection_R_def} and that appears in the computations of the log-likelihood. There is unfortunately, up-to-now, no recursive formulas for $R'$ and $R''$. 
 
 We show the mean time required for simulating and applying the Newton-Raphson algorithm to one process, while changing the number of jumps of the process. The fig. \ref{fig:complex} displays a quadratic tendency. The usage of the profiler shows that most of the computations come from the bottleneck.  
