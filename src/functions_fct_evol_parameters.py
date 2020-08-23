@@ -139,7 +139,7 @@ def update_functions(case, PARAMETERS):
         for i in range(M):
             the_update_functions[0][i] = \
                 partial(lambda time, T_max, time_burn_in, index_1: periodic_stop(time, T_max, MU[index_1], 0.2,
-                                                                                 time_burn_in=time_burn_in), i=i)
+                                                                                 time_burn_in=time_burn_in), index_1=i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(
