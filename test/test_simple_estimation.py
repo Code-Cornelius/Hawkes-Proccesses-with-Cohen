@@ -1,4 +1,4 @@
-from .setup_tests import *
+from .setup_for_estimations import *
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
