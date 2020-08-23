@@ -2,7 +2,7 @@
 
 
 ##### my libraries
-from classes.estimators.class_estimator import *
+from library_classes.estimators.class_estimator import *
 
 ##### other files
 

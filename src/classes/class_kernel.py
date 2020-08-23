@@ -2,11 +2,12 @@
 from inspect import signature  # used in the method eval of the class
 import scipy.stats  # functions of statistics
 import numpy as np
-##### other files
-from classes.graphs.class_graph_estimator import *
 
 ##### my libraries
-from functions.tools import classical_functions_integration
+from library_functions.tools import classical_functions_integration
+from library_classes.graphs.class_graph_estimator import *
+
+##### other files
 
 np.random.seed(124)
 

@@ -2,12 +2,10 @@
 
 
 ##### my libraries
-
-
-from classes.graphs.class_histogram_estimator import *
+from library_classes.graphs.class_histogram_estimator import *
 
 ##### other files
-from ..class_Estimator_Hawkes import *
+from classes.class_Estimator_Hawkes import *
 
 
 # batch_estimation is one dataframe with the estimators.

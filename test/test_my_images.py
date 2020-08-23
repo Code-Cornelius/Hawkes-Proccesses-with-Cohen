@@ -3,8 +3,8 @@ import unittest
 
 import matplotlib.pyplot as plt
 # my libraries
-import plot_functions
-import recurrent_functions
+from library_classes.plot import class_aplot
+from library_functions.tools import recurrent_functions
 
 # other files
 from functions_fct_evol_parameters import *
@@ -24,7 +24,7 @@ class Test_images(unittest.TestCase):
         xx = np.linspace(-15, 15, nb_of_points)
         mesh = 30. / nb_of_points
         zz = np.zeros(nb_of_points)
-        my_plot = plot_functions.APlot(how=(1, 1))
+        my_plot = class_aplot.APlot(how=(1, 1))
         points = np.array([-7., -6., 1., 2., 5.])
         for f in points:
             yy = recurrent_functions.phi_numpy(xx, f, 2) / len(points)
@@ -40,7 +40,7 @@ class Test_images(unittest.TestCase):
 
         ############################## 2
         zz = np.zeros(nb_of_points)
-        my_plot = plot_functions.APlot(how=(1, 1))
+        my_plot = class_aplot.APlot(how=(1, 1))
         points = np.array([-7., -6., 1., 2., 5.])
         for f in points:
             yy = recurrent_functions.phi_numpy(xx, f, 2 * (1 + math.fabs(f) / 10)) / len(points)
@@ -59,7 +59,7 @@ class Test_images(unittest.TestCase):
         ############### left
         zz = np.zeros(nb_of_points)
         max_x = 0.125
-        my_plot = plot_functions.APlot(how=(1, 2), sharey=True)
+        my_plot = class_aplot.APlot(how=(1, 2), sharey=True)
         my_plot.uni_plot(0, [0 for _ in xx],
                          np.linspace(-0.004, max_x, len(xx)),
                          dict_plot_param={'color': 'g', 'label': 'Estimation point',
@@ -128,7 +128,7 @@ class Test_images(unittest.TestCase):
         ############### left
         zz = np.zeros(nb_of_points)
         max_x = 0.23
-        my_plot = plot_functions.APlot(how=(1, 2), sharey=True)
+        my_plot = class_aplot.APlot(how=(1, 2), sharey=True)
         my_plot.uni_plot(0, [0 for _ in xx],
                          np.linspace(-0.004, max_x, len(xx)),
                          dict_plot_param={'color': 'g', 'label': 'Estimation point',
@@ -187,7 +187,7 @@ class Test_images(unittest.TestCase):
         for fct, param in zip(list_1, list_2):
             fct = np.vectorize(fct)
             yy = fct(xx, T_max=T_max, time_burn_in=0, **param)
-            aplot = plot_functions.APlot(how=(1, 1))
+            aplot = class_aplot.APlot(how=(1, 1))
             aplot.uni_plot(nb_ax=0, xx=xx, yy=yy, dict_plot_param={"color": "blue", "markersize": 0, "linewidth": 2})
             aplot.set_dict_fig(0, {'title': '', 'xlabel': '', 'ylabel': ''})
 

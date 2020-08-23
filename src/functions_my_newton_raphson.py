@@ -1,7 +1,8 @@
 import numpy as np
 
-from errors.Error_convergence import Error_convergence
-from functions.tools import classical_functions_vectors
+# my libraries
+from library_errors.Error_convergence import Error_convergence
+from library_functions.tools import classical_functions_vectors
 
 
 

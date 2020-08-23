@@ -4,10 +4,10 @@ import numpy as np
 from scipy.stats.mstats import gmean
 
 # other files
-from .classes.class_kernel import *
+from classes.class_kernel import *
 
 # my libraries
-from functions.tools import classical_functions_vectors
+from library_functions.tools import classical_functions_vectors
 
 
 np.random.seed(124)

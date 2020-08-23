@@ -2,12 +2,12 @@
 
 
 ##### my libraries
+from library_classes.graphs.class_evolution_plot_estimator import *
 
 
 ##### other files
-from classes.graphs.class_evolution_plot_estimator import *
-from ..class_Estimator_Hawkes import Estimator_Hawkes
-from ..class_kernel import *
+from classes.class_Estimator_Hawkes import Estimator_Hawkes
+from classes.class_kernel import *
 
 
 # section ######################################################################

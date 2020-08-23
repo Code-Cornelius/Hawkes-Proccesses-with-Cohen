@@ -2,13 +2,12 @@
 import math
 import matplotlib.pyplot as plt
 ##### other files
-from src.classes.class_kernel import *
-from .class_kernel import *
+from classes.class_kernel import *
 from functions_general_for_Hawkes import multi_list_generator
 
 ##### my libraries
-from functions.tools import classical_functions_vectors
-from classes.plot import class_aplot
+from library_functions.tools import classical_functions_vectors
+from library_classes.plot import class_aplot
 
 
 np.random.seed(124)
