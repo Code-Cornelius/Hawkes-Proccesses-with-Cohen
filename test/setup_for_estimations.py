@@ -4,7 +4,7 @@ import unittest
 
 ##### my libraries
 import functions.tools.recurrent_functions
-import functions.tools.decorators_functions
+from functions.tools.decorators_functions import *
 import functions_change_point_analysis
 import functions_fct_rescale_adaptive
 
