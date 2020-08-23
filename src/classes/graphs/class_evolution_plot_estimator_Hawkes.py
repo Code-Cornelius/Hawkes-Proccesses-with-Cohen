@@ -6,9 +6,8 @@
 
 ##### other files
 from classes.graphs.class_evolution_plot_estimator import *
-
-from classes.class_Estimator_Hawkes import Estimator_Hawkes
-from classes.class_kernel import *
+from ..class_Estimator_Hawkes import Estimator_Hawkes
+from ..class_kernel import *
 
 
 # section ######################################################################

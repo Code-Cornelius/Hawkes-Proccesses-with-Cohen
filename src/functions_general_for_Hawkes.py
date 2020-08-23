@@ -1,8 +1,15 @@
-# create the exact good list of size M*M*3
-# the function returns [   [0], [[0]], [[0]]   ]
 def multi_list_generator(size):
+    """create the exact good list of size M*M*3
+
+
+    Args:
+        size:
+
+    Returns: the function returns [   [0], [[0]], [[0]]   ] for size = 1.
+
+    """
     if size < 1:
-        raise ("Size not big enough.")
+        raise Exception("Size not big enough.")
     ans = []
     interior_list = [0] * size
     # MU ALPHA BETA

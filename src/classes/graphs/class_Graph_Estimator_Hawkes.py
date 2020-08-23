@@ -3,15 +3,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 ##### my libraries
+from classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
-import plot_functions
+import classes.plot.class_aplot
 from errors import Error_forbidden
 from errors.Warning_deprecated import deprecated_function
 
 ##### other files
-from classes.class_Estimator_Hawkes import *
-from classes.class_kernel import *
+from src.classes.class_Estimator_Hawkes import *
+from src.classes.class_kernel import *
 
 
 # batch_estimation is one dataframe with the estimators.

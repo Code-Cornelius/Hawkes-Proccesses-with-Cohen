@@ -3,8 +3,8 @@ import time
 import unittest
 
 ##### my libraries
-import recurrent_functions
-import decorators_functions
+import functions.tools.recurrent_functions
+import functions.tools.decorators_functions
 import functions_change_point_analysis
 import functions_fct_rescale_adaptive
 

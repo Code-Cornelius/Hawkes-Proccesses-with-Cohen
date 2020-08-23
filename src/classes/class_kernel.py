@@ -6,6 +6,7 @@ import numpy as np
 from classes.graphs.class_graph_estimator import *
 
 ##### my libraries
+from functions.tools import classical_functions_integration
 
 np.random.seed(124)
 
@@ -83,7 +84,7 @@ class Kernel:
             yy = self._fct_kernel(T_t=tt_integral, eval_point=eval_point, length_elements_T_t=[1],
                                   **{k: self.__dict__[k] for k in self.__dict__ if
                                      k in signature(self._fct_kernel).parameters})
-            integral = classical_functions.trapeze_int(tt_integral[0],
+            integral = classical_functions_integration.trapeze_int(tt_integral[0],
                                                        yy[0])  # yy[0] bc function gives back a list of arrays.
 
             for i in range(len(length_elements_T_t)):

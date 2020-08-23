@@ -1,13 +1,17 @@
-import classical_functions
 import numpy as np
 
 from errors.Error_convergence import Error_convergence
+from functions.tools import classical_functions_vectors
 
 
-# e is the error.
-# tol is the each step tolerance
-# An interesting number of jump for that algorithm is around a hundred.
+
+
+
 def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10 ** (-4), silent=True):
+    # e is the error.
+    # tol is the each step tolerance
+    # An interesting number of jump for that algorithm is around a hundred.
+
     # nb of dimensions
     M = len(MU)
     ## df is the derivative
@@ -42,7 +46,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # compute the shift
         hessian = ddf(MU, ALPHA, BETA)
         # if not invertible you re do the simulations. Solve is also more effective than computing the inverse
-        if not classical_functions.is_invertible(hessian):
+        if not classical_functions_vectors.is_invertible(hessian):
             raise Error_convergence("Hessian is not invertible")
         direction = np.linalg.solve(hessian, derivative)
 
@@ -127,12 +131,11 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
     return MU, ALPHA, BETA
 
 
-# return 3 things, first the coefficient by which to multiply the stepest descent.
-# also which direction has to change.
-# finally whether the coefficient has been changed.
 def armijo_rule(f, df, x0, direction, a, sigma, b):
-    # TODO ARMIJO RULE IS DONE FOR CASES WHERE ALPHA BETAM U ARE SCALARS, MULTIVARIATE CASE!!!
-    #  DONE NOW?
+    # return 3 things, first the coefficient by which to multiply the stepest descent.
+    # also which direction has to change.
+    # finally whether the coefficient has been changed.
+
     if abs(b) >= 1:
         raise Exception("b has to be smaller than 1.")
 

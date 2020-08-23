@@ -2,10 +2,10 @@
 import bisect
 
 ##### my libraries
-from decorators_functions import Memoization
+from functions.tools.decorators_functions import Memoization
 
 ##### other files
-from classes.class_kernel import *
+from .classes.class_kernel import *
 
 # section ######################################################################
 #  #############################################################################

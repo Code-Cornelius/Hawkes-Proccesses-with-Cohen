@@ -4,12 +4,11 @@
 ##### my libraries
 
 
-
 from classes.graphs.class_statistic_plot_estimator import *
 from errors import Error_forbidden
 
 ##### other files
-from classes.class_Estimator_Hawkes import *
+from ..class_Estimator_Hawkes import *
 
 
 # batch_estimation is one dataframe with the estimators.
@@ -59,7 +58,6 @@ class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):
         '''
         return sum / self.nb_of_guesses
 
-
     # section ######################################################################
     #  #############################################################################
     # plot
@@ -77,5 +75,3 @@ class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator):
             return dict_fig
         else:
             raise Error_forbidden
-
-

@@ -1,14 +1,13 @@
 ##### normal libraries
 
 
-
 ##### my libraries
 
 
 from classes.graphs.class_histogram_estimator import *
 
 ##### other files
-from classes.class_Estimator_Hawkes import *
+from ..class_Estimator_Hawkes import *
 
 
 # batch_estimation is one dataframe with the estimators.
@@ -41,7 +40,6 @@ class Histogram_estimator_Hawkes(Histogram_estimator):
     # section ######################################################################
     #  #############################################################################
     # data
-
 
     # section ######################################################################
     #  #############################################################################

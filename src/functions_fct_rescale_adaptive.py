@@ -4,9 +4,11 @@ import numpy as np
 from scipy.stats.mstats import gmean
 
 # other files
-from classes.class_kernel import *
+from .classes.class_kernel import *
 
 # my libraries
+from functions.tools import classical_functions_vectors
+
 
 np.random.seed(124)
 
@@ -64,7 +66,7 @@ def AKDE_scaling(times, G=10., gamma=0.5):
 def rescale_min_max(vect):
     the_max = max(vect)
     the_min = min(vect)
-    the_mean = classical_functions.mean_list(vect)
+    the_mean = classical_functions_vectors.mean_list(vect)
     ans = [(vect[i] - the_mean) / (the_max - the_min) + 1 for i in range(len(vect))]
     return ans
 
@@ -78,7 +80,7 @@ def check_evoluating(vector, tol):
     Returns:
 
     """
-    the_mean = classical_functions.mean_list(vector)
+    the_mean = classical_functions_vectors.mean_list(vector)
     if all(element < the_mean * (1 + tol) for element in vector) and all(
             element > the_mean * (1 - tol) for element in vector):
         return False

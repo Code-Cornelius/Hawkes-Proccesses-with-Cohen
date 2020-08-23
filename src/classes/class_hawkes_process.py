@@ -2,12 +2,14 @@
 import math
 import matplotlib.pyplot as plt
 ##### other files
-from classes.class_kernel import *
+from src.classes.class_kernel import *
+from .class_kernel import *
 from functions_general_for_Hawkes import multi_list_generator
 
 ##### my libraries
-import classical_functions
-import plot_functions
+from functions.tools import classical_functions_vectors
+from classes.plot import class_aplot
+
 
 np.random.seed(124)
 
@@ -63,7 +65,7 @@ def step_fun(tt, time_real):
     # At every index where the jumps occurs and onwards, +1 to the step-function.
     y = np.zeros(len(tt))
     for i in range(len(tt)):
-        jumps = classical_functions.find_smallest_rank_leq_to_K(time_real, tt[i])
+        jumps = classical_functions_vectors.find_smallest_rank_leq_to_K(time_real, tt[i])
         y[i] = jumps
     return y
 
@@ -107,7 +109,7 @@ class Hawkes_process:
 
     def plot_parameters_hawkes(self):
         # I m printing the evolution of the parameters there.
-        aplot = plot_functions.APlot(how=(1, self.M))
+        aplot = class_aplot.APlot(how=(1, self.M))
         tt = np.linspace(0, 1, 1000)
         my_colors = plt.cm.rainbow(np.linspace(0, 1, 2 * self.M))
         for i_dim in range(self.M):
@@ -155,7 +157,7 @@ class Hawkes_process:
 
         # here alpha and beta should be scalars in a matrix form.
         if np.shape(self.ALPHA) != np.shape(self.BETA):
-            raise Exception("Why are the the_update_functions not of the good shape ?")
+            raise ValueError("Why are the the_update_functions not of the good shape ?")
 
         ########################################################################################
         # empty vector for stocking the information (the times at which something happens).
@@ -257,7 +259,7 @@ class Hawkes_process:
             if plot_bool:
                 # print("previous : ", previous_jump)
                 # print("last : ", last_jump)
-                first_index_time = classical_functions.find_smallest_rank_leq_to_K(tt_burn, previous_jump)
+                first_index_time = classical_functions_vectors.find_smallest_rank_leq_to_K(tt_burn, previous_jump)
                 for i_line in range(self.M):
                     for j_column in range(self.M):
                         for i_times in range(first_index_time, len(tt_burn)):
@@ -322,7 +324,7 @@ class Hawkes_process:
         intensity_bis = np.zeros((self.M, len(tt_burn) - Hawkes_process.nb_points_burned))
         for i in range(len(T_t)):
             # find the times big enough.
-            i_time = classical_functions.find_smallest_rank_leq_to_K(np.array(T_t[i]), Hawkes_process.time_burn_in)
+            i_time = classical_functions_vectors.find_smallest_rank_leq_to_K(np.array(T_t[i]), Hawkes_process.time_burn_in)
             # shift the times
             T_t[i] = list(
                 np.array(T_t[i][i_time:]) - Hawkes_process.time_burn_in

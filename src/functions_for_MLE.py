@@ -5,7 +5,7 @@ import pandas as pd
 ##### my libraries
 from errors.Error_convergence import *
 
-from classes.class_hawkes_process import *
+from .classes.class_hawkes_process import *
 from functions_derivatives_MLE import *
 ##### other files
 from functions_my_newton_raphson import newtons_method_multi_MLE

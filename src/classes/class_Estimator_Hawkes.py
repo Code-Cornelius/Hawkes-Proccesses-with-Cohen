@@ -2,13 +2,14 @@
 
 
 ##### my libraries
+from classes.estimators.class_estimator import *
 
 ##### other files
-from classes.class_kernel import *
+
 
 # section ######################################################################
 #  #############################################################################
-# code:
+# class
 
 class Estimator_Hawkes(Estimator):
     set_column_hawkes = {'parameter', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in',
@@ -23,7 +24,7 @@ class Estimator_Hawkes(Estimator):
             if Estimator_Hawkes.set_column_hawkes.issubset(df.columns):
                 super().__init__(df)
             else:
-                raise ("Probleme, the columns of the dataframe do not match the estimator hawkes.")
+                raise ValueError("Problem, the columns of the dataframe do not match the estimator hawkes.")
         # if no df:
         else:
             super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.set_column_hawkes)))
