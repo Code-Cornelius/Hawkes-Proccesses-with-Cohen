@@ -1,14 +1,6 @@
-import decorators_functions
-import functions_change_point_analysis
-import functions_fct_rescale_adaptive
-from test.test_simple_estimation import *
+from .setup_tests import *
 
-if test_mode:
-    nb_of_times = 5
-else:
-    nb_of_times = 50
-width_kernel = 1 / 5. * T_max
-b = width_kernel / 2.
+
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     # section ######################################################################
     #  #############################################################################
