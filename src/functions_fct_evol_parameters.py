@@ -63,8 +63,8 @@ def update_functions(case, PARAMETERS):
                             index_1, index_2],
                         T_max=T_max,
                         time_burn_in=time_burn_in),
-                            i=i,
-                            j=j)
+                            index_1=i,
+                            index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
                         lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[

@@ -166,7 +166,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     def test_over_the_time_adaptive_two_simulate(self):
         path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_2_first.csv'
 
-        considered_param = ['nu','alpha','beta']
+        considered_param = ['nu','alpha']
 
 
         Times = np.linspace( Test_Simulation_Hawkes_adaptive.lower_percent_bound  * T_max, Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
@@ -227,6 +227,31 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         evol_graph.draw(separator_colour='weight function',
                            kernel_plot_param=plot_param)
 
+
+    def test_comparison_before_after_rescale(self):
+        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
+        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_second.csv'
+
+        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_first.csv'
+        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_second.csv'
+
+        df_1 = pd.read_csv(path_for_first_simul)
+        df_2 = pd.read_csv(path_for_second_simul)
+        my_df = pd.concat([df_1, df_2], axis=0, join='outer', ignore_index=False, keys=None,
+                  levels=None, names=None, verify_integrity=False, copy=True)
+        Times = np.linspace( Test_Simulation_Hawkes_adaptive.lower_percent_bound  * T_max, Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+        estimator_kernel = Estimator_Hawkes(my_df)
+        considered_param = ['nu','alpha','beta']
+
+        list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
+                                 considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
+                                                                                  tol = 0.1, silent=silent)
+        my_estim = Estimator_Hawkes(my_df)
+        evol_graph = Evolution_plot_estimator_Hawkes(my_estim, the_update_functions)
+        plot_param = list_of_kernels, Times
+        # I am plotting many kernels here.
+        evol_graph.draw(separator_colour='weight function',
+                           kernel_plot_param=plot_param)
 
 
 
