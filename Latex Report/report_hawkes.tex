@@ -1271,11 +1271,10 @@ We previously mentionned how the scaling is interfering with rescaling the kerne
 \label{fig:impact_g_flat}
 \end{figure}
 
-The second step's plots is displayed with fig. \ref{fig:second_estimate_0_alpha}, \ref{fig:second_estimate_0_beta}, \ref{fig:second_estimate_0_nu}
 
-We observe an expected improvement. It isn't directly induced by $g$, but by the scaling tolerance we introduced. It deals very well with such trends. The kernels seem to be varying a lot but one should be careful about the scale on the right: the kernels are pretty flat.
+We observe an expected improvement. It isn't directly induced by $g$, but by the scaling tolerance we introduced. It deals very well with such trends. The impact of the scale on the kernels is that they became totally flat: one should be careful about the scale on the right.
 
-\textbf{Conclusion:} constant parameters should be treated differently then the rest. We deal with it with a tolerance threshold.
+\textbf{Conclusion:} Constant parameters should be treated differently then the rest. We deal with it with a tolerance threshold.
 
 
 
@@ -1292,8 +1291,7 @@ Let's first give a look to how the kernels are evolving with the first estimate.
 \label{fig:impact_g_linear}
 \end{figure}
 
-
-The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}, \ref{fig:second_estimate_1_beta}, \ref{fig:second_estimate_1_nu}. It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big for this case scenario / an original kernel width too small.
+It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big for this case scenario / an original kernel width too small.
 
 
 \textbf{Conclusion:} Hawkes Adaptive Time Dependant Estimation of Parameters should be done with a few widths for the first estimate, in the exact same manner as for KDE estimation. 
@@ -1306,7 +1304,10 @@ The second step's plots is displayed with fig. \ref{fig:second_estimate_1_alpha}
 
 The figures are drawn in apendix as: \ref{fig:first_estimate_2_alpha}, \ref{fig:first_estimate_2_beta}, \ref{fig:first_estimate_2_nu}.
 
-We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is the length of the kernel. Over the two phases, we observe small kernels, and during the jump bigger kernels.
+We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is the length of the kernel. Over the two phases, we observe small kernels, and during the jump bigger kernels. 
+
+A last comment, there is a spike in beta's estimation, that is simply due to an overwhelmingly high estimate and to an effect of batch-mean, that can happen due to the estimation used method. It is totally random, and should be considered as extreme noise. For that reason, we excluded the beta dimension from the scaling algorithm.
+
 
 The second step's plots is displayed with fig. \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
 
@@ -1336,8 +1337,6 @@ We see that the jump is way better estimated. The transition reduces to around 6
 Another thing to consider is that the jump isn't perfectly located, but it is a dimensionality problem. The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for alpha and nu are at different times, it isn't clear how to adapt in the best fashion. Here, the algorithm has increased the kernels for all points in between the two jumps, making the left side of the jump for alpha as well as the right side of the jump for nu very precise. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
 
 Also, we notice a small bump in the first estimations. It is due to the value of $l$ being too big: a large kernel is suppose to appear for values close to the mean, however, for such values, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line.
-
-A last comment, there is a spike in beta's estimation, that is simply due to an overwhelmingly high estimate and to an effect of batch-mean, that can happen due to the estimation used method. It is totally random, and should be considered as extreme noise.
 
 \textbf{Conclusion:} The algorithm is limited to low dimensional problems. The minimum of the rescale function should be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period.
 
