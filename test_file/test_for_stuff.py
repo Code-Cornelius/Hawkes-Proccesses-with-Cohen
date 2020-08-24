@@ -1,7 +1,7 @@
 import pandas as pd
 
-
-df = pd.read_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_bianca.csv')#,
+path = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_second.csv'
+df = pd.read_csv(path)#,
             #index_col='Employee',
             #parse_dates=['Hired'],
             #header=0,
@@ -9,8 +9,8 @@ df = pd.read_csv(r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estima
 print(df)
 
 for i in range( len(df.index) ):
-    print(df.at[i, 'weight function'])
-    df.at[i, 'weight function'] = "Biweight 5040 width"
+    # print(df.at[i, 'weight function'])
+    df.at[i, 'weight function'] = "Adaptive Biweight with first width 975.0"
 print(df)
 
-df.to_csv('super_0_first.csv')
+df.to_csv(path)

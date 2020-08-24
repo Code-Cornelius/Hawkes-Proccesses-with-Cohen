@@ -117,7 +117,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(0, PARAMETERS)
+the_update_functions = update_functions(4, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
@@ -125,7 +125,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T_max = 3, 50 * mini_T
 else:
-    nb_of_guesses, T_max = 50, 120 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, 65 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 

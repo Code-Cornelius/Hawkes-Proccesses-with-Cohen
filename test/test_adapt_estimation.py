@@ -232,8 +232,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
         path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_second.csv'
 
-        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_first.csv'
-        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_second.csv'
+#        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_4_first.csv'
+#        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_4_second.csv'
 
         df_1 = pd.read_csv(path_for_first_simul)
         df_2 = pd.read_csv(path_for_second_simul)
