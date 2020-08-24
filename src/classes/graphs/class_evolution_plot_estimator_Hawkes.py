@@ -8,48 +8,22 @@ from library_classes.graphs.class_evolution_plot_estimator import *
 ##### other files
 from classes.class_Estimator_Hawkes import Estimator_Hawkes
 from classes.class_kernel import *
+from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
 
 
 # section ######################################################################
 #  #############################################################################
 # code:
 
-class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator):
+
+class Evolution_plot_estimator_Hawkes(Evolution_plot_estimator, Graph_Estimator_Hawkes):
     evolution_name = 'time estimation'
 
     def __init__(self, estimator, fct_parameters):
-        # BIANCA a way to have one constructor for all of them?
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        super().__init__(estimator, separators=['parameter', 'm', 'n'])
-
-        # parameters is a list of lists of lists of functions
-        self.ALPHA = fct_parameters[1]
-        self.BETA = fct_parameters[2]  # makes the file more readable.
-        self.NU = fct_parameters[0]
-        self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
-        self.T_max = estimator.DF["T_max"].max()
-        self.M = np.shape(self.ALPHA)[1]
-        self.nb_of_guesses = estimator.DF['number of guesses'].max()
-
-
-    @classmethod
-    def from_path(cls, path, parameters):
-        '''
-        create another init that takes the same parameter, with the diff that it takes the path. Another constructor :
-
-        Args:
-            path:
-            parameters:
-
-        Returns:
-
-        '''
-        # BIANCA a way to have one constructor for all of them?
-        # path has to be raw. with \\
-        estimator = Estimator_Hawkes()
-        estimator.append(pd.read_csv(path))
-        return cls(estimator, parameters)
+        Evolution_plot_estimator.__init__(self, estimator, separators=['parameter', 'm', 'n'])
+        Graph_Estimator_Hawkes.__init__(self, estimator, fct_parameters)
 
     # section ######################################################################
     #  #############################################################################
