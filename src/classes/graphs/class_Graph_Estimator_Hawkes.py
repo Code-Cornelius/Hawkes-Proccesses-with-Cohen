@@ -23,6 +23,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
+
         super().__init__(estimator = estimator, fct_parameters = fct_parameters,
                          separators=Graph_Estimator_Hawkes.separators,
                          *args, **kwargs)
