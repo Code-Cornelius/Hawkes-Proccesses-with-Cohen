@@ -19,9 +19,7 @@ from classes.class_kernel import *
 class Graph_Estimator_Hawkes(Graph_Estimator):
     evolution_name = 'time estimation'
 
-    def __init__(self, estimator, fct_parameters):
-        deprecated_function(reason="Graph_Estimator_Hawkes"
-                                   "")
+    def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
         Graph_Estimator.__init__(self, estimator, ['parameter', 'm', 'n'])
