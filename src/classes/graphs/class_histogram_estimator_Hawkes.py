@@ -12,17 +12,16 @@ from classes.class_Estimator_Hawkes import *
 from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
 
 
-class Histogram_estimator_Hawkes(Histogram_estimator, Graph_Estimator_Hawkes):
+class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
     nb_of_bins = 60
 
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
-        print( [x.__name__ for x in Histogram_estimator_Hawkes.__mro__] )
-
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        #super().__init__(self, estimator = estimator, separators = ['parameter', 'm', 'n'], fct_parameters = fct_parameters, *args, **kwargs)
-        Graph_Estimator_Hawkes.__init__(self, estimator, fct_parameters)
-        Histogram_estimator.__init__(self, estimator, separators=['parameter', 'm', 'n'])
+
+        #work-in-progress are the separators the good one?
+        super().__init__(estimator = estimator, fct_parameters = fct_parameters,
+                         *args, **kwargs)
 
 
     # section ######################################################################

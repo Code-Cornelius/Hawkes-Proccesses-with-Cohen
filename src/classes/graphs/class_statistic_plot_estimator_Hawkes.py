@@ -13,13 +13,13 @@ from classes.class_Estimator_Hawkes import *
 from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
 
 
-class Statistic_plot_estimator_Hawkes(Statistic_plot_estimator, Graph_Estimator_Hawkes):
+class Statistic_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Statistic_plot_estimator):
 
-    def __init__(self, estimator, fct_parameters):
+    def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        Statistic_plot_estimator.__init__(self, estimator, separators=['parameter', 'm', 'n'])
-        Graph_Estimator_Hawkes.__init__(self, estimator, fct_parameters)
+        super().__init__(estimator = estimator, fct_parameters = fct_parameters,
+                         *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

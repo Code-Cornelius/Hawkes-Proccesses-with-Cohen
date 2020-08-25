@@ -7,7 +7,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         pass
 
     def tearDown(self):
-        pass #plt.show()
+        plt.show()
 
     def test_form_evol_functions(self):
         for i in range(5):
@@ -36,7 +36,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_first.csv',
             the_update_functions)
 
-        hist_test.draw_histogram()
+        hist_test.draw()
 
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
         stat_test.draw(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
