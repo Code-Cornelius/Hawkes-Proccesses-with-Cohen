@@ -1,14 +1,7 @@
 ##### normal libraries
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 ##### my libraries
-from library_classes.graphs.class_graph_estimator import Graph_Estimator
-import library_classes.plot.class_aplot
 
 # errors:
-from library_errors import Error_forbidden
-from library_errors.Warning_deprecated import deprecated_function
 
 ##### other files
 from classes.class_Estimator_Hawkes import *
@@ -24,7 +17,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
 
-        super().__init__(estimator = estimator, fct_parameters = fct_parameters,
+        super().__init__(estimator=estimator, fct_parameters=fct_parameters,
                          separators=Graph_Estimator_Hawkes.separators,
                          *args, **kwargs)
 
@@ -42,4 +35,4 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         # path has to be raw. with \\
         estimator = Estimator_Hawkes()
         estimator.append(pd.read_csv(path))
-        return cls(estimator = estimator, fct_parameters=parameters)
+        return cls(estimator=estimator, fct_parameters=parameters)

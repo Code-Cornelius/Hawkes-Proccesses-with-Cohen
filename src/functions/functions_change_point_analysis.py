@@ -23,8 +23,6 @@ def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_mu
     # get the max value which is M-1
     M = estimator.DF["m"].max() + 1
 
-
-
     #################################### my code version
     separators = ['parameter', 'm', 'n']
 

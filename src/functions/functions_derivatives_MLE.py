@@ -7,6 +7,7 @@ from library_functions.tools.decorators_functions import Memoization
 ##### other files
 from classes.class_kernel import *
 
+
 # section ######################################################################
 #  #############################################################################
 # R FUNCTIONS
@@ -57,7 +58,7 @@ def R(m, n, k, T_t, BETA, end=-10):
         return 0
 
     # thats the sum on the right. We are above the inequalities so we only check for the lower bound.
-    i = -1 #making sure the variable exists, though i should always be created.
+    i = -1  # making sure the variable exists, though i should always be created.
     for i in range(end, -1, -1):
         if T_t[m][k - 2] <= T_t[n][i]:
             constant += np.exp(-BETA[m, n] * (T_t[m][k - 1] - T_t[n][i]))
@@ -121,6 +122,7 @@ def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
         compute_R_dashes(m, n, T_t, BETA, end=end)
     return previous_Rs_dash_dash[(m, n)][k - 1]
 
+
 # section ######################################################################
 #  #############################################################################
 # first derivative
@@ -152,6 +154,7 @@ def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
         w[m] * vector_R_dash * np.reciprocal(vector_denomR))  # in denomR the i is already shifted.
 
     return ALPHA[m, n] / (BETA[m, n] * BETA[m, n]) * ANS1 - ALPHA[m, n] / (BETA[m, n]) * ANS2 - ANS3
+
 
 # section ######################################################################
 #  #############################################################################
@@ -323,7 +326,8 @@ def matrix_creator_square(size, function_diag, function_sides, function_wings, *
         for jj in range(size):
             if size * jj + size * ii < size * size:
                 if jj == 0:
-                    matrix[size * ii:size * ii + size, size * ii + size * jj:size * ii + size * jj + size] = small_square_matrix(
+                    matrix[size * ii:size * ii + size,
+                    size * ii + size * jj:size * ii + size * jj + size] = small_square_matrix(
                         size, function_diag, function_sides, (size * ii) % size, (size * jj + size * ii) % size, m=ii,
                         **kwargs)
                 elif ii < jj:
@@ -373,7 +377,7 @@ def likelihood(T_t, ALPHA, BETA, MU, T):
             inside_big_third_sum = MU[i]
             for j in range(M):
                 inside_big_third_sum += ALPHA[i, j] * R(m=i, n=j, k=k + 1, T_t=T_t, BETA=BETA)
-        value_i += np.log(inside_big_third_sum) #T_t never empty
+        value_i += np.log(inside_big_third_sum)  # T_t never empty
         ans += value_i
     return ans
 

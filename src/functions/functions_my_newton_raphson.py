@@ -5,9 +5,6 @@ from library_errors.Error_convergence import Error_convergence
 from library_functions.tools import classical_functions_vectors
 
 
-
-
-
 def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10 ** (-4), silent=True):
     # e is the error.
     # tol is the each step tolerance
@@ -88,7 +85,7 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
 
         # if the max is too big I replace the value by a random number between 0 and 1.
         # Also, I synchronize the alpha and the beta in order to avoid boundary problem.
-        if np.max(np.abs(x0)) > 100: #absolute in case goes negative infinity.
+        if np.max(np.abs(x0)) > 100:  # absolute in case goes negative infinity.
             nb_of_explosions += 1
             for i in range(len(x0)):
                 if i < M:

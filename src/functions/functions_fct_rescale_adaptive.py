@@ -1,14 +1,12 @@
 # normal libraries
 import math  # quick math functions
-import numpy as np
 from scipy.stats.mstats import gmean
-
-# other files
-from classes.class_kernel import *
 
 # my libraries
 from library_functions.tools import classical_functions_vectors
 
+# other files
+from classes.class_kernel import *
 
 np.random.seed(124)
 
@@ -148,8 +146,9 @@ def creator_list_kernels(my_scalings, previous_half_width):
     list_of_kernels = []
     for scale in my_scalings:
         new_scaling = previous_half_width / scale
-        list_of_kernels.append(Kernel(fct_biweight, name=f"Adaptive Biweight with first width {2*previous_half_width}",
-                                      a=-new_scaling, b=new_scaling))
+        list_of_kernels.append(
+            Kernel(fct_biweight, name=f"Adaptive Biweight with first width {2 * previous_half_width}",
+                   a=-new_scaling, b=new_scaling))
         # list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {2*new_scaling} width",
         #                              a=-new_scaling, b=new_scaling)) # I would have put the scaling but that would have been a problem.
         # for plots. So I keep it simple with the previous width.

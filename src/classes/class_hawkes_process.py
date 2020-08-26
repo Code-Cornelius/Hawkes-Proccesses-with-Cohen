@@ -1,14 +1,14 @@
 ##### normal libraries
 import math
+
 import matplotlib.pyplot as plt
+from library_classes.plot import class_aplot
+##### my libraries
+from library_functions.tools import classical_functions_vectors
+
 ##### other files
 from classes.class_kernel import *
 from functions.functions_general_for_Hawkes import multi_list_generator
-
-##### my libraries
-from library_functions.tools import classical_functions_vectors
-from library_classes.plot import class_aplot
-
 
 np.random.seed(124)
 
@@ -323,7 +323,8 @@ class Hawkes_process:
         intensity_bis = np.zeros((self.M, len(tt_burn) - Hawkes_process.nb_points_burned))
         for i in range(len(T_t)):
             # find the times big enough.
-            i_time = classical_functions_vectors.find_smallest_rank_leq_to_K(np.array(T_t[i]), Hawkes_process.time_burn_in)
+            i_time = classical_functions_vectors.find_smallest_rank_leq_to_K(np.array(T_t[i]),
+                                                                             Hawkes_process.time_burn_in)
             # shift the times
             T_t[i] = list(
                 np.array(T_t[i][i_time:]) - Hawkes_process.time_burn_in

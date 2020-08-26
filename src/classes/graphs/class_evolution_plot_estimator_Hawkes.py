@@ -4,9 +4,7 @@
 ##### my libraries
 from library_classes.graphs.class_evolution_plot_estimator import *
 
-
 ##### other files
-from classes.class_Estimator_Hawkes import Estimator_Hawkes
 from classes.class_kernel import *
 from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
 
@@ -22,7 +20,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        super().__init__(estimator = estimator, fct_parameters = fct_parameters,
+        super().__init__(estimator=estimator, fct_parameters=fct_parameters,
                          *args, **kwargs)
 
     # section ######################################################################
@@ -41,10 +39,8 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     def get_evolution_name_true_value(self, data):
         return self.get_evolution_name_specific_data(data, 'true value')
 
-
     def get_evolution_name_plot_data(self, data):
         return self.get_evolution_name_specific_data(data, 'value')
-
 
     def get_evolution_name_specific_data(self, data, str):
         '''
@@ -91,7 +87,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         Returns:
 
         '''
-        #we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
+        # we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
         _, coloured_keys = super().draw(separators, separator_colour)
         if kernel_plot_param is not None:
             list_of_kernels, Times = kernel_plot_param
@@ -102,7 +98,8 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % (len(Times) // 14):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
+                    if not number % (
+                            len(Times) // 14):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
@@ -135,9 +132,9 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
                         if list_of_kernels[kernel_counter].name == kernel_name:
                             kernel = list_of_kernels[kernel_counter]
                         else:
-                            kernel_counter +=1
-                    if kernel_counter > len(list_of_kernels): # if he hasn't found the kernel, there is an error.
-                        raise("The kernels given and ploted are not matching.")
+                            kernel_counter += 1
+                    if kernel_counter > len(list_of_kernels):  # if he hasn't found the kernel, there is an error.
+                        raise ("The kernels given and ploted are not matching.")
                     tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
                     yy = kernel.eval(tt, Time, self.T_max)
                     plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],

@@ -54,7 +54,8 @@ def update_functions(case, PARAMETERS):
             the_update_functions[0][i] = \
                 partial(lambda time, T_max, time_burn_in, index_1: constant_parameter(time=time, constant=value,
                                                                                       T_max=T_max,
-                                                                                      time_burn_in=time_burn_in), index_1=i)
+                                                                                      time_burn_in=time_burn_in),
+                        index_1=i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
@@ -78,7 +79,8 @@ def update_functions(case, PARAMETERS):
             the_update_functions[0][i] = \
                 partial(
                     lambda time, T_max, time_burn_in, index_1: linear_growth(time, 1.5 * MU[index_1], MU[index_1] / 2,
-                                                                             T_max, time_burn_in=time_burn_in), index_1=i)
+                                                                             T_max, time_burn_in=time_burn_in),
+                    index_1=i)
 
             for j in range(M):
                 the_update_functions[1][i][j] = \
@@ -97,7 +99,8 @@ def update_functions(case, PARAMETERS):
         for i in range(M):
             the_update_functions[0][i] = \
                 partial(lambda time, T_max, time_burn_in, index_1: one_jump(time, 0.7, MU[index_1], 1.7 * MU[index_1],
-                                                                            T_max, time_burn_in=time_burn_in), index_1=i)
+                                                                            T_max, time_burn_in=time_burn_in),
+                        index_1=i)
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(time, 0.4,
@@ -149,5 +152,5 @@ def update_functions(case, PARAMETERS):
                 the_update_functions[2][i][j] = \
                     partial(
                         lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1 = i, index_2=j)
+                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
     return the_update_functions

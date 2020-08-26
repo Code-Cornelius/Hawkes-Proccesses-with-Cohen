@@ -14,8 +14,9 @@ from functions.functions_my_newton_raphson import newtons_method_multi_MLE
 # now there is an error raised.
 def simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation):
     T_max = tt[-1]
-    _, time_real = hp.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False, silent=True) # don't store intensity, only used for plots.
-    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max = T_max)
+    _, time_real = hp.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False,
+                                                           silent=True)  # don't store intensity, only used for plots.
+    w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max=T_max)
     # print(time_real)
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
@@ -25,10 +26,11 @@ def simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation):
     # One shouldn't get an infinite loop here. It's probability.
     return alpha_hat, beta_hat, mu_hat
 
+
 def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     # w shouldn't be None, however as a safety measure, just before doing the computations !
     if w is None:
-        w = Kernel(fct_plain, "plain", T_max =  T).eval(T_t, 0, T_max = T)
+        w = Kernel(fct_plain, "plain", T_max=T).eval(T_t, 0, T_max=T)
         # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
     M = len(T_t)
     MU = np.full(M, 0.1)
@@ -57,7 +59,7 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     return ALPHA, BETA, MU
 
 
-def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain, time_estimation=0,
+def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
                   silent=True):
     ## function_weight should be ONE kernel from class_kernel.
     ## hp is a hawkes process
@@ -77,7 +79,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
              "value": [mu_hat[s]],
              'T_max': [T_max],
              'time_burn_in': [Hawkes_process.time_burn_in],
-             'true value': [hp.NU[s](time_estimation,T_max, Hawkes_process.time_burn_in)],
+             'true value': [hp.NU[s](time_estimation, T_max, Hawkes_process.time_burn_in)],
              'number of guesses': [nb_of_guesses]
              }), sort=True
         )
@@ -91,7 +93,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
                  'time_burn_in': [Hawkes_process.time_burn_in],
-                 'true value': [hp.ALPHA[s][t](time_estimation,T_max, Hawkes_process.time_burn_in) ],
+                 'true value': [hp.ALPHA[s][t](time_estimation, T_max, Hawkes_process.time_burn_in)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -104,7 +106,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight= kernel_plain,
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
                  'time_burn_in': [Hawkes_process.time_burn_in],
-                 'true value': [hp.BETA[s][t](time_estimation,T_max, Hawkes_process.time_burn_in)],
+                 'true value': [hp.BETA[s][t](time_estimation, T_max, Hawkes_process.time_burn_in)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -125,34 +127,10 @@ def multi_estimations_at_one_time(hp, estimator, tt, nb_of_guesses, kernel_weigh
         estimation_hp(hp, estimator, tt, kernel_weight=kernel_weight, time_estimation=time_estimation, silent=silent,
                       nb_of_guesses=nb_of_guesses)
 
-    return # no need to return the estimator.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return  # no need to return the estimator.
 
 
 # those two functions are quite useless right now. I don't want to spend time on them to refractor them.
-
-
-
 
 
 '''

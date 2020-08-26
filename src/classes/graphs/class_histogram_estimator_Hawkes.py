@@ -19,9 +19,8 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
 
-        super().__init__(estimator = estimator, fct_parameters = fct_parameters,
+        super().__init__(estimator=estimator, fct_parameters=fct_parameters,
                          *args, **kwargs)
-
 
     # section ######################################################################
     #  #############################################################################

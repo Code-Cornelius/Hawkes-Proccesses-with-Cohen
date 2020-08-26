@@ -1,11 +1,11 @@
 ##### normal libraries
 from inspect import signature  # used in the method eval of the class
-import scipy.stats  # functions of statistics
-import numpy as np
 
+import numpy as np
+import scipy.stats  # functions of statistics
+from library_classes.graphs.class_graph_estimator import *
 ##### my libraries
 from library_functions.tools import classical_functions_integration
-from library_classes.graphs.class_graph_estimator import *
 
 ##### other files
 
@@ -86,7 +86,8 @@ class Kernel:
                                   **{k: self.__dict__[k] for k in self.__dict__ if
                                      k in signature(self._fct_kernel).parameters})
             integral = classical_functions_integration.trapeze_int(tt_integral[0],
-                                                       yy[0])  # yy[0] bc function gives back a list of arrays.
+                                                                   yy[
+                                                                       0])  # yy[0] bc function gives back a list of arrays.
 
             for i in range(len(length_elements_T_t)):
                 ans[i] = ans[i] / integral * T_max
