@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 ##### other files
 from classes.class_kernel import *
-from functions_general_for_Hawkes import multi_list_generator
+from functions.functions_general_for_Hawkes import multi_list_generator
 
 ##### my libraries
 from library_functions.tools import classical_functions_vectors

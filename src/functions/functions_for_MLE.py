@@ -1,14 +1,13 @@
 # normal libraries
 import warnings
-import pandas as pd
 
 ##### my libraries
 from library_errors.Error_convergence import *
 
 ##### other files
 from classes.class_hawkes_process import *
-from functions_derivatives_MLE import *
-from functions_my_newton_raphson import newtons_method_multi_MLE
+from functions.functions_derivatives_MLE import *
+from functions.functions_my_newton_raphson import newtons_method_multi_MLE
 
 
 # the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.

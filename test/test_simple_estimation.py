@@ -1,5 +1,20 @@
-from library_classes.plot import class_aplot
+##### normal libraries
+import time
+import unittest
+
+##### my libraries
+from library_functions.tools import recurrent_functions
+
+from classes.class_hawkes_process import *
+from classes.graphs.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
+from classes.graphs.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
+from classes.graphs.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
+##### other files
+from functions import functions_for_MLE
+from functions.functions_fct_evol_parameters import update_functions
 from .setup_for_estimations import *
+
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
@@ -15,11 +30,11 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             Hawkes_process(the_update_functions)
 
     def test_plot_hawkes(self):
-        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt= tt, plot_bool=True, silent=False)
+        intensity, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=True, silent=False)
         HAWKSY.plot_hawkes(tt, time_real, intensity, name="EXACT_HAWKES")
 
     def test_simple_unique(self):
-        _, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt = tt, plot_bool=False, silent=True)
+        _, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False, silent=True)
         print(len(time_real[0]))
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T_max, silent=False))
 
@@ -39,13 +54,10 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         hist_test.draw()
 
         TIMES = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T]
-        stat_test.draw(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
-                                               computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
-                                               fct_parameters = the_update_functions) # last parameter for hist.
+        stat_test.draw(mini_T=mini_T, times=TIMES, name_column_evolution='T_max',
+                       computation_function=recurrent_functions.compute_MSE, class_for_hist=Histogram_estimator_Hawkes,
+                       fct_parameters=the_update_functions)  # last parameter for hist.
         evol_test.draw(separator_colour='weight function')
-
-
-
 
     def test_simple_estimation_multi(self):
         estimator_multi = Estimator_Hawkes()
@@ -72,9 +84,9 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
                                                             tt, nb_of_guesses, silent=silent)
         stat_test = Statistic_plot_estimator_Hawkes(estimator_MSE, the_update_functions)
-        stat_test.draw(mini_T = mini_T, times= TIMES, name_column_evolution = 'T_max',
-                                               computation_function =  recurrent_functions.compute_MSE, class_for_hist = Histogram_estimator_Hawkes,
-                                               fct_parameters = the_update_functions) # last parameter for hist.
+        stat_test.draw(mini_T=mini_T, times=TIMES, name_column_evolution='T_max',
+                       computation_function=recurrent_functions.compute_MSE, class_for_hist=Histogram_estimator_Hawkes,
+                       fct_parameters=the_update_functions)  # last parameter for hist.
         estimator_MSE.DF.to_csv(trash_path, index=False,
                                 header=True)
 
@@ -99,7 +111,8 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         aplot = class_aplot.APlot(how=(1, 1))
         aplot.uni_plot(nb_ax=0, xx=T_plot, yy=vect_time_simulation)
         aplot.set_dict_fig(0, {
-            'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, batches of {} realisations.".format(
+            'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, "
+                     "batches of {} realisations.".format(
                 nb_of_guesses),
             'xlabel': "Number of Jumps simulated", 'ylabel': "Average time to simulate"})
         aplot.save_plot("Timing_opti")

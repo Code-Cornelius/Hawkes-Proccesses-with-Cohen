@@ -7,7 +7,7 @@ from library_classes.plot import class_aplot
 from library_functions.tools import recurrent_functions
 
 # other files
-from functions_fct_evol_parameters import *
+from functions.functions_fct_evol_parameters import *
 
 np.random.seed(124)
 

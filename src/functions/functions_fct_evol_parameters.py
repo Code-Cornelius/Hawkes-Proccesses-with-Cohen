@@ -3,7 +3,7 @@ from functools import partial
 
 import numpy as np
 
-import functions_general_for_Hawkes
+from functions import functions_general_for_Hawkes
 
 
 # all of those functions are simply function that returns one element.

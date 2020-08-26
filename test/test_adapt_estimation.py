@@ -1,5 +1,23 @@
 from .setup_for_estimations import *
 
+##### normal libraries
+import time
+import unittest
+
+##### my libraries
+from library_functions.tools import recurrent_functions
+from library_functions.tools import decorators_functions
+from functions import functions_change_point_analysis
+from functions import functions_fct_rescale_adaptive
+
+##### other files
+from functions import functions_for_MLE
+from classes.graphs.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
+from classes.class_hawkes_process import *
+from functions.functions_fct_evol_parameters import update_functions
+
+
 L=0.04
 R=0.96
 h=2.5
@@ -184,8 +202,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel = Estimator_Hawkes.from_path(path_for_first_simul)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
-                                 considered_param = considered_param, half_width = b,
-                                 L=l, R=R, h=h, l= l, tol = 0.1, silent=silent)
+                                                                                  considered_param = considered_param, half_width = b,
+                                                                                  L=l, R=R, h=h, l= l, tol = 0.1, silent=silent)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
         actual_state = [0]  # initialization
@@ -229,7 +247,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel = Estimator_Hawkes.from_path(path_for_first_simul)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
-                                 considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
+                                                                                  considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
                                                                                   tol = 0.1, silent=silent)
 
         evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_second_simul, the_update_functions)
@@ -252,7 +270,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         considered_param = ['nu','alpha','beta']
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
-                                 considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
+                                                                                  considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
                                                                                   tol = 0.1, silent=silent)
         my_estim = Estimator_Hawkes(my_df)
         evol_graph = Evolution_plot_estimator_Hawkes(my_estim, the_update_functions)

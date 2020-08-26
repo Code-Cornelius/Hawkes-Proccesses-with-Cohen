@@ -5,17 +5,15 @@ import unittest
 ##### my libraries
 from library_functions.tools import recurrent_functions
 from library_functions.tools import decorators_functions
-import functions_change_point_analysis
-import functions_fct_rescale_adaptive
+import functions.functions_change_point_analysis
+import functions.functions_fct_rescale_adaptive
 
 ##### other files
-import functions_for_MLE
+import functions.functions_for_MLE
 from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
-from classes.graphs.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
-from classes.graphs.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
-from functions_fct_evol_parameters import update_functions
+from functions.functions_fct_evol_parameters import update_functions
 
 
 
@@ -23,8 +21,8 @@ from functions_fct_evol_parameters import update_functions
 np.random.seed(124)
 
 def choice_parameter(dim, styl):
-    # dim choses how many dimensions
-    # styl choses which variant of the parameters.
+    # dim chooses how many dimensions
+    # styl chooses which variant of the parameters.
     if dim == 1:
         if styl == 1:
             ALPHA = [[1.2]]
@@ -117,7 +115,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(4, PARAMETERS)
+the_update_functions = update_functions(2, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
@@ -125,7 +123,7 @@ estimator_multi = Estimator_Hawkes()
 if test_mode:
     nb_of_guesses, T_max = 3, 50 * mini_T
 else:
-    nb_of_guesses, T_max = 50, 65 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, 80 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 

@@ -1,10 +1,12 @@
+'''
 import csv
-
+import numpy as np
 from classical_functions import *
 from functions_networkx import *
 
-import functions_for_MLE
-'''
+from functions import functions_for_MLE
+
+
 ############# tests ####################
 alpha = 3
 
@@ -31,7 +33,7 @@ for j in range( 100 ):
     my_list = np.exp(my_list*alpha)
     ans = sum( my_list)
 print( "time duration outside : ", time.time() - start )
-'''
+
 
 
 
@@ -74,7 +76,7 @@ np.random.seed(124)
 
 
 # Simulation writing in csv
-#'''
+
 
 ##########################################
 ###################main###################
@@ -89,12 +91,11 @@ myFile = open('jumps_hawkes.csv', 'w', newline = '')
 with myFile:
    writer = csv.writer(myFile)
    writer.writerows(zippable)
-#'''
+
 
 
 
 # Using csv file
-'''
 myFile = open('jumps_hawkes.csv', 'r', newline = '')
 reader = csv.reader(myFile)
 
@@ -102,20 +103,16 @@ time_real = [[]]
 for row in reader:
     for e in row:
         time_real[0].append( float(e) )
-'''
 
 
 # normal estimation
-#'''
 my_time = time.time()
 print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T))
 time_computational(my_time, time.time(), "my function")
-#'''
 
 
 
 # other method
-'''
 
 import derivatives_MLE
 M = 1
@@ -144,7 +141,6 @@ print(scipy.optimize.minimize(f, x, method='Newton-CG',
                         hess=ddf )
 )
 time_computational(my_time, time.time(), "scipy function NEWTON CONJUGATE GRADIENT")
-#'''
 
 
 
@@ -153,3 +149,5 @@ time_computational(my_time, time.time(), "scipy function NEWTON CONJUGATE GRADIE
 # print(multi_simul_Hawkes_and_estimation(tt, ALPHA, BETA, MU, T, nb_of_guesses = 300))
 # multi_simul_Hawkes_and_estimation_MSE(tt, ALPHA, BETA, MU, mini_T = mini_T, nb_of_guesses= 100)
 plt.show()
+
+'''
