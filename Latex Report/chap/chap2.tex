@@ -501,3 +501,380 @@ k \geq 2, \quad R''_{m,n} (k) &= \sum_{i : t_i^n < t_k^m } (t_k^m - t_i^n)^2  \e
 \begin{equation}
 \frac{\partial^2 } {\partial \alpha_{m,n} \partial \beta_{m',n'} } \ln L^m ( \theta \mid \Tau ) = 0, \qquad m \neq m'; n,n' \in  \llbracket 1, M \rrbracket
 \end{equation}
+
+
+
+\subsection{Gradient and Hessian's structure}
+The derivatives are obviously at least $\mathcal C^2$. Thus, by using Schwartz theorem, the gradient exists, so does the hessian and the latter is symmetric. This is pretty important because it allows to reduce the number of required computations by almost $2$. In other words, by keeping the notation from further-on, we can use, 
+
+$$\forall i,j \in  \llbracket 1, M \rrbracket ^ 2,  H_{i,j} = H_{j,i}^T, \quad \text{and  } \forall i \in  \llbracket 1, M \rrbracket, H_{i,i} \text{ is symmetric.} $$
+
+
+Hereinafter we draw a proposition for the structure of the gradient and the hessian, coined respectively by $D$ and $H$, for a M-variate Hawkes process:
+
+\begin{equation}
+D = \left ( 
+\frac{\partial } {\partial \nu_1}, \cdots, \frac{\partial } {\partial \nu_M}
+, 
+\frac{\partial } {\partial \alpha_{1,1}},  \cdots, 
+\frac{\partial } {\partial \alpha_{1,M}}, 
+\frac{\partial } {\partial  \alpha_{2,1}}, \cdots, 
+\frac{\partial } {\partial  \alpha_{M,M}}, 
+\frac{\partial } {\partial  \beta_{1,1}}, \cdots, 
+\frac{\partial } {\partial  \beta_{1,M}}, 
+\frac{\partial } {\partial \beta_{2,1}}, \cdots, 
+\frac{\partial } {\partial  \beta_{M,M}}  \right ) 
+\end{equation}
+
+By separating the Hessian into 9 pieces:
+
+\begin{equation}
+H = 
+\begin{pmatrix}
+H_{1,1} & H_{1,2}    & H_{1,3}  \\
+H_{2,1}   &  H_{2,2}   & H_{2,3}\\
+H_{3,1}      & H_{3,2}       &  H_{3,3}
+\end{pmatrix}
+\end{equation}
+
+Where each individual piece reads, and we highlighted the groups of the same derivatives in respective colors:
+\begin{equation}
+H_{1,1} = 
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \nu_1 }} & 0       & \cdots & 0 & 0       \\
+0      & \textcolor{blue}{\frac{\partial^2 } {\partial \nu_2 \partial \nu_2 }}
+  & \cdots      &  0 & 0       \\
+0      & 0       &  \textcolor{blue}{\frac{\partial^2 } {\partial \nu_3 \partial \nu_3 }}
+     & \cdots & \vdots  \\
+\vdots & \vdots  & \vdots & \textcolor{blue}{\ddots} & 0       \\
+0      & 0       & \cdots & 0      & \textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \nu_M }}
+\end{pmatrix}
+\end{equation}
+
+$$ H_{2,2} = $$
+\begin{equation}
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{1,1} \partial \alpha_{1,1} }          } 
+&
+ \textcolor{red}{\cdots }
+& 
+ \textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,1} \partial \alpha_{1,M} } } 
+&
+0 & \cdots & 0 & 
+\cdots & 0 & 
+ \cdots 
+&
+  0      
+\\%1
+\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
+\\%2
+\textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \alpha_{1,1} } } & 
+\textcolor{red}{\cdots}  & 
+\textcolor{blue}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \alpha_{1,M} }} & 
+ 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
+\\%3
+0  & 
+\cdots & 0 & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \alpha_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \alpha_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\%4
+0  & 
+\cdots & 0 & 
+\textcolor{red}{\vdots} &
+\textcolor{blue}{\ddots }& 
+\textcolor{red}{\vdots } & 
+\cdots & \vdots & \cdots & \vdots
+\\ %5
+0 &
+\cdots & 0 & 
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \alpha_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \alpha_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\ %6
+\vdots    &
+\vdots & 
+\vdots      & 
+\vdots & \vdots & \vdots & \ddots &
+\vdots & 
+\vdots & 
+\vdots
+\\ %7
+0      & 
+\cdots & 
+0      & 
+0 & 
+\cdots & 
+0  & \cdots &
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{M,M-1} \partial \alpha_{M,M} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{M,M} \partial \alpha_{M,M} }}
+\end{pmatrix}
+\end{equation}
+
+
+
+
+$$ H_{3,3} = $$
+\begin{equation}
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{1,1} \partial \beta_{1,1} }          } 
+&
+ \textcolor{red}{\cdots }
+& 
+ \textcolor{red}{\frac{\partial^2 }{\partial \beta_{1,1} \partial \beta_{1,M} } } 
+&
+0 & \cdots & 0 & 
+\cdots & 0 & 
+ \cdots 
+&
+  0      
+\\%1
+\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
+\\%2
+\textcolor{red}{\frac{\partial^2 }{\partial \beta_{1,M} \partial \beta_{1,1} } } & 
+\textcolor{red}{\cdots}  & 
+\textcolor{blue}{\frac{\partial^2 }{\partial \beta_{1,M} \partial \beta_{1,M} }} & 
+ 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
+\\%3
+0  & 
+\cdots & 0 & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{2,1} \partial \beta_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{red}{\frac{\partial^2 } {\partial \beta_{2,1} \partial \beta_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\%4
+0  & 
+\cdots & 0 & 
+\textcolor{red}{\vdots} &
+\textcolor{blue}{\ddots }& 
+\textcolor{red}{\vdots } & 
+\cdots & \vdots & \cdots & \vdots
+\\ %5
+0 &
+\cdots & 0 & 
+\textcolor{red}{\frac{\partial^2 } {\partial \beta_{2,M} \partial \beta_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{2,M} \partial \beta_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\ %6
+\vdots    &
+\vdots & 
+\vdots      & 
+\vdots & \vdots & \vdots & \ddots &
+\vdots & 
+\vdots & 
+\vdots
+\\ %7
+0      & 
+\cdots & 
+0      & 
+0 & 
+\cdots & 
+0  & \cdots &
+\textcolor{red}{\frac{\partial^2 } {\partial \beta_{M,M-1} \partial \beta_{M,M} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{M,M} \partial \beta_{M,M} }}
+\end{pmatrix}
+\end{equation}
+
+
+$$ H_{2,3} = $$
+\begin{equation}
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{1,1} \partial \beta_{1,1} }          } 
+&
+ \textcolor{red}{\cdots }
+& 
+ \textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,1} \partial \beta_{1,M} } } 
+&
+0 & \cdots & 0 & 
+\cdots & 0 & 
+ \cdots 
+&
+  0      
+\\%1
+\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
+\\%2
+\textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \beta_{1,1} } } & 
+\textcolor{red}{\cdots}  & 
+\textcolor{blue}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \beta_{1,M} }} & 
+ 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
+\\%3
+0  & 
+\cdots & 0 & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \beta_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \beta_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\%4
+0  & 
+\cdots & 0 & 
+\textcolor{red}{\vdots} &
+\textcolor{blue}{\ddots }& 
+\textcolor{red}{\vdots } & 
+\cdots & \vdots & \cdots & \vdots
+\\ %5
+0 &
+\cdots & 0 & 
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \beta_{2,1} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \beta_{2,M} }}      & 
+\cdots & \vdots & \cdots & \vdots
+\\ %6
+\vdots    &
+\vdots & 
+\vdots      & 
+\vdots & \vdots & \vdots & \ddots &
+\vdots & 
+\vdots & 
+\vdots
+\\ %7
+0      & 
+\cdots & 
+0      & 
+0 & 
+\cdots & 
+0  & \cdots &
+\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{M,M-1} \partial \beta_{M,M} }} &
+\textcolor{red}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{M,M} \partial \beta_{M,M} }}
+\end{pmatrix}
+\end{equation}
+
+
+$$H_{1,2} =  $$
+\begin{equation}
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \alpha_{1,1} }}
+&
+ \textcolor{blue}{\cdots }
+& 
+ \textcolor{blue}{\frac{\partial^2 }{\partial \nu_1 \partial \alpha_{1,M} } } 
+&
+0 & \cdots & 0  & \cdots & 0 & \cdots & 0
+\\%1
+0       &  \cdots   & 0 &  
+\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \alpha_{2,1} }}  & 
+\textcolor{blue}{\cdots} &  
+\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \alpha_{2,M} }} & \cdots & 0 & \cdots & 0
+\\%2
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots  & \ddots & \vdots & \vdots & \vdots
+\\%3
+0  & \cdots & 0 & 0 & \cdots & 0 & \cdots & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \alpha_{M,1} }} &
+\textcolor{blue}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \alpha_{M,M} } }
+\end{pmatrix}     
+\end{equation}
+
+$$H_{1,3} = $$
+\begin{equation} 
+\begin{pmatrix}
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \beta_{1,1} }}
+&
+ \textcolor{blue}{\cdots }
+& 
+ \textcolor{blue}{\frac{\partial^2 }{\partial \nu_1 \partial \beta_{1,M} } } 
+&
+0 & \cdots & 0  & \cdots & 0 & \cdots & 0
+\\%1
+0       &  \cdots   & 0 &  
+\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \beta_{2,1} }}  & 
+\textcolor{blue}{\cdots} &  
+\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \beta_{2,M} }} & \cdots & 0 & \cdots & 0
+\\%2
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots  & \ddots & \vdots & \vdots & \vdots
+\\%3
+0  & \cdots & 0 & 0 & \cdots & 0 & \cdots & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \beta_{M,1} }} &
+\textcolor{blue}{\cdots} & 
+\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \beta_{M,M} } }
+\end{pmatrix}     
+\end{equation}
+
+
+\subsection{Implementation Difficulties in Python}
+
+\begin{itemize}
+\item The first obvious difficulty has been to write down the formulas into code without mistake. The formulas are heavy and very prone to errors.
+\item In particular, creating the Hessian was a riddle. We haven't found a clever way to write it properly. The author's idea was that we only need to create the upper part of the Hessian, and that there are two types of groups of derivatives: the square and the rectangles, as appearing in the previous subsection.
+\item As mentioned, the computational bottleneck makes the algorithms slow. For that reason, the rest of the program has to be optimized in order to compensate that lack of performances. In particular, Python is a slow language. We heavily rely on numpy, a library with which all the numerical computations are made in C.
+\item One shall also introduce some burn-in period before the actual useful part of the simulation of the process; cf. subsection \ref{subsection:burn}.
+\item The optimization algorithm for solving the problem of minimization might be an issue, as mentionned in subsection \ref{subsection:challenge}. We tried to use the in-built optimization functions from the library \textbf{scipy}, but they were not resiliant enough for the dimensionality of the problem. Such algorithms would get stuck because of the unsmooth nature of the problem. For that reason, we built our own newton-raphson algorithm, using the classical algorithm (based upon line search methods) and Armijo Rule for the step size, whenever the algorithm reaches a certain amount of steps. Indeed, Armijo Rule requires the evaluation of the function and it is quite expensive, as well as in most cases, unnecessary.
+\item Certain sets of parameters lead to unprecise results. In particular, boundarie cases (as $\alpha = \beta$) are problematic, as well as sets of parameters with not enough events occuring during the simulation. The observed interval should be adapted to the parameters. In other words, it is less interesting to talk about the interval [0,T] for simulations than rather the number of events occuring on that interval.
+\end{itemize}
+
+With regards to computational optimization, we mainly made usage of numpy for computations involving long vectors. In particular, using the built-in function for exponential makes running much faster. 
+
+We also used this trick for computing $R,R',R''$. One can actually compute R' and R'' at the same time in order to spare some redundant computations. Finally, by using a matrix notation (through the function \textbf{np.subtract.outer($\cdot,\cdot$)}), numpy can compute those quantities for all the dimensions (in the multi-dimensional case) at once. The code would look like this:
+
+\begin{verbatim}
+def compute_R_dashes(m, n, T_t, BETA):
+    matrix_diff = np.subtract.outer(np.array(T_t[m]), np.array(T_t[n]))
+    matrix_diff[matrix_diff < 0] = 0
+    # faster than
+    # matrix_diff = np.maximum(,0)
+
+    dashes = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
+    dash_dashes = dashes * matrix_diff
+    # np.power is not efficient for scalars, but good looking.
+    previous_Rs_dash[(m, n)] = list(dashes.sum(axis=1))
+
+    previous_Rs_dash_dash[(m, n)] = list(dash_dashes.sum(axis=1))
+\end{verbatim}
+
+Some other hidden tricks have also been discovered by the author, like using binary operations instead of using logical notations, or list comprehension.
+
+Last but not least, we used memoization (and in our case scenario using a decorator is possible) for $R,R',R''$. Memoisation is a programming technique which is used to speed up computations\footnote{It was derived from the Latin word memorandum which means “to be remembered”}. As the name suggests, it is based on memorizing the results of expensive function calls. Whenever the function is called again with the same parameters, the results does not have to be computed again and it avoids unnecessary calculations. With its recursive form, $R$ is then computed extremely quickly in linear time. Memoization in Python can be implemented with the help of a class-decorator, that one can dissect in the author's personal libraries section \ref{personal_lib}. 
+
+
+
+
+\section{Numerical Results}
+
+
+
+\subsection{Histogram}
+The first thing to do is to run the simulation and the estimation for a given Hawkes Process. We chose a Hawkes process with parameters: $\alpha = 1.5, \beta = 2, \nu = 0.2$. We get the following histograms for the results, when we simulate the process over 7200 units of time (the algorithm observes roughly 3000 events) for a batch of 80 simulations. This leads to figures \ref{fig:hist_1_alpha}, \ref{fig:hist_1_beta}, \ref{fig:hist_1_nu}.
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_1.png}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\label{fig:hist_1_alpha}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_2.png}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\label{fig:hist_1_beta}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_3.png}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\label{fig:hist_1_nu}
+\end{figure}
+
+
+\subsection{Asymptotic Consistency}
+
+We can also run the program in order to compute the asymptotic MSE, with the number of observed jumps increasing with times. We plot the normalised MSE (mean MSE over the batch) score with respect to the number of observed jumps, for batches of 80 simulations. With the libray, we also plot the histogram of the batch with the highest simulated time. We observe the evolution of the MSE on figure \ref{fig:MSE_1}.
+
+
+
+
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.99 \textwidth]{../imag/chap2/MSE_score.png}
+\caption{Evolution of the MSE for the estimations of a Hawkes Process.}
+\label{fig:MSE_1}
+\end{figure}

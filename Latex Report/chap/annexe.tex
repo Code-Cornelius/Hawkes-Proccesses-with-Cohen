@@ -2,30 +2,6 @@
 \label{appendix_simulate}
 
 
-
-\willdo{ TODO NOW SO finish the sections and put the third one into the 2 others. Also, precise and use the quote for meaningful text. Finally, re read it to see if everything matches together.}
-
-
-\textit{While this algorithm works well enough in its original context of fixed intensity
-functions, its main drawback in applications to processes with random
-conditional intensities is the need for a bound on the intensity that holds not
-only over (0,A) but also over all histories of the process up to time A. To meet
-this difficulty, Ogata (1981) suggested a sequential variant of the algorithm
-that overcomes this difficulty, requiring only a local boundedness condition
-on the conditional intensity. A minor variant of his approach is outlined in
-Algorithm 7.5.IV.
-}
-
-
-In \cite{daley}, they introduce that concise conditions:
-
-There exists functions $M(t \mid \mathcal F_{t^-} )$ and $L(t \mid \mathcal F_{t^-} )$, such that $\forall t \in [0, \infty [$ and all list-history, the conditional intensity functions $\lambda$ of the process satisfy:
-
-$$ 0 \leq u < L(t \mid \mathcal F_{t^-} ), \qquad  \lambda( t + u  \mid \mathcal F_{t^-} )  \leq M( t \mid \mathcal F_{t^-} )  $$
-
-Then for any marked simple point process, the difficulty is reduced to find such functions $M,L$. 
-
-
 \section{Methods for simulating a Hawkes Process}
 \label{section:definition_algo}
 We describe a few algorithms for simulating Hawkes processes. We will give a particular attention to the following criteria:
@@ -58,7 +34,13 @@ By the fact that a Hawkes process can be seen either as a non-homogeneous Poisso
 
 \subsection{Intensity based simulation}
 \label{subsection:thinning}
-Hawkes process generation can be viewed as the simulation of an inhomogeneous Poisson process. Indeed, the intensity is globally random, with deterministic segments in between jumps ( $\forall k \in \N, ]t_k, t_{k+1}]$ is a deterministic segment). For that reason, one can use the classic thinning algorithm (also referred to as the Lewis-Shedler thinning algorithm) whose pseudo-code can be found in \cite{lewis} and whose simplest version is well described in \cite{socialhawkes} eq. (1.18). A polished version of this algorithm is given by Ogata in \cite{Ogata} (the so called Ogata's modified thinning algorithm). A clear sum-up is available at the end of \cite{simullaub}. One can also find a very clear and detailed review of intensity-based algorithms in \cite{daley}, section 7.5. In particular, they mention in algorithm 7.5.II. the Lewis algorithm; algorithm 7.5.IV the Ogata's polishing and at 7.5.V. the thinning algorithm for marked point processes.
+Hawkes process generation can be viewed as the simulation of an inhomogeneous Poisson process. Indeed, the intensity is globally random, with deterministic segments in between jumps ( $\forall k \in \N, ]t_k, t_{k+1}]$ is a deterministic segment). For that reason, one can use the classic thinning algorithm (also referred to as the Lewis-Shedler thinning algorithm) whose pseudo-code can be found in \cite{lewis} and whose simplest version is well described in \cite{socialhawkes} eq. (1.18). 
+
+Lewis' algorithm works well enough in the settings of fixed intensity functions, its main drawback is the need for a bound on the intensity that holds over an interval for all histories of the process. This, is a tremendeous flaw for applications to processes with random conditional intensities (as Hawkes processes). This difficulty has been overcomed with Ogata, whose algorithm requires only a local boundedness condition on the conditional intensity.
+It is readable in \cite{Ogata} (the so called Ogata's modified thinning algorithm). 
+
+
+A clear sum-up is available at the end of \cite{simullaub}. One can also find a very clear and detailed review of intensity-based algorithms in \cite{daley}, section 7.5. In particular, they mention in algorithm 7.5.II. the Lewis algorithm; algorithm 7.5.IV the Ogata's polishing and at 7.5.V. the thinning algorithm for marked point processes. 
 
 Thinning methods fall into the category of Acceptance-Rejection methods and are not described as efficient for the reason that for $N$ events, they usually impose a complexity of $o(N^2)$. This is due to the rejection sampling method they rely on.
 
@@ -119,6 +101,17 @@ D & \sim \text{uniform}(0, \overline{\lambda}) \\
 \end{remarque}
 
 
+\begin{remarque}
+Thinning algorithm relies on the idea of supremum for the intensity. For that reason, as noticed in \cite{daley}, a condition for applying such algorithm is that 
+
+"there exists functions $M(t \mid \mathcal F_{t^-} )$ and $L(t \mid \mathcal F_{t^-} )$, such that $\forall t \in [0, \infty [$ and all list-history, the conditional intensity functions $\lambda$ of the process satisfy:
+
+$$ 0 \leq u < L(t \mid \mathcal F_{t^-} ), \qquad  \lambda( t + u  \mid \mathcal F_{t^-} )  \leq M( t \mid \mathcal F_{t^-} )  $$
+
+Then for any marked simple point process, the difficulty is reduced to find such functions $M,L$."
+
+
+\end{remarque}
 
 \subsection{Superposition based simulation}
 Another interesting method for simulating Poisson processes is based upon the immigration-birth representation. The idea is to first simulate the immigrants as a Poisson process. Conditional on the number of immigrants, the time at which the immigrants appear is an order statistics, identically and independently uniformly distributed over the segment\footnote{One can find a proof of that in Cox-Lewis 1962, and quoted in \cite{gen_nonhomo_poisson} as theorem 2.}. The descendants then form an inhomogeneous Poisson process, which can be simulated thanks to another trick. Since we know that the branching representation of the Hawkes process has $\alpha / \beta $ births in average, we simulate the number of descendant with a Poisson law with parameter $\alpha / \beta$ and then add the new jumps by computing the inter-arrival time, immigrant-son, of an homogeneous Poisson process with parameter $\beta$.

@@ -69,1129 +69,19 @@
 
 
 \input{chap/chap1}
-
-
 \input{chap/chap2}
-
-\subsection{Gradient and Hessian's structure}
-The derivatives are obviously at least $\mathcal C^2$. Thus, by using Schwartz theorem, the gradient exists, so does the hessian and the latter is symmetric. This is pretty important because it allows to reduce the number of required computations by almost $2$. In other words, by keeping the notation from further-on, we can use, 
-
-$$\forall i,j \in  \llbracket 1, M \rrbracket ^ 2,  H_{i,j} = H_{j,i}^T, \quad \text{and  } \forall i \in  \llbracket 1, M \rrbracket, H_{i,i} \text{ is symmetric.} $$
-
-
-Hereinafter we draw a proposition for the structure of the gradient and the hessian, coined respectively by $D$ and $H$, for a M-variate Hawkes process:
-
-\begin{equation}
-D = \left ( 
-\frac{\partial } {\partial \nu_1}, \cdots, \frac{\partial } {\partial \nu_M}
-, 
-\frac{\partial } {\partial \alpha_{1,1}},  \cdots, 
-\frac{\partial } {\partial \alpha_{1,M}}, 
-\frac{\partial } {\partial  \alpha_{2,1}}, \cdots, 
-\frac{\partial } {\partial  \alpha_{M,M}}, 
-\frac{\partial } {\partial  \beta_{1,1}}, \cdots, 
-\frac{\partial } {\partial  \beta_{1,M}}, 
-\frac{\partial } {\partial \beta_{2,1}}, \cdots, 
-\frac{\partial } {\partial  \beta_{M,M}}  \right ) 
-\end{equation}
-
-By separating the Hessian into 9 pieces:
-
-\begin{equation}
-H = 
-\begin{pmatrix}
-H_{1,1} & H_{1,2}    & H_{1,3}  \\
-H_{2,1}   &  H_{2,2}   & H_{2,3}\\
-H_{3,1}      & H_{3,2}       &  H_{3,3}
-\end{pmatrix}
-\end{equation}
-
-Where each individual piece reads, and we highlighted the groups of the same derivatives in respective colors:
-\begin{equation}
-H_{1,1} = 
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \nu_1 }} & 0       & \cdots & 0 & 0       \\
-0      & \textcolor{blue}{\frac{\partial^2 } {\partial \nu_2 \partial \nu_2 }}
-  & \cdots      &  0 & 0       \\
-0      & 0       &  \textcolor{blue}{\frac{\partial^2 } {\partial \nu_3 \partial \nu_3 }}
-     & \cdots & \vdots  \\
-\vdots & \vdots  & \vdots & \textcolor{blue}{\ddots} & 0       \\
-0      & 0       & \cdots & 0      & \textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \nu_M }}
-\end{pmatrix}
-\end{equation}
-
-$$ H_{2,2} = $$
-\begin{equation}
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{1,1} \partial \alpha_{1,1} }          } 
-&
- \textcolor{red}{\cdots }
-& 
- \textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,1} \partial \alpha_{1,M} } } 
-&
-0 & \cdots & 0 & 
-\cdots & 0 & 
- \cdots 
-&
-  0      
-\\%1
-\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
-\\%2
-\textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \alpha_{1,1} } } & 
-\textcolor{red}{\cdots}  & 
-\textcolor{blue}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \alpha_{1,M} }} & 
- 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
-\\%3
-0  & 
-\cdots & 0 & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \alpha_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \alpha_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\%4
-0  & 
-\cdots & 0 & 
-\textcolor{red}{\vdots} &
-\textcolor{blue}{\ddots }& 
-\textcolor{red}{\vdots } & 
-\cdots & \vdots & \cdots & \vdots
-\\ %5
-0 &
-\cdots & 0 & 
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \alpha_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \alpha_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\ %6
-\vdots    &
-\vdots & 
-\vdots      & 
-\vdots & \vdots & \vdots & \ddots &
-\vdots & 
-\vdots & 
-\vdots
-\\ %7
-0      & 
-\cdots & 
-0      & 
-0 & 
-\cdots & 
-0  & \cdots &
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{M,M-1} \partial \alpha_{M,M} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{M,M} \partial \alpha_{M,M} }}
-\end{pmatrix}
-\end{equation}
-
-
-
-
-$$ H_{3,3} = $$
-\begin{equation}
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{1,1} \partial \beta_{1,1} }          } 
-&
- \textcolor{red}{\cdots }
-& 
- \textcolor{red}{\frac{\partial^2 }{\partial \beta_{1,1} \partial \beta_{1,M} } } 
-&
-0 & \cdots & 0 & 
-\cdots & 0 & 
- \cdots 
-&
-  0      
-\\%1
-\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
-\\%2
-\textcolor{red}{\frac{\partial^2 }{\partial \beta_{1,M} \partial \beta_{1,1} } } & 
-\textcolor{red}{\cdots}  & 
-\textcolor{blue}{\frac{\partial^2 }{\partial \beta_{1,M} \partial \beta_{1,M} }} & 
- 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
-\\%3
-0  & 
-\cdots & 0 & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{2,1} \partial \beta_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{red}{\frac{\partial^2 } {\partial \beta_{2,1} \partial \beta_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\%4
-0  & 
-\cdots & 0 & 
-\textcolor{red}{\vdots} &
-\textcolor{blue}{\ddots }& 
-\textcolor{red}{\vdots } & 
-\cdots & \vdots & \cdots & \vdots
-\\ %5
-0 &
-\cdots & 0 & 
-\textcolor{red}{\frac{\partial^2 } {\partial \beta_{2,M} \partial \beta_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{2,M} \partial \beta_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\ %6
-\vdots    &
-\vdots & 
-\vdots      & 
-\vdots & \vdots & \vdots & \ddots &
-\vdots & 
-\vdots & 
-\vdots
-\\ %7
-0      & 
-\cdots & 
-0      & 
-0 & 
-\cdots & 
-0  & \cdots &
-\textcolor{red}{\frac{\partial^2 } {\partial \beta_{M,M-1} \partial \beta_{M,M} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \beta_{M,M} \partial \beta_{M,M} }}
-\end{pmatrix}
-\end{equation}
-
-
-$$ H_{2,3} = $$
-\begin{equation}
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{1,1} \partial \beta_{1,1} }          } 
-&
- \textcolor{red}{\cdots }
-& 
- \textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,1} \partial \beta_{1,M} } } 
-&
-0 & \cdots & 0 & 
-\cdots & 0 & 
- \cdots 
-&
-  0      
-\\%1
-\textcolor{red}{\vdots  }     &  \textcolor{blue}{\ddots }  & \textcolor{red}{\vdots} & \vdots & \cdots & \vdots   & \cdots & \vdots & \cdots & \vdots  
-\\%2
-\textcolor{red}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \beta_{1,1} } } & 
-\textcolor{red}{\cdots}  & 
-\textcolor{blue}{\frac{\partial^2 }{\partial \alpha_{1,M} \partial \beta_{1,M} }} & 
- 0 & \cdots & 0 & \cdots   & \vdots & \cdots & \vdots     
-\\%3
-0  & 
-\cdots & 0 & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \beta_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,1} \partial \beta_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\%4
-0  & 
-\cdots & 0 & 
-\textcolor{red}{\vdots} &
-\textcolor{blue}{\ddots }& 
-\textcolor{red}{\vdots } & 
-\cdots & \vdots & \cdots & \vdots
-\\ %5
-0 &
-\cdots & 0 & 
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \beta_{2,1} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{2,M} \partial \beta_{2,M} }}      & 
-\cdots & \vdots & \cdots & \vdots
-\\ %6
-\vdots    &
-\vdots & 
-\vdots      & 
-\vdots & \vdots & \vdots & \ddots &
-\vdots & 
-\vdots & 
-\vdots
-\\ %7
-0      & 
-\cdots & 
-0      & 
-0 & 
-\cdots & 
-0  & \cdots &
-\textcolor{red}{\frac{\partial^2 } {\partial \alpha_{M,M-1} \partial \beta_{M,M} }} &
-\textcolor{red}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \alpha_{M,M} \partial \beta_{M,M} }}
-\end{pmatrix}
-\end{equation}
-
-
-$$H_{1,2} =  $$
-\begin{equation}
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \alpha_{1,1} }}
-&
- \textcolor{blue}{\cdots }
-& 
- \textcolor{blue}{\frac{\partial^2 }{\partial \nu_1 \partial \alpha_{1,M} } } 
-&
-0 & \cdots & 0  & \cdots & 0 & \cdots & 0
-\\%1
-0       &  \cdots   & 0 &  
-\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \alpha_{2,1} }}  & 
-\textcolor{blue}{\cdots} &  
-\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \alpha_{2,M} }} & \cdots & 0 & \cdots & 0
-\\%2
-\vdots & \vdots & \vdots & \vdots & \vdots & \vdots  & \ddots & \vdots & \vdots & \vdots
-\\%3
-0  & \cdots & 0 & 0 & \cdots & 0 & \cdots & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \alpha_{M,1} }} &
-\textcolor{blue}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \alpha_{M,M} } }
-\end{pmatrix}     
-\end{equation}
-
-$$H_{1,3} = $$
-\begin{equation} 
-\begin{pmatrix}
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_1 \partial \beta_{1,1} }}
-&
- \textcolor{blue}{\cdots }
-& 
- \textcolor{blue}{\frac{\partial^2 }{\partial \nu_1 \partial \beta_{1,M} } } 
-&
-0 & \cdots & 0  & \cdots & 0 & \cdots & 0
-\\%1
-0       &  \cdots   & 0 &  
-\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \beta_{2,1} }}  & 
-\textcolor{blue}{\cdots} &  
-\textcolor{blue}{\frac{\partial^2 }{\partial \nu_2 \partial \beta_{2,M} }} & \cdots & 0 & \cdots & 0
-\\%2
-\vdots & \vdots & \vdots & \vdots & \vdots & \vdots  & \ddots & \vdots & \vdots & \vdots
-\\%3
-0  & \cdots & 0 & 0 & \cdots & 0 & \cdots & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \beta_{M,1} }} &
-\textcolor{blue}{\cdots} & 
-\textcolor{blue}{\frac{\partial^2 } {\partial \nu_M \partial \beta_{M,M} } }
-\end{pmatrix}     
-\end{equation}
-
-
-\subsection{Implementation Difficulties in Python}
-
-\begin{itemize}
-\item The first obvious difficulty has been to write down the formulas into code without mistake. The formulas are heavy and very prone to errors.
-\item In particular, creating the Hessian was a riddle. We haven't found a clever way to write it properly. The author's idea was that we only need to create the upper part of the Hessian, and that there are two types of groups of derivatives: the square and the rectangles, as appearing in the previous subsection.
-\item As mentioned, the computational bottleneck makes the algorithms slow. For that reason, the rest of the program has to be optimized in order to compensate that lack of performances. In particular, Python is a slow language. We heavily rely on numpy, a library with which all the numerical computations are made in C.
-\item One shall also introduce some burn-in period before the actual useful part of the simulation of the process; cf. subsection \ref{subsection:burn}.
-\item The optimization algorithm for solving the problem of minimization might be an issue, as mentionned in subsection \ref{subsection:challenge}. We tried to use the in-built optimization functions from the library \textbf{scipy}, but they were not resiliant enough for the dimensionality of the problem. Such algorithms would get stuck because of the unsmooth nature of the problem. For that reason, we built our own newton-raphson algorithm, using the classical algorithm (based upon line search methods) and Armijo Rule for the step size, whenever the algorithm reaches a certain amount of steps. Indeed, Armijo Rule requires the evaluation of the function and it is quite expensive, as well as in most cases, unnecessary.
-\item Certain sets of parameters lead to unprecise results. In particular, boundarie cases (as $\alpha = \beta$) are problematic, as well as sets of parameters with not enough events occuring during the simulation. The observed interval should be adapted to the parameters. In other words, it is less interesting to talk about the interval [0,T] for simulations than rather the number of events occuring on that interval.
-\end{itemize}
-
-With regards to computational optimization, we mainly made usage of numpy for computations involving long vectors. In particular, using the built-in function for exponential makes running much faster. 
-
-We also used this trick for computing $R,R',R''$. One can actually compute R' and R'' at the same time in order to spare some redundant computations. Finally, by using a matrix notation (through the function \textbf{np.subtract.outer($\cdot,\cdot$)}), numpy can compute those quantities for all the dimensions (in the multi-dimensional case) at once. The code would look like this:
-
-\begin{verbatim}
-def compute_R_dashes(m, n, T_t, BETA):
-    matrix_diff = np.subtract.outer(np.array(T_t[m]), np.array(T_t[n]))
-    matrix_diff[matrix_diff < 0] = 0
-    # faster than
-    # matrix_diff = np.maximum(,0)
-
-    dashes = matrix_diff * np.exp(-BETA[m, n] * matrix_diff)
-    dash_dashes = dashes * matrix_diff
-    # np.power is not efficient for scalars, but good looking.
-    previous_Rs_dash[(m, n)] = list(dashes.sum(axis=1))
-
-    previous_Rs_dash_dash[(m, n)] = list(dash_dashes.sum(axis=1))
-\end{verbatim}
-
-Some other hidden tricks have also been discovered by the author, like using binary operations instead of using logical notations, or list comprehension.
-
-Last but not least, we used memoization (and in our case scenario using a decorator is possible) for $R,R',R''$. Memoisation is a programming technique which is used to speed up computations\footnote{It was derived from the Latin word memorandum which means “to be remembered”}. As the name suggests, it is based on memorizing the results of expensive function calls. Whenever the function is called again with the same parameters, the results does not have to be computed again and it avoids unnecessary calculations. With its recursive form, $R$ is then computed extremely quickly in linear time. Memoization in Python can be implemented with the help of a class-decorator, that one can dissect in the author's personal libraries section \ref{personal_lib}. 
-
-
-
-
-\section{Numerical Results}
-
-
-
-\subsection{Histogram}
-The first thing to do is to run the simulation and the estimation for a given Hawkes Process. We chose a Hawkes process with parameters: $\alpha = 1.5, \beta = 2, \nu = 0.2$. We get the following histograms for the results, when we simulate the process over 7200 units of time (the algorithm observes roughly 3000 events) for a batch of 80 simulations. This leads to figures \ref{fig:hist_1_alpha}, \ref{fig:hist_1_beta}, \ref{fig:hist_1_nu}.
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_1.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
-\label{fig:hist_1_alpha}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_2.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
-\label{fig:hist_1_beta}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_3.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
-\label{fig:hist_1_nu}
-\end{figure}
-
-
-\subsection{Asymptotic Consistency}
-
-We can also run the program in order to compute the asymptotic MSE, with the number of observed jumps increasing with times. We plot the normalised MSE (mean MSE over the batch) score with respect to the number of observed jumps, for batches of 80 simulations. With the libray, we also plot the histogram of the batch with the highest simulated time. We observe the evolution of the MSE on figure \ref{fig:MSE_1}.
-
-
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.99 \textwidth]{../imag/chap2/MSE_score.png}
-\caption{Evolution of the MSE for the estimations of a Hawkes Process.}
-\label{fig:MSE_1}
-\end{figure}
-
-
-
-
-
 \input{chap/chap3}
 
 
 
 
 
-\subsection{Measure of Accuracy}
-The class $ \Omega_w $ of functions is pretty big, and we would like to find the best kernels. For that reason, we first need to fix a metric in order to compare the scores of the different estimations. If one knows the true function estimated $f$, and calls the estimation $\hat{f}$, then one measure of accuracy is given by the mean square error, computed by: 
 
-\begin{equation}
-\MSE ( \hat{f}(u) ) \triangleq  \E [ ( \hat{f}(u) - f(u) )^2 ]
-\end{equation}
 
-whose global natural extension is given by the $L^1$ norm of the previous quantity, yielding the so-called mean integrated square error:
-
-\begin{equation}
-\MISE ( \hat{f}(u) ) \triangleq  \E [ \int ( \hat{f}(u) - f(u) )^2 du ]
-\end{equation}
-
-\begin{remarque}
-One can rewrite, under mild condition of regularity:
-\begin{align*}
-\E [ \int ( \hat{f}(u) - f(u) )^2 du ] &= \int \E [( \hat{f}(u) - f(u) )^2 ] du \\
-&= \int  \E[ (\hat{f}(u) ] - f(u) )^2 ] du + \int \Var( \hat{f}(u)) du 
-\end{align*}
-hence we came back to the classic bias-variance trade-off we already mentioned in section \ref{section:bias-variance_trade-off}.
-\end{remarque}
-
-Using the theory available in KDE, we are going to find the best kernels with respect to $\MISE$.
-
-\section{Fixed Width Window}
-\label{section:FWW}
-
-A kernel is composed of two things: a basic canonical function shaping the kernel and the variables that adjust the values taken. A first thing to do would be to uncouple the two parameters.
-
-\subsection{Optimal Kernel}
-
-As exposed in \cite{Wand}, it is possible to derive the optimal kernel for KDE. In \cite{Wand}, the formula for asymptotical mean square error is given by their eq. (2.12). The issue there is that the scaling of $K$ is coupled with the bandwidth $h$. However, by a substitution inside $K$ of the form 
-$$ K_{\delta} ( \cdot ) = \frac 1  {\delta } K \left ( \frac {\cdot } { \delta } \right ) $$
-we get a factorization of the previous expression with separate dependency of the bandwidth and of the kernel. One has to simply choose $\delta$\footnote{Independent to $h$.} to be: $$ \delta_0 = \left ( \frac{ \int K(t)^2 dt }{ \left ( \int t^2 K(t) dt \right )^2 } \right ) ^{\frac 1 5} $$
-
-
-\begin{theoreme}{Optimal kernel for KDE estimation choice}
-
-\begin{equation}
-\begin{array}{lcr}
-\min_{ K  }  & C(K) := ( \mu_2 ^2 \cdot \norm{K}_{L^1}^4 )^{1/5}      &     \\
-\text{subject to }   & K \geq 0 & \text{(positivity) } \\
-& \norm{K}_{L^1} \triangleq  \int K = 1  & \text{(normalized)} \\
- & \mu_1 \triangleq  \int t K(t) dt = 0    & \text{(centred)                 } \\
-& \mu_2 \triangleq  \int t^2 K(t) dt =: a         & \text{(finite second moment)   }           
-\end{array}
-\end{equation}
-
-has the following class of kernels as a solution:
-
-\begin{equation}
-K^*_a(t) := \frac 3 4  \frac { 1 - \frac {t^2}{5 a^2} } {\sqrt{5} a } \11charac_{ \{ \abs t \leq \sqrt{5} a \} }
-\end{equation} 
-
-We usually refer to this class of kernel as Epanechnikov. It also is usual to fix $a=1$ and to rescale the kernel such that it is defined on $\abs t \leq 1 $, yielding:
-
-
-\begin{equation}
-K^*(t) := \frac 3 4 ( 1 - t^2 )  \11charac_{ \abs t \leq 1 }
-\end{equation} 
-\end{theoreme} 
-
-The kernel that minimizes the target equation in the minimization problem is also the one which minimizes the $\MISE$. Actually, the quantity $C(K)$ is the kernel dependent part of the expression. 
-
-Another popular scaled kernel, with almost equal performances is the biweight kernel defined as:
-
-\begin{equation}
-K_b(t) := \frac {15}{16} ( 1 - t^2 )^2  \11charac_{ \abs t \leq 1 }
-\end{equation} 
-
-\begin{remarque}
-Note that the biweight kernel is of class $\mathcal C^{1}$ at $\{-1, 1\}$ while Epanechnikov isn't derivable at those points.
-\end{remarque}
-
-
-
-
-
-
-
-
-
-
-
-In order to compare the performances of different kernels, statisticians developed the concept of efficiency:
-
-\begin{definition}[Efficiency of $K$ relative to $K^*$]
-Efficiency represents the ratio of sample sizes necessary
-to obtain the same accuracy when using $K^*$ as when using $K$. The efficiency is, thus, computed as:
-
-$$ \left ( \frac{C(K^*)}{C(K)} \right ) ^{\frac 5 4 } $$
-\end{definition}
-
-Is shown page 31 in Table (2.1), in \cite{Wand}, Epanechnikov kernel has an efficiency of $1$, and the biweight has an efficiency of $0.994$. It is actually surprising how the windows aren't affecting efficiency in a very impactful manner.
-
-
-
-\begin{remarque}
-Four of the common kernels are actually derived with the same formula. They are all part of the same family:
-
-$$ K(x,p) = \frac{(1-x^2)^p}{2^{2p+1} B(p+1,p+1) } \11charac_{\abs x < 1 }$$
-
-where $B(\cdot, \cdot)$ is the beta function. Notice that $p=1$ corresponds to the Epanechnikov kernel, $p=2$ corresponds to the biweight kernel, $p=3$ matches with the often called triweight kernel and finally the limiting case of $p \to \infty$ corresponds to the standard normal density kernel. 
-\end{remarque}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/FKDE.png}
-\caption{Example of a fixed kernel density estimation, showing the impact of the single kernels.}
-\label{fig:FKDE}
-\end{figure}
-
-\subsection{A Few Kernels That We Tried to Use}
-
-By considering parameters that are constant through time, as displayed on fig. \ref{fig:evol_choice_basic}, we tested different kernels, for fixed width, essentially the one from fig. \ref{fig:kernels_list}. We got the results from fig. \ref{fig:basic_5_kernels_alpha}, \ref{fig:basic_5_kernels_beta}, \ref{fig:basic_5_kernels_nu}. We don't notice any noticeable change. Perhaps it would be interesting to compute the change in MSE depending on the kernel. This confirms our idea that the kernel doesn't impact the estimation too much.
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.80 \textwidth]{../imag/chap3/the_kernels.png}
-\caption{Superposition of the kernels shapes we mentioned.}
-\label{fig:kernels_list}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.75 \textwidth]{../imag/chap3/compar_kernel/evol_param.png}
-\caption{Parameters for fig. \ref{fig:basic_5_kernels_alpha}, \ref{fig:basic_5_kernels_beta}, \ref{fig:basic_5_kernels_nu}, and for next section: fig. \ref{fig:basic_3_kernels_alpha}, \ref{fig:basic_3_kernels_beta}, \ref{fig:basic_3_kernels_nu}. }
-\label{fig:evol_choice_basic}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/alpha.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of alpha.}
-\label{fig:basic_5_kernels_alpha}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/beta.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of beta.}
-\label{fig:basic_5_kernels_beta}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/nu.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of nu.}
-\label{fig:basic_5_kernels_nu}
-\end{figure}
-
-
-
-
-
-
-
-\subsection{Optimal Width}
-\label{subsection:optimal_width}
-
-
-The optimal width derived within the theory of KDE is not relevant for our concern. The estimator $\widehat{\theta}$ is taken as a function of the kernels:
-
-$$ \hat{f}(x) := \frac 1 {n h} \sum^n K \left ( \frac{x - X_i } {h}  \right )$$
-
-where $n$ is the number of data you have, $h$ the window's width. However, in our case, the kernel is shaping the data given to the MLE and so the relationship between the estimate and the kernels is more complicated.
-
-
-Since we weren't able to determine a simple relationship, we recommand chosing a meaningful width for the first optimal width. A good first blind guess can be $1/5$ of the total length of observations. The more the parameters are varying with respect to time, the smaller the width should be. That first guess about the shape of the functions driving the parameters is perhaps the most meaningful first optimal width.
-
-\begin{remarque}
-One should be careful about not having too narrow kernels. If the algorithm doesn't have enough data to observe, the MLE might fail to converge.
-\end{remarque}
-
-We observe the impact of the width here in fig. \ref{fig:basic_3_kernels_alpha}, \ref{fig:basic_3_kernels_beta}, \ref{fig:basic_3_kernels_nu}. We compare the same size as the previous figures with twice and half as wide. We observe that the smallest kernels yields the more variable estimates.
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3alpha.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of alpha.}
-\label{fig:basic_3_kernels_alpha}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3beta.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of beta.}
-\label{fig:basic_3_kernels_beta}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3nu.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of nu.}
-\label{fig:basic_3_kernels_nu}
-\end{figure}
-
-
-
-
-\section{Adaptive Width Window}
-\subsection{Idea Behind AKDE}
-Another method is called the Adaptive Kernel Density Estimation (AKDE). The author refers to \cite{Methods_ESTIM} and \cite{AKDE_ex} for more details. We synthesize the method.
-
-
-Adaptive Width Window kernel estimation lies upon the idea that we are going to estimate the function through a two-step process. The first step is giving a rough estimate named the pilot estimate. Strong of that first estimate, one rescales kernels' width with respect to the geometric metric. Geometric mean has the property of being very sensible to small number. Scaling by comparing the value to the geometric mean is then a way to boost the evolution of relatively extremal values. 
-Then, the second step is using the new constructed kernels in order to create a good estimate.
-
-
-
-\subsection{Algorithm for AKDE}
-\label{section:algo_awke}
-The geometric mean for a sequence $\sequence{ a_i } $ is commonly defined as $$ G_{a} := \left (  \prod^n a_i \right  )^{\frac 1 n }$$ and we define the sensitivity parameter satisfying $ 0 \leq \gamma \leq 1$. It is quite common to set $\gamma = \frac 1 2$; this value can be found in the book \cite{Silverman} or in the article \cite{abramson}. Then we have:
-\begin{equation}
-\label{eq:local_width_factor}
-\forall t_i \in \sequence{t_i}, \qquad \lambda_{t_i} :=  \left ( \frac{\widetilde{f}(t_i) }{G_{\widetilde{f_i}} } \right ) ^{ - \gamma }  
-\end{equation}
-
-and  $ G_{\widetilde{f_i}} $ is based upon the sequence $ \sequence{ \widetilde{f}(t_i) } $
-
-
-
-
-
-
-\begin{algorithm}[H]
-\label{algo:adaptive1}
-\SetAlgoLined
-1. \quad Find a pilot estimate coined $\widetilde{f}$. We use the arbitrary kernel from section \ref{section:FWW}, which for a kernel $K^*$ and a bandwidth $h^*$ is of the form $$ (t, t_i) \to \frac 1 {h^*} K^* \left ( \frac{t - t_i}{h^*} \right ) $$ 
-
-2. \quad $\forall t_i \in \sequence{t_i}$, when we estimated the pilot estimate $\widetilde{f}$, create the local width factor $\lambda_{t_i}$ according to eq. (\ref{eq:local_width_factor}). 
-
-3. \quad Find the final estimate $\hat{f}$ by using a different kernel for each $t_i$. $\forall t \in \sequencetime $, the new kernel shall be of the form:
-$$ (t, t_i) \to \frac 1 {\lambda_{t_i} h^*} K^* \left ( \frac{t - t_i}{\lambda_{t_i} h^*} \right )$$ 
-\caption{Adaptive Kernel Estimation.}
-\end{algorithm}
-
-
-
-
-
-
-
-
-
-
-
-
-\begin{remarque}
-The interpretation of the scaling coefficient $\sequence{\lambda_{t_i}}$ can be stated like that. The bigger the coefficient, the more the bandwidth is scaled up. A coefficient smaller than one is equivalent to a pilot value bigger than the geometric mean. In other words, $\gamma$ is increasing the discrepancy of the first optimal estimate. Hence, when the estimate is relatively smaller (resp. bigger), the kernels get wider (resp. tighter). 
-
-Essentially, such kernels are useful for KDE since places with estimated high density get narrower kernels for a more precise estimation while other intervals with low density, mainly the tails, observe wider kernels that capture the potential smooth decay of the density. 
-\end{remarque}
-
-
-
-In order to compute the geometric mean in an optimized way in python, one can use:
-
-\begin{verbatim}
-from scipy.stats.mstats import gmean
-gmean( [np.array] )
-\end{verbatim}
-
-In particular, a classic problem for large arrays is overflow. A good habit is to map the array to a log-domain first, calculate the sum of these logs, then multiply by $\frac 1 n$ and finally calculate the exponential. Here I give two hand-written functions in order to compute the same result:
-
-\begin{verbatim}
-def geo_mean(iterable):
-    a = np.array(iterable)
-    return a.prod()**(1.0/len(a))
-\end{verbatim}    
-\begin{verbatim}
-def geo_mean_overflow(iterable):
-    a = np.log(iterable)
-    return np.exp(a.sum()/len(a))
-\end{verbatim}
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap3/AKDE.png}
-\caption{The adaptive kernel density estimation, after the second step. Same points as on fig. \ref{fig:FKDE}), we observe how the kernels changed through the computations as well as the impact of the single kernels on the KDE.}
-\end{figure}
-
-
-
-
-
-
-
-\subsection{Equivalence Between Representation of Kernels}
-\label{section:equivalence_bi_rep}
-
-In the theory of kernels, most of plots show how one can find an estimate of a density by summing up rescaled-centred kernels, and plots like the left one from fig. \ref{fig:CKDE} are rampant. One should notice that it is also totally equivalent to represent KDE as the right picture. The rescale put aside, a kernel is a two-dimensional function: 
-
-\begin{equation*}
-(t,t_i) \to K(t - t_i) 
-\end{equation*}
-
-The left graph from fig. \ref{fig:CKDE} shows the function 
-$$ \forall t \in \R, \ (t,t_{ \{1,2,3 \} }) \to K(t- t_{ \{1,2,3 \} }) $$ 
-for three different $t_i$; the right one shows the function
-$$ \forall t_i \in \sequence{ t_i }, \ (0,t_i ) \to K(0 - t_i) $$ 
-and the stars corresponds to values we add up in order to get the estimate in $0$, when one uses $\hat{f}(t) = \sum_i K(t-t_i)$. 
-
-This has an interesting implication. One can think about kernels as a function of one parameter and this will give a different representation of the situation depending which we chose. In the author's opinion, the second representation, from fig. \ref{fig:CKDE}, is more intuitive and efficient for our weighting problem. 
-
-\begin{itemize}
-\item Indeed, it is very \textbf{intuitive} to see the point $t$ as the point when we search for an estimate, and observe the shape of the kernel impacting the data upon it. 
-\item It is also very \textbf{efficient} when one uses it with adaptive kernel estimation. The previously introduced algorithm used in KDE is based upon the first representation and thus considers the kernels as function of time. Hence, in the first representation from fig. \ref{fig:CKDE} we are scaling $\# \sequence{t_i}$ kernels, where $\#$ denotes the number of elements of the sequence. On the other hand, the other representation asks for rescaling $\#\sequencetime$ kernels. 
-\end{itemize}
-
-
-In the end, this double representation comes from the nature of the used kernel. We are using transition probabilities (transition kernels) which can be defined as:
-
-\begin{definition}[Transition Kernel]
-Let $(\Omega, \mathcal F), ( \mathcal X, \mathcal B (X) )$ two measurables spaces. Then $$ \kappa : \mathcal F \times \mathcal B (X) \to [0, \infty] $$ is called a kernel from $\mathcal F$ to $\mathcal B(X)$ if and only if:
-
-\begin{itemize}
-\setlength{\itemindent}{3. cm}
-\item $\forall B \in \mathcal B(X), t \to \kappa(  t, B)$ is measurable
-\item $\forall t \in \mathcal F, B \to \kappa(  t, B)$ is a measure.
-\end{itemize}
-\end{definition}
-
-Then, one can see the previously stated $K$ or $w$ as the unidimensional case of transition kernels. Notice, we could rewrite eq. (\ref{eq:weighted_log_likelihood}) in the following way:
-
-$$ \ln W L^m( \Theta \mid \Tau ) = - \int_0^T \lambda^{m} ( s \mid \Theta , \Tau ) \kappa(t, ds) + \int_0^T \ln \lambda^{m} ( s \mid \Theta , \Tau^m ) \kappa(t, d N_s)  $$
-
-\begin{figure}
-\centering
-\includegraphics[width = 1.00 \textwidth]{../imag/chap3/CKDE.png}
-\caption{Comparison of the two equivalent representations for symmetric kernels. The graphs share the same y-scale. On the left, one observe three kernels as function of the time and evaluated for specific $t_i$. On the right, the weight function is plotted, as a function of the events' time, for a fixed time $t$ ( $t= 0$, corresponding to the green line on the left), as well as the sum of the three points at which we evaluated the weight function. We observe that both representations lead to the same value.}
-\label{fig:CKDE}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width = 1.00 \textwidth]{../imag/chap3/CKDE2.png}
-\caption{Kernels as function of the first or of the second argument. One is the symmetric version of the other with respect to the green dotted line.}
-\label{fig:CKDE2}
-\end{figure}
-
-\willlastcheck{check that the newpage is ok.}
-
-\newpage 
-Finally, one shouldn't jump from one representation to another without some precautions. The equality $K(t - t_i) = K(t_i - t)$ holds if and only if $K$ is even. Then, though our equivalence from fig. \ref{fig:CKDE} was suggesting the usage that we plotted the same function on both plots (resp. in purple on the left and in red on the right), it is clear on fig. \ref{fig:CKDE2} that it is not the case. For that reason, the author offers to conclude the discussion we started at the end of section \ref{section:kernel_weights_first_conversation}. We wrote down the following definitions as being the main distinction between kernels and weights, which also grants some unification between the two representation:
-\begin{definition}[Kernel]
-$K$ is a scaled function of the time, with as parameter the jump's time $t_i$.
-\end{definition}
-
-\begin{definition}[Weight function]
-$w$ is a function of the jump's time, with as parameter time $t$.
-\end{definition}
-
-\begin{theoreme}[label = thrm:equiv_w_k]{Equivalence weights and kernels}
-The two definition are linked through those equalities
-\begin{align*}
-\forall t \in \sequencetime, \ t_i \in \sequence{t_i }, \qquad w_t(t_i) 
-&= w(t_i - t) \\
-&=  K(t - t_i) \cdot \norm{w}_{L^1} \\
-&= K_{t_i}(t) \cdot \norm{w}_{L^1}
-\end{align*}
-\end{theoreme}
-
-
-
-
-
-\section{Improvement of the AKDE}
-\subsection{A New Scaling Function}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.95 \textwidth]{../imag/chap3/old_funct.png}
-\caption{Plot of the previously presented function $g$ in eq. (\ref{eq:local_width_factor}) as well as in equation (\ref{eq:old_g}). We plot it as a function of the first estimate's result.}
-\label{fig:old_scaling}
-\end{figure}
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.95 \textwidth]{../imag/chap3/my_new_funct.png}
-\caption{Scaling output depending on how close the estimate is to the geometric mean. The lower branch ends at $2$, the mean is $10$ and the upper branch finishes at $75$. We constructed the function as a two sinusoïdal branches function.}
-\label{fig:new_scaling}
-\end{figure}
-
-In the previous algorithm, the kernels are scaled with respect to the geometric mean. In particular, high probability points get narrower kernels, and low probability points get wider kernels. This is not the expected behaviour for our task. We would like to scale extremes, while broadening points at the medium.
-
-
-
-This is the reason why the author wanted to improve the rescale system of the AKDE. Notice that the idea of the algorithm is to rescale the kernels based upon a function $g$, which takes as parameters one element of an array and the geometric mean. 
-
-The originally used $g$ function can be written like eq. (\ref{eq:old_g}) and is plotted for $G = 10$, $\gamma = 1/2$ on fig. \ref{fig:old_scaling}. 
-
-\begin{equation}
-\label{eq:old_g}
-g(x,G, \gamma) =  \left ( \frac x G \right ) ^{-\gamma}
-\end{equation}
-
-We call the function $g$ a rescale function. We want to find a better rescale function, that suits better our needs. We propose the following function:
-
-
-\begin{theoreme}[label = thrm:new_g]{New $g$ rescale function}
-\begin{align}
-\label{eq:new_g}
-g(x, G, L,R,h,l) &=   \frac {h-l} 2 \left (2 
--  \11charac_{ [- \pi, 0]} (u)  \cos(u)
--  \11charac_{ [0, \pi]} (v)  \cos(v) \right ) + l,  \\
-\quad & u = \frac{x - G}{G- L} \pi, \notag  \\
-\quad & v = \frac{x - G}{R- G} \pi \notag
-\end{align}
-
-$G$ is the junction point between the two branches. $L$ and $R$ are the end of the varying part and hence outside $[L,R]$, the value of the function $g$ is fixed. It is clear that L < G < R for the function to be well defined. We search for conditions in subsection \ref{subsection:self-defin}.
-\end{theoreme}
-
-$G$ shall correspond to the geometric mean of the pilot estimate, $L$ (resp. $R$) is taken in the following as the $0.02$-quantile (resp. $0.98$-quantile). $h,l$ are added as the parameter of scaling.
-
-Recall that $p$-quantile for an ordered serie of length $n$ is defined as being equal to its $\lceil{np}\rceil$-value\footnote{$\lceil{\cdot}\rceil$ is the ceil-function.}.
-
-
-What has been done here is that we created on a function that:
-
-
-
-\begin{itemize}
-\item equals to $l$ in $G$, 
-\item behaves smoothly along the line, quadratically near the ends of the branches and linearly in the middle (since the function is formed of cosinus),
-\item equals $h$ for extreme values,
-\item is easily adaptable to the first estimation, by modifying $L$ and $R$,
-\item through the substitution $u,v$, one can easily interpret R and L as the values at which the branches are reaching their final values. Choosing L and R as quantiles allows the user to choose how much data is considered as extreme. 
-\end{itemize}
-
-\begin{remarque}
-We recommand taking $h$ as $2.5$, $l$ as $0.2$; $L$ as the $2\%$-quantile and $R$ as $98\%$-quantile. Those values worked very well for us.
-\end{remarque}
-
-One can see how the function $g$ looks like on fig. \ref{fig:new_scaling}. We offer here one implementation in python:
-
-
-\begin{Verbatim}[fontsize=\footnotesize]
-def mean_list(my_list):
-    # the default behaviour if list is empty, it returns 0.
-    return float(sum(my_list)) / max(len(my_list), 1)
-    
-    
-def my_rescale_sin(value_at_each_time, L=None, R=None, h=2.5, l=0.2 / 2, silent=True):
-    if any(value_at_each_time != 0):
-        # I compute the geometric mean from our estimator.
-        G = gmean(value_at_each_time)
-
-    else :  # G == 0, it happens if no norm computed.
-    #then it has to return 0.01 such that it widen all the kernels.
-        return np.full(len(value_at_each_time), 0.01)
-
-    if L is None:
-        L = np.quantile(value_at_each_time, 0.02)
-    if R is None:
-        R = np.quantile(value_at_each_time, 0.98)
-
-    if not silent:
-        print("Left boundary : ", L)
-    if not silent:
-        print("Right boundary : ", R)
-
-    xx = value_at_each_time - G
-
-    ans = 0
-    scaling1 = math.pi / (G - L)
-    scaling2 = math.pi / (R - G)
-    # I fix the part outside of my interest, to be the final value, h.
-    # This part corresponds to math.pi.
-    # I also need the scaling by +h/2 given by math.pi
-
-    # xx2 and xx3 are the cosinus, but they are different cosinus.
-    # So I fix them where I don't want them to move at 0 and then I can add the two functions.
-    my_xx2 = np.where((xx * scaling1 > -math.pi) & (xx * scaling1 < 0),
-                      xx * scaling1, math.pi)  # left
-    my_xx3 = np.where((xx * scaling2 > 0) & (xx * scaling2 < math.pi),
-                      xx * scaling2, math.pi)  # right
-    ans += - (h - l) / 2 * np.cos(my_xx2)
-    ans += - (h - l) / 2 * np.cos(my_xx3)
-
-    ans += l  # avoid infinite width kernel, with a minimal value.
-    return ans
-\end{Verbatim}
-
-
-\begin{remarque}
-We notice that chosing the quantiles as $2\%$ and $98\%$ isn't too extreme. The function $g$ is flat on the sides and though having only $4\%$ of the values being considered as extrems is low, the number of points having the kernels narrowed is actually much bigger in practice, due to the flat behaviour of $g$ near the end of the branches. Putting $10-90$ did actually yielded half of the kernel being narrowed extremely.
-\end{remarque}
-
-\subsection{Is The Rescale Function Well-Defined ?}
-\label{subsection:self-defin}
-
-\willprecise{ do a better job here }
-
-
-That question is left to the reader. As a hint, we thought about the following inequalities, which hold for any sequence of positive numbers $\sequence{a_i}$:
-\willlastcheck{ Good position of the inequalities }
-\begin{alignat}{2}
-\text{Harmonic Mean} 
-&\leq \text{Geometric Mean} 
-&& \leq \text{Arithmetic Mean} \notag \\
-\frac n {\sum^n \frac 1 {a_i} } 
-& \leq \hspace{0.55 cm} \left ( \prod^n a_i \right ) ^{ \frac 1 n } 
-&& \leq \frac 1 n \sum^n a_i \notag
-\end{alignat}
-where the equality holds when the sequence is constant.
-
-The function $g$ should be well defined. An issue might arise if some values were negatives, but in our study, we deal with self-exciting Hawkes processes whose parameters are all positive (as well as we are computing the $l^2$ norm). Another concern is, when do we have $L \leq G \leq R$? This is fundamental for the function to be well behaved. For now, the user should check by hand.
-
-
-\willdo{ peut etre ailleurs cette section.}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\section{From KDE to WMLE}
-
-We mentioned throughout our study that though we summarize methods about KDE, it is actually possible to use the same methods for weighted maximum likelihood estimation. Let's go through the small necessary adjustments again.
-
-\subsection{From Kernels to Weights}
-As mentioned in section \ref{section:kernel_to_weights}, as well as through theorem \ref{thrm:equiv_w_k}, in order to go from the kernels of the theoretical part of this chapter to the space $\Omega_w$ as defined at the beginning of the chapter, one simply has to multiply by a constant, equal to the total considered time of simulation. Thus, we have the equality:
-
-$$ T \cdot K ( \cdot ) \equiv w ( \cdot ) $$
-
-\subsection{From One-Dimensional Kernel to Multi-Dimensional Statistics}
-As mentioned in section \ref{section:multi_to_uni}, another issue lies in the fact that we can't compute the geometric mean of $\theta^*_{\cdot} \in \mathbb R^{m+2m^2}$ for the algorithm from section \ref{section:algo_awke}\footnote{By $\theta^*_{\cdot}$ we mean the function $\theta^*$, evaluated at an unknown point. The function corresponds to the estimate of the WMLE, which is a function of time because of the time dependence of the involved weights.}.
-However, one can apply the geometric mean on the norms of the estimators. By default, one can use the $l^2$ norm of $\theta^*_{\cdot}$, in other words
-
-$$\theta = (\theta_1, \theta_2, \cdots, \theta_n ) \implies 
-\norm{\theta}_{l^2} = \left ( \sum^n_1 \theta_i^2 \right )^{\frac 1 2}$$ 
-
-Please remember that in our case, $\theta$ is time dependant so taking the norm over $\theta$ recovers a function from $[0,T]$ to $\R$. Hence, if we allow $t$ to take only certain given values, $\norm{\theta_t}_{l^2}$ can be seen as a sequence.
-
-
-\begin{remarque}
-A particular care of scaling the parameters should not be skipped. Indeed, not scaling the parameters could lead to the classic problem of data-sciences related to feature normalization. The features with high magnitudes will weigh in a lot more in the distance calculations than features with low magnitudes, in particular for euclidean distance.
-\end{remarque}
-
-\subsection{Scaling}
-\label{subsection:scaling}
-
-As mentioned in the previous subsection, we might have to apply some scaling to the estimates. We chose a classical positive mean-scaling:
-
-\begin{equation}
-\forall i \in  \llbracket 1, M \rrbracket, \qquad  \widetilde{\theta_i } = \frac{\theta_i - \mean \theta }{\max(\theta) - \min(\theta) } + 1 
-\label{rescale-function}
-\end{equation}
-
-It makes sense as we care about how the values are extremes in comparison to each others. The scaling is also linear and thus does not change essentially the distribution\footnote{Unlike normalization.}. The classical mean-scaling does not involve the additional $+1$, and its values lie in $[-1,1]$. The shift ensures a positive value, which is very important in order to keep the order of norms: minimals norms for low estimation; maximal norms for high estimation.
-
-
-A problem appear with non-moving parameters. Worst case scenario is when there is no change for a parameter. Then, the time series of means is showing no autocorreletion and the plot is essentially noise. Furthermore, it is quite common to observe some strong correlation in between the parameters (alpha goes up, beta goes up as well) exagerating the change in the kernels width. A solution we implemented is to not considere the evolution of parameters with no significant change. Our criterea is a minimal percent change with respect to the original (at time 0) value of the parameter. The default minimum is $10\%$ though it can be changed.
-
-
-We offer here an implementation of what we just said. 
-
-\begin{Verbatim}[fontsize=\footnotesize]
-def rescale_min_max(vect):
-    the_max = max(vect)
-    the_min = min(vect)
-    the_mean = classical_functions.mean_list(vect)
-    ans = [(vect[i] - the_mean) / (the_max - the_min) + 1 for i in range(len(vect))]
-    return ans
-
-
-def check_evoluating(vector, tol):
-    ''' if all values of the vector are inside the tube mean +/- 
-    '''
-    the_mean = classical_functions.mean_list(vector)
-    if all(element < the_mean * (1 + tol) for element in vector) and all(
-            element > the_mean * (1 - tol) for element in vector):
-        return False
-    return True
-
-
-def rescaling_kernel_processing(times, first_estimate, considered_param, tol=0, silent=True):
-    # on the first entry, I get the time, on the second entry I get nu alpha or beta, 
-    #then it s where in the matrix.
-    # considered_param should be which parameters are important to consider.
-
-    # ans is my vector of normes. Each value is for one time.
-    ans = np.zeros(len(times))
-
-    # times and first_estimate same length.
-    # I need to pick the good parameters and rescale them accordingly.
-
-    # the dimension of the data.
-    M = len(first_estimate[0][0])
-    total_M = 2 * M * M + M
-    include_estimation = [False] * total_M
-    # I am creating a vector with 2M*M + M entries,
-    #each one is going to be scaled, and this is the parameters I am using afterwards.
-    vect_of_estimators = [[] for _ in range(total_M)]
-    for k in range(len(times)):
-        for i in range(M):
-            vect_of_estimators[i].append(first_estimate[k][0][i])
-            for j in range(M):
-                vect_of_estimators[M + i + j].append(first_estimate[k][1][i][j])
-                vect_of_estimators[M + M * M + i + j].append(first_estimate[k][2][i][j])
-
-    for i in range(total_M):
-        # check the parameters I need to check.
-        if i < M and 'nu' in considered_param:
-            include_estimation[i] = True
-        elif i < M + M * M and 'alpha' in considered_param:
-            include_estimation[i] = True
-        elif 'beta' in considered_param:
-            include_estimation[i] = True
-
-        if include_estimation[i]:
-            if not check_evoluating(vect_of_estimators[i], tol):  # we don't keep the True
-                include_estimation[i] = False
-    if not silent:
-        print("which dim to include for norm : ", include_estimation)
-
-    rescale_vector = []
-    for i in range(total_M):
-        if include_estimation[i]:
-            rescale_vector.append(rescale_min_max(vect_of_estimators[i]))
-
-    for j in range(len(times)):
-        ans[j] = np.linalg.norm(
-        [rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
-    # I compute the geometric mean from our estimator.
-    G = gmean(ans)
-    if not silent:
-        print("vect  :", vect_of_estimators)
-        # print("interm :", rescale_vector)
-        print("the norms ", ans)
-        # print('mean : ', G)
-    scaling_factors = my_rescale_sin(ans, G=G, silent=silent)
-    return scaling_factors
-\end{Verbatim}
-
-\subsection{Number of Kernels to Rescale}
-As exposed in section \ref{section:equivalence_bi_rep}, both representation of the kernels are equivalent. The first one (kernels as functions of the events) is rampant throughout KDE theory, though we believe the second one is more intuitive in our case scenario.
-
-We shall take advantage of the double representation in order to reduce computational cost. When we want to continuously evaluate a function based on discrete data, it makes sense to compute a scale variable for each element of $\sequence{t_i}$. However, in our case scenario, we want to weight our MLE at specific discrete times $\sequencetime$, using a big set of data $\sequence{t_i}$ (relatively so big that it is considered continuous). It thus makes sense to, instead of rescaling the kernels with respect to the events $\sequence{t_i}$, we shall rescale the weights with respect to the times $\sequencetime$. It drastically reduces computational costs as well as simplifies how one can implement that algorithm.
-
-
-
-
-\subsection{Implementation Difficulties in Python}
-
-There is a problem related to numerical computations. Since the interval of observed data is not infinite, there might be points where we are processing estimation, at which the support of the kernel is not strictly included inside the simulation interval. One solution would be to estimate at points for which kernels are fully included inside the interval. However, it means there are points for which we can't estimate the parameters, and it then means we lose a lot of data. On the other hand, we saw that there is a quadratic tendency in the complexity of the estimation algorithm, so we really need to use as much data as possible instead of wasting it. A solution is scaling up the kernels in order to keep the integral of it equal to $T$, as mentioned in the constraint. Then, the shape is only partially the one set, but the "energy" is conserved and the estimate is correct. One can see the impact of such scaling on fig. \ref{fig:scaling_kernels}. In order to scale up, the author did compute the numerical integral of the kernel and scale accordingly.
-
-Also, we also mentionned the burn-in period as being compulsory in order to reach some kind of stationary behaviour for the process. It can be difficult to incorporate this period of time while skipping it for the estimation and adapt the kernels; one should be extremely careful with it.
-
-
-
-\begin{figure}
-\centering
-\includegraphics[width = 0.90 \textwidth]{../imag/chap2/impact_edge_kernel.png}
-\caption{Shape of the kernel, depending on where it is located on the interval $[0,T]$; here $T = 2000$.}
-\label{fig:scaling_kernels}
-\end{figure}
-
-
-
-\section{Sum-Up Algorithms}
-\subsection{Algorithm for Adaptive WMLE}
-Following the algorithm \ref{algo:adaptive1}, we write our final version of the adaptive weighting algorithm. The major changes that we apply are:
-
-\begin{itemize}
-\item rescale the parameters if necessary according to the equation (\ref{rescale-function}), for each dimension, excluding the dimensions that are non evoluating,
-\item rescale the weights $t$ instead of the kernels $t_i$, for computational reasons,
-\item usage of the norm upon the estimate $\theta^*$\footnote{after rescaling the different coefficients as suggested.},
-\item change the rescale function $g$ defined in eq. (\ref{eq:new_g}). The function $g$ is seen as a two-dimensional function; the rest of the parameters are fixed.
-\end{itemize}
-
-
-We then get the new scaling parameters:
-
-
-\begin{equation}
-\forall t \in \sequencetime, \qquad \lambda_{t} :=  
-g \left (\norm{\widetilde{\theta_{t}}}_{l^2}, 
-G_{\norm{\widetilde{\theta_{\cdot}}}_{l^2}} \right)   
-\end{equation}
-
-and  $ G_{\norm{\widetilde{\theta_{\cdot}}}_{l^2}} $ is based upon the sequence $\{ \norm{\widetilde{\theta_{\cdot}}}_{l^2} \} $
-
-
-The algorithm becomes:
-
-
-\begin{algorithm}[H]
-\label{algo:adaptive2}
-\SetAlgoLined
-1. \quad Find a pilot estimate coined $\widetilde{\theta_t}$. We use the optimal weight from section \ref{section:FWW}, which for a weight $w^*$ and a bandwidth $h^*$ is of the form  $$ (t, t_i) \to \frac 1 {h^*} w^* \left ( \frac{t_i - t }{h^*} \right ) $$ 
-
-2. \quad $\forall t \in \sequencetime$, when we estimated the pilot estimate $\widetilde{\theta_t}$, create the local width factor $\lambda_t$ according to eq. (\ref{eq:local_width_factor}). 
-
-3. \quad Find the final estimate $\hat{\theta_t}$ by using a different weight for each different time $t$. 
-
-$\forall t \in [0,T]$, the new weight shall be of the form:
-$$ (t, t_i) \to \frac 1 {\lambda_{t} h^*} w^* \left ( \frac{t - t_i}{\lambda_{t} h^*} \right )$$ 
-\caption{Hawkes Adaptive Time Dependant Estimation of Parameters (HATDEP).}
-\end{algorithm}
-
-
-
-
-
-
-
-
-\chapter{Numerical Results}
+\chapter{Numerical Results of HATDEP}
 
 \section{Presentation}
-This section is for presenting some empirical observations à propos the new adaptive algorithm using the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We first precise our settings, then the results and we try to give some meaningful observations and interpretations. It yields some critical ideas about how to chose the parameters.
+This section is for presenting some empirical observations à propos the new adaptive algorithm using the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We first precise our settings, then the results and we try to give some meaningful observations and interpretations. It yields some critical ideas about how to chose the parameters. We first show how the HAPDEP improves estimation in the case of windows that are too big, and secondly how the algorithm isn't harming estimation that are already good.
 
 \section{Considered Evolution for the Parameters}
 \begin{figure}
@@ -1253,10 +143,18 @@ Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_int
 
 
 
-\section{Naïve Estimation}
-As a first array of trials, we consider our recommanded parameters: $L$ and $R$ defined respectively as being the $2$ and $98$ quantiles; $h$ and $l$ being respectively $2.5$ and $0.2$. 
+\section{HATDAP for improving performances}
+\label{section_first_simul}
+As a first array of trials, we consider our recommanded parameters: $L$ and $R$ defined respectively as being the $4$ and $96$ quantiles; $h$ being $2.5$. We chose $l$ as a function of the first width. The reason for that is that if one takes a width smaller than the total length, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line, independently of its center.
 
-We are also going to use $1/5$ of the total observation length as being the width for the kernels of the first estimate, following the recommandation from section \ref{subsection:optimal_width} of using an arbitrary kernel width. This width is quite big relatively to the total number of jumps, and we could have used a smaller one. However, we want to observe the behaviour under non perfect condition of the adaptive algorithm.
+
+
+Also, we notice a small bump in the first estimations. It is due to the value of $l$ being too big: a large kernel is suppose to appear for values close to the mean, however, for such values, 
+
+
+We are also going to use $1/4$ of the observation length as being the width for the kernels of the first estimate (hence $l = 1/8$), following the recommandation from section \ref{subsection:optimal_width} of using an arbitrary kernel width. This width is quite big relatively to the total number of jumps, and we could have used a smaller one. However, we want to observe the behaviour under non perfect condition of the adaptive algorithm.
+
+
 
 \subsection{Constant Parameters}
 The figures are drawn in apendix as: \ref{fig:first_estimate_0_alpha}, \ref{fig:first_estimate_0_beta}, \ref{fig:first_estimate_0_nu}. 
@@ -1274,7 +172,7 @@ We previously mentionned how the scaling is interfering with rescaling the kerne
 
 We observe an expected improvement. It isn't directly induced by $g$, but by the scaling tolerance we introduced. It deals very well with such trends. The impact of the scale on the kernels is that they became totally flat: one should be careful about the scale on the right.
 
-\textbf{Conclusion:} Constant parameters should be treated differently then the rest. We deal with it with a tolerance threshold.
+\textbf{Conclusion:} Constant parameters should be treated differently than the rest. We deal with it with a tolerance threshold.
 
 
 
@@ -1294,22 +192,20 @@ Let's first give a look to how the kernels are evolving with the first estimate.
 It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big for this case scenario / an original kernel width too small.
 
 
-\textbf{Conclusion:} Hawkes Adaptive Time Dependant Estimation of Parameters should be done with a few widths for the first estimate, in the exact same manner as for KDE estimation. 
+\textbf{Conclusion:} Hawkes Adaptive Time Dependant Estimation of Parameters can be tried with a few different first trials, in the exact same way as KDE.
 
 
 
 
 \subsection{Simple Jump}
-\willdo{to simulate and write}
-
 The figures are drawn in apendix as: \ref{fig:first_estimate_2_alpha}, \ref{fig:first_estimate_2_beta}, \ref{fig:first_estimate_2_nu}.
 
 We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is the length of the kernel. Over the two phases, we observe small kernels, and during the jump bigger kernels. 
 
+
+\willlastcheck{ paragraph not useful later? }
 A last comment, there is a spike in beta's estimation, that is simply due to an overwhelmingly high estimate and to an effect of batch-mean, that can happen due to the estimation used method. It is totally random, and should be considered as extreme noise. For that reason, we excluded the beta dimension from the scaling algorithm.
 
-
-The second step's plots is displayed with fig. \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
 
 \begin{figure}
 \centering
@@ -1330,24 +226,22 @@ The figures are drawn in apendix as: \ref{fig:first_estimate_3_alpha}, \ref{fig:
 
 The first estimate struggles to capture accuratly the jump in the parameters' function. There is a transition phase between the two behaviours which could be shortened. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to the size of the kernel.
 
-The second step's plots is displayed with fig.  \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
-
-We see that the jump is way better estimated. The transition reduces to around 600 but more importantly, one clearly distinguishes the two phases. Also, we observe that the adaptive algorithm did increase the phenomena appearing in the first graph: alpha was estimated close to the jump (and after the adaptive process, even closer) while for nu, the jump was detected too early, and it increased with the adaptive. So the algorithm is pinpointing some underlying phenomenas, as expected.
+We see that the jump is way better estimated after HATDEP. The transition reduces to around 600 but more importantly, one clearly distinguishes the two phases. Also, we observe that the adaptive algorithm did increase the phenomena appearing in the first graph: alpha was estimated close to the jump (and after the adaptive process, even closer) while for nu, the jump was detected too early, and it increased with the adaptive. So the algorithm is pinpointing some underlying phenomenas, as expected.
 
 Another thing to consider is that the jump isn't perfectly located, but it is a dimensionality problem. The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for alpha and nu are at different times, it isn't clear how to adapt in the best fashion. Here, the algorithm has increased the kernels for all points in between the two jumps, making the left side of the jump for alpha as well as the right side of the jump for nu very precise. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
 
-Also, we notice a small bump in the first estimations. It is due to the value of $l$ being too big: a large kernel is suppose to appear for values close to the mean, however, for such values, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line.
-
-\textbf{Conclusion:} The algorithm is limited to low dimensional problems. The minimum of the rescale function should be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period.
+\textbf{Conclusion:} The algorithm is limited to low dimensional problems, like 2 or 3 dimensions maximum.
 
 \subsection{Sinusoïdal Growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_4_alpha}, \ref{fig:first_estimate_4_beta}, \ref{fig:first_estimate_4_nu}.
+
+We change $L$ for a bigger value, because we expect to have many small values induced by the plateau ending phase. We take $L=10\%$, and $R$ reduced to $98\%$.
 
 The first estimate struggles to capture the variability of the sinus. We have blatantly used a too wide kernel. However, it is interesting to see how the algorithm would react to it.
 
 We observe on our test image \ref{fig:impact_g_sin} that high peak values have narrow kernels and that the stationary phase after 6000 has the low narrow kernels. Then we expect the high points to be precise but the fact that no small kernels are left for the low points of the sinus might be an issue for a precise estimation.
 
-The second step's plots is displayed with fig. \ref{fig:second_estimate_4_alpha}, \ref{fig:second_estimate_4_beta}, \ref{fig:second_estimate_4_nu}.
+
 
 Now we observe that the changing point at 6000 is better captured. However, on the other hand, since we scale the kernel accordingly, it also means the lower parts of the sinus are missed, while the upper parts aren't. We would have observed a different behaviour if the final value of the parameters would have centred with respect to the sinus. In order to compensate for that, one should increase the number of kernels for low-extremal values (the parameter 	L), as well as used smaller kernels from the beginning; that should take into account the variability of the function.
 
@@ -1364,26 +258,35 @@ Now we observe that the changing point at 6000 is better captured. However, on t
 
 
 
-\section{Second Approach}
-We are going to redo the sinusoïdal growth and apply the teaching: 
+\section{Better First Guess}
+\label{section_second_simul}
+We now use a smaller kernel from the beginning. We are studying simply the one jump case, the linear growth and jump case and the sinusoïdal curve. For them, we use $1/5$ for all of them apart from $1/8$ for the sinusoïdal curve. 
 
-\begin{enumerate}
-\item we learnt that the first width is crucial in the result of the second estimate; we replace 1/5 by 1/8 for the width of the first kernels,
-\item We also learnt that depending on the first width, $l$ should change; so we fix $l = 1/16$, in other words the percent of total length of used data divided by two,
-\item Finally, depending on the shape of the parameters' function, one could adapt $L$ and $R$; we change $L$ to be 5$\%$.
-\end{enumerate}
+\subsection{Simple Jump}
+
+The figures are drawn in apendix as: \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
+
+
+\subsection{Linear growth and Jump}
+
+
+The figures are drawn in apendix as: \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
+
 
 \subsection{Sinusoïdal Growth}
 
 
+The figures are drawn in apendix as: \ref{fig:second_estimate_4_alpha}, \ref{fig:second_estimate_4_beta}, \ref{fig:second_estimate_4_nu}.
 
 
+\section{Conclusion About the Algorithm}
 
-\section{Exploration of Adjustable Parameters}
-\label{section:exploration}
+It doesn't harm much the estimation. Of course a bit, then one can reduce the number $h$.
 
+problem of dimensionality. 
 
-I don't know about this...
+problem of multiple shape: better for one time jumps. If all dimensions can have similar behaviour.
+
 
 
 
