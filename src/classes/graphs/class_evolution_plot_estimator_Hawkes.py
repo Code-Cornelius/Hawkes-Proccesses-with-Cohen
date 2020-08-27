@@ -98,8 +98,9 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not number % (
-                            len(Times) // 14):  # I don't want to plot all the kernels, so only one upon 8 are drawn.
+                    if not (len(Times) // 14) or (not number % (len(Times) // 14)):
+                        #the first condition is checking whether len(TIMES) > 14. Otherwise, there is a modulo by 0.
+                        # I don't want to plot all the kernels, so only one upon 8 are drawn.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
