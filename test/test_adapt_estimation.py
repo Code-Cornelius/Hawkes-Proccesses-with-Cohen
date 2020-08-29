@@ -53,20 +53,6 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         estimator_kernel = Estimator_Hawkes()
 
-        # if test_mode :
-        #     list_of_kernels = [Kernel(fct_truncnorm, name="large truncnorm", a=-b, b=b, sigma=b * 0.6)]
-        # else :
-        #     list_of_kernels = [  # Kernel(fct_truncnorm, name="my truncnorm", a=-350, b=350, sigma=300),
-        #         Kernel(fct_truncnorm, name="large truncnorm", a= -b, b= b, sigma= b * 0.6),
-        #         #Kernel(fct_truncnorm, name="large, high truncnorm", a= -b, b = b, sigma= b * 0.9),
-        #         Kernel(fct_top_hat, name="top-hat", a=-b, b=b),
-        #         Kernel(fct_biweight, name="biweight", a=-b, b=b),
-        #         Kernel(fct_epa, name="epanechnikov", a=-b, b=b)
-        #                     ]
-            # list_of_kernels = [  Kernel(fct_biweight, name="biweight small", a=-b/2, b=b/2),
-            #                      Kernel(fct_biweight, name="biweight medium", a=-b, b=b),
-            #                      Kernel(fct_biweight, name="biweight large", a=-b*1.5, b=b*1.5),
-            #                   ]
         list_of_kernels = [Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)]
 
         Times = np.linspace( Test_Simulation_Hawkes_adaptive.lower_percent_bound  * T_max, Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
@@ -177,7 +163,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_one_draw(self):
         path = first_estimation_path
-        path = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
+        path = r'csv_files/first_estimations/super_0_first.csv'
 
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
@@ -193,7 +179,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                            kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two_simulate(self):
-        path_for_first_simul = r'../csv_files/second_estimation/super_smaller_1_first.csv'
+        path_for_first_simul = r'csv_files/second_estimations/super_smaller_2_first.csv'
 
         considered_param = ['nu','alpha']
 
@@ -237,8 +223,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_two_draw(self):
-        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_first.csv'
-        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_4_second.csv'
+        path_for_first_simul = r'csv_files/first_estimations/super_0_first.csv'
+        path_for_second_simul = r'/second_estimations\super_smaller_4_second.csv'
 
         considered_param = ['nu','alpha','beta']
 
@@ -250,7 +236,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                                                                                   considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
                                                                                   tol = 0.1, silent=silent)
 
-        evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_second_simul, the_update_functions)
+        evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_first_simul, the_update_functions)
         plot_param = list_of_kernels, Times
         # I am plotting many kernels here.
         evol_graph.draw(separator_colour='weight function',
@@ -258,8 +244,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_comparison_before_after_rescale(self):
-        path_for_first_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_0_first.csv'
-        path_for_second_simul = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\second_estimation\super_smaller_ 0_second.csv'
+        path_for_first_simul = r'csv_files/first_estimations/super_0_first.csv'
+        path_for_second_simul = r'csv_files/first_estimations/super_0_second.csv'
 
         df_1 = pd.read_csv(path_for_first_simul)
         df_2 = pd.read_csv(path_for_second_simul)
@@ -278,6 +264,4 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         # I am plotting many kernels here.
         evol_graph.draw(separator_colour='weight function',
                            kernel_plot_param=plot_param)
-
-
 
