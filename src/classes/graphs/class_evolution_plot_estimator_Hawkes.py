@@ -19,6 +19,9 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
 
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
+        #  pcq c'est bizarre le truc où j'ai besoin ou pas des fcts evol...
+
+
         # Initialise the Graph with the estimator
         super().__init__(estimator=estimator, fct_parameters=fct_parameters,
                          *args, **kwargs)
