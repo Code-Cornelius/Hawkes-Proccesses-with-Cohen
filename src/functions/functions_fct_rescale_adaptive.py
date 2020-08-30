@@ -123,7 +123,7 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
             if not check_evoluating(vect_of_estimators[i], tol):  # we don't keep the True
                 include_estimation[i] = False
     if not silent:
-        print("which dim to include for norm : ", include_estimation)
+        print("which dim to include for norm : (nu,alpha,beta);", include_estimation)
 
     rescale_vector = []
     for i in range(total_M):
