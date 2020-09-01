@@ -18,14 +18,11 @@ from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
 
 
-L=0.04
-R=0.96
+L=L_PARAM
+R=R_PARAM
 h=2.5
 l= width_kernel / T_max / 2
 
-
-# L = 0.1
-# R = 0.98
 
 
 
@@ -166,7 +163,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_one_draw(self):
         path = first_estimation_path
-        path = r'csv_files/first_estimations/super_4_first.csv'
+#        path = r'csv_files/first_estimations/super_4_first.csv'
 
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
@@ -182,6 +179,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                            kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two_simulate(self):
+        path_for_first_simul = '~/Desktop/N/Hawkes-Proccesses-with-Cohen/csv_files/second_estimation/super_smaller_4_first.csv'
         path_for_first_simul = r'csv_files/second_estimations/super_12_first.csv'
 
         considered_param = ['nu','alpha']
