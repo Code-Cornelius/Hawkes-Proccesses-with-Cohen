@@ -113,6 +113,25 @@ def update_functions(case, PARAMETERS):
                         lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
                             index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
 
+    # for 7500 jumps, do 80 with first sets of param dim 1
+    elif case == 12:  # this is the case jump at the same times.
+        for i in range(M):
+            the_update_functions[0][i] = \
+                partial(lambda time, T_max, time_burn_in, index_1: one_jump(time, 0.7, MU[index_1], 1.7 * MU[index_1],
+                                                                            T_max, time_burn_in=time_burn_in),
+                        index_1=i)
+            for j in range(M):
+                the_update_functions[1][i][j] = \
+                    partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(time, 0.7,
+                                                                                         BETA[index_1, index_2] * 0.7,
+                                                                                         -0.5, T_max,
+                                                                                         time_burn_in=time_burn_in),
+                            index_1=i, index_2=j)
+                the_update_functions[2][i][j] = \
+                    partial(
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
+                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+
     # for 7500 jumps, do 100 with first sets of param dim 1
     elif case == 3:
         for i in range(M):
