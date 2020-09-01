@@ -24,7 +24,6 @@ An algorithm that uses rejection sampling method is called non-efficient.
 \item Markable (jumps can be marked; marked Hawkes process)
 \item Multivariate (the algorithm supports multi-variate Hawkes process)
 The criteria flexible and followable do make sense if and only if the multivariate version of the algorithm is available.
-
 \end{itemize}
 
 
@@ -140,6 +139,7 @@ All the previously mentioned algorithm are summed-up in the table \ref{table:met
 \subsection{Burn-In}
 \label{subsection:burn}
 We want to simulate Hawkes processes over finite time windows. Unfortunately, the described methods are partially failing, as the past of the process is not known and cannot be simulated, at least not completely.
+
 Burn-in period: for non-exact methods, a burn-in period shall be introduced to the process in order for it to reach a stationary state. Then, the effects of any transients from the initial conditions become negligible. Finding the optimal length of such period is an important question that we have not delved into.
 
 
