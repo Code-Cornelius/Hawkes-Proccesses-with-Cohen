@@ -14,9 +14,7 @@ from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
-
-
-
+from test.paramsConverter import LENGTH, FUNCTION_NUMBER, KERNEL_DIVIDER, FILE_ONE, FILE_TWO
 
 np.random.seed(124)
 
@@ -115,15 +113,15 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
 print(PARAMETERS)
-the_update_functions = update_functions(2, PARAMETERS)
+the_update_functions = update_functions(FUNCTION_NUMBER, PARAMETERS)
 
 
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T_max = 3, 50 * mini_T
+    nb_of_guesses, T_max = 3, LENGTH * mini_T
 else:
-    nb_of_guesses, T_max = 50, 80 * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, LENGTH * mini_T #in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
@@ -131,11 +129,11 @@ tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
 HAWKSY = Hawkes_process(the_update_functions)
 # for not keeping the data, I store it in the bin:
-trash_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators.csv'
+trash_path = '~/Desktop/N/out/estimators.csv'
 
 # for the first estimate in the adaptive strategy I store it there:
-first_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators_first.csv'
-second_estimation_path = 'C:\\Users\\nie_k\\Desktop\\travail\\RESEARCH\\RESEARCH COHEN\\Hawkes process Work\\csv_files\\estimators_second.csv'
+first_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_ONE)
+second_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_TWO)
 
 
 # section ######################################################################
@@ -147,5 +145,6 @@ if test_mode:
     nb_of_times = 5
 else:
     nb_of_times = 50
-width_kernel = 1 / 5. * T_max
+
+width_kernel = 1 / KERNEL_DIVIDER * T_max
 b = width_kernel / 2.
