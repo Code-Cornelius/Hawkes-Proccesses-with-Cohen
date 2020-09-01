@@ -24,6 +24,9 @@ h=2.5
 l= width_kernel / T_max / 2
 
 
+# L = 0.1
+# R = 0.98
+
 
 
 
@@ -163,7 +166,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_one_draw(self):
         path = first_estimation_path
-        path = r'csv_files/first_estimations/super_0_first.csv'
+        path = r'csv_files/first_estimations/super_4_first.csv'
 
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
@@ -179,7 +182,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                            kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two_simulate(self):
-        path_for_first_simul = r'csv_files/second_estimations/super_smaller_2_first.csv'
+        path_for_first_simul = r'csv_files/second_estimations/super_12_first.csv'
 
         considered_param = ['nu','alpha']
 
@@ -223,7 +226,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_over_the_time_adaptive_two_draw(self):
-        path_for_first_simul = r'csv_files/first_estimations/super_0_first.csv'
+        path_for_first_simul = r'csv_files/first_estimations/super_4_second.csv'
         path_for_second_simul = r'/second_estimations\super_smaller_4_second.csv'
 
         considered_param = ['nu','alpha','beta']
@@ -233,7 +236,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         estimator_kernel = Estimator_Hawkes.from_path(path_for_first_simul)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
-                                                                                  considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
+                                                                                  considered_param = considered_param, half_width = b, L=L, R=R, h=h, l= l,
                                                                                   tol = 0.1, silent=silent)
 
         evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_first_simul, the_update_functions)
@@ -244,8 +247,8 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
 
     def test_comparison_before_after_rescale(self):
-        path_for_first_simul = r'csv_files/first_estimations/super_0_first.csv'
-        path_for_second_simul = r'csv_files/first_estimations/super_0_second.csv'
+        path_for_first_simul = r'csv_files/second_estimations/super_smaller_3_first.csv'
+        path_for_second_simul = r'csv_files/second_estimations/super_smaller_3_second.csv'
 
         df_1 = pd.read_csv(path_for_first_simul)
         df_2 = pd.read_csv(path_for_second_simul)
@@ -256,7 +259,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         considered_param = ['nu','alpha','beta']
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(my_estimator_mean_dict = estimator_kernel, Times = Times,
-                                                                                  considered_param = considered_param, half_width = b, L=0.02, R=0.98, h=2.5, l= width_kernel / T_max / 2,
+                                                                                  considered_param = considered_param, half_width = b, L=L, R=R, h=h, l= l,
                                                                                   tol = 0.1, silent=silent)
         my_estim = Estimator_Hawkes(my_df)
         evol_graph = Evolution_plot_estimator_Hawkes(my_estim, the_update_functions)

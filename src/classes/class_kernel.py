@@ -58,8 +58,8 @@ class Kernel:
 
     # the name is for identification in plots
     def __init__(self, fct_kernel, name=' no name ', **kwargs):
-        self._fct_kernel = fct_kernel
-        self._name = name
+        self.fct_kernel = fct_kernel
+        self.name = name
         self.__dict__.update(kwargs)
 
     def __repr__(self):
@@ -104,7 +104,7 @@ class Kernel:
     # getters setters
     @property
     def fct_kernel(self):
-        return self._fct_kernel
+        return self._fct_ke<rnel
 
     @fct_kernel.setter
     def fct_kernel(self, new_fct_kernel):

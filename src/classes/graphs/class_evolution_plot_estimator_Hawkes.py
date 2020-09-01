@@ -74,7 +74,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         return fig_dict
 
     def draw(self, separators=None, separator_colour=None, kernel_plot_param=None,
-             one_kernel_plot_param=None):
+             one_kernel_plot_param=None, all_kernels_drawn = False):
         '''
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
@@ -86,11 +86,15 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
             kernel_plot_param:     list_of_kernels, Times = kernel_plot_param
-            one_kernel_plot_param
+            one_kernel_plot_param:
+            all_kernels_drawn:
         Returns:
 
         '''
         # we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
+
+        NB_OF_KERNELS_DRAWN = 14
+
         _, coloured_keys = super().draw(separators, separator_colour)
         if kernel_plot_param is not None:
             list_of_kernels, Times = kernel_plot_param
@@ -101,9 +105,11 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    if not (len(Times) // 14) or (not number % (len(Times) // 14)):
-                        #the first condition is checking whether len(TIMES) > 14. Otherwise, there is a modulo by 0.
-                        # I don't want to plot all the kernels, so only one upon 8 are drawn.
+                    condition = all_kernels_drawn or not (len(Times) // NB_OF_KERNELS_DRAWN) or (not number % (len(Times) // NB_OF_KERNELS_DRAWN))
+                    if condition:
+                        # first : whether I want all kernels to be drawn
+                        #the second condition is checking whether len(TIMES) > NB_OF_KERNELS_DRAWN. Otherwise, there is a modulo by 0, which returns an error.
+                        #third condition is true for all 14 selected kernels.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
