@@ -1,14 +1,14 @@
-##### normal libraries
+# normal libraries
 import time
 import unittest
 
-##### my libraries
+# my libraries
 from library_functions.tools import recurrent_functions
 from library_functions.tools import decorators_functions
 import functions.functions_change_point_analysis
 import functions.functions_fct_rescale_adaptive
 
-##### other files
+# other files
 import functions.functions_for_MLE
 from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes

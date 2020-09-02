@@ -1,13 +1,13 @@
-##### normal libraries
+# normal libraries
 from inspect import signature  # used in the method eval of the class
 
 import numpy as np
 import scipy.stats  # functions of statistics
 from library_classes.estimators.graphs.class_graph_estimator import *
-##### my libraries
+# my libraries
 from library_functions.tools import classical_functions_integration
 
-##### other files
+# other files
 
 np.random.seed(124)
 

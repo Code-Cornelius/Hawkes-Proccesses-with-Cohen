@@ -2,15 +2,15 @@
 # https://github.com/deepcharles/ruptures
 
 
-##### normal libraries
+# normal libraries
 import ruptures as rpt
 
-##### other files
+# other files
 from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.class_kernel import *
 
 
-##### my libraries
+# my libraries
 
 
 def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_multi_plot_name=None):

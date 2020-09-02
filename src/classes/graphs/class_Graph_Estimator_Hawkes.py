@@ -4,7 +4,7 @@
 # errors:
 
 ##### other files
-from classes.class_Estimator_Hawkes import *
+from classes.class_estimator_hawkes import *
 from classes.class_kernel import *
 
 

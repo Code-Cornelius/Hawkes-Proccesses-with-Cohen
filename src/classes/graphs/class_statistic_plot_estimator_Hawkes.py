@@ -6,7 +6,7 @@ from library_classes.estimators.graphs.class_statistic_plot_estimator import *
 from library_errors import Error_forbidden
 
 ##### other files
-from classes.class_Estimator_Hawkes import *
+from classes.class_estimator_hawkes import *
 
 
 # batch_estimation is one dataframe with the estimators.
