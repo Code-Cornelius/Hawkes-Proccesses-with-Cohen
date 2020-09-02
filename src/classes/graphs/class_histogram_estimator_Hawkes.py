@@ -1,10 +1,10 @@
 # normal libraries
 
 
-##### my libraries
+# my libraries
 from library_classes.estimators.graphs.class_histogram_estimator import *
 
-##### other files
+# other files
 from classes.class_estimator_hawkes import *
 
 
@@ -31,27 +31,27 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
     # plot
 
     def get_range(self, key, mean):
-        '''The best range for parameters is the following. It is then scaled up depending on the mean value.
+        """The best range for parameters is the following. It is then scaled up depending on the mean value.
         Args:
             key:
             mean:
 
         Returns:
 
-        '''
+        """
         variable = key[0]
         if variable == "nu":
-            return (0.1, 1.5 * mean)
+            return 0.1, 1.5 * mean
         else:
-            return (0.6 * mean, 1.4 * mean)
+            return 0.6 * mean, 1.4 * mean
 
     # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_param(self, key, mean):
-        range = self.get_range(key, mean)
+        my_range = self.get_range(key, mean)
         dict_param = {'bins': Histogram_estimator_Hawkes.nb_of_bins,
                       'label': 'Histogram',
                       'color': 'green',
-                      'range': range,
+                      'my_range': my_range,
                       'cumulative': True
                       }
         return dict_param

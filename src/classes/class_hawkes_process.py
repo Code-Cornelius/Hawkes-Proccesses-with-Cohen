@@ -1,12 +1,12 @@
-##### normal libraries
+# normal libraries
 import math
 
 import matplotlib.pyplot as plt
 from library_classes.plot import class_aplot
-##### my libraries
+# my libraries
 from library_functions.tools import classical_functions_vectors
 
-##### other files
+# other files
 from classes.class_kernel import *
 from functions.functions_general_for_Hawkes import multi_list_generator
 
@@ -38,7 +38,7 @@ def exp_kernel(alpha, beta, t):
 
 
 def lewis_non_homo(max_time, actual_time, max_nu, fct_value, **kwargs):
-    """
+    """ Method in order to get inter-arrivals times using lewis' thinning algorithm.
 
     Args:
         max_time: in order to avoid infinite loop.
@@ -130,7 +130,7 @@ class Hawkes_process:
                                                 "linewidth": 2}, tight=False)
 
                 aplot.set_dict_fig(i_dim, {
-                    'title': "Evolution of the parameters, time in $\%$ of total; dimension : {}".format(i_dim),
+                    'title': "Evolution of the parameters, time in % of total; dimension : {}".format(i_dim),
                     'xlabel': '', 'ylabel': ''})
             aplot.show_legend(i_dim)
 
@@ -145,7 +145,8 @@ class Hawkes_process:
         tt_burn = np.append(Hawkes_process.points_burned, tt + Hawkes_process.time_burn_in)
         T_max = tt[-1]
 
-        if not silent: print("Start of the simulation of the Hawkes process.")
+        if not silent:
+            print("Start of the simulation of the Hawkes process.")
         ########################################################################################
         # alpha and beta same shape. Mu a column vector with the initial intensities.
 
@@ -184,7 +185,8 @@ class Hawkes_process:
         the_funct_nu = [np.vectorize(self.NU[i]) for i in range(self.M)]
         max_nu = [np.max(the_funct_nu[i](tt_burn, T_max, Hawkes_process.time_burn_in)) for i in range(self.M)]
         while condition:
-            # aa is the matrix of the a_m^i. Each column represents one i, each row a m, just the way the equations are written.
+            # aa is the matrix of the a_m^i. Each column represents one i, each row a m,
+            # just the way the equations are written.
             aa = np.zeros((self.M, self.M + 1))
             # first loop over the m_dims.
             # second loop over where from.
@@ -205,9 +207,10 @@ class Hawkes_process:
                     else:
                         U = np.random.rand(1)
                         # todo change function BETA
-                        aa[m_dims, i_where_from] = CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
-                                                           self.BETA[i_where_from - 1][m_dims](0, T_max,
-                                                                                               Hawkes_process.time_burn_in))
+                        aa[m_dims, i_where_from] = \
+                            CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
+                                    self.BETA[i_where_from - 1][m_dims]
+                                    (0, T_max, Hawkes_process.time_burn_in))
             # next_a_index indicates the dimension in which the jump happens.
             if self.M > 1:
                 # it is tricky : first find where the min is (index) but it is flatten.
@@ -225,7 +228,8 @@ class Hawkes_process:
             previous_jump = last_jump
             last_jump += next_a_value
 
-            if not silent: print("actual jump : ", last_jump)
+            if not silent:
+                print("actual jump : ", last_jump)
 
             # I add the time iff I haven't reached the limit already.
 
@@ -263,7 +267,7 @@ class Hawkes_process:
                         for i_times in range(first_index_time, len(tt_burn)):
                             # this is when there is the jump.
                             # It means the time is exactly smaller but the next one bigger.
-                            if tt_burn[i_times - 1] <= last_jump and tt_burn[i_times] > last_jump:
+                            if tt_burn[i_times - 1] <= last_jump < tt_burn[i_times]:
                                 # I filter the lines on which I add the jump.
                                 # I add the jump to the process iff the value appears on the relevant line of the alpha.
                                 if i_line == next_a_index:
@@ -314,7 +318,8 @@ class Hawkes_process:
                     for j_from in range(self.M):
                         intensity[i_line, counter_times] += small_lambdas[j_from, i_line, counter_times]
 
-        if not silent: print("inside not shifted : ", T_t)
+        if not silent:
+            print("inside not shifted : ", T_t)
         # conditions on the times, we want a subset of them.
 
         # intensity bis is the truncated version of intensity.

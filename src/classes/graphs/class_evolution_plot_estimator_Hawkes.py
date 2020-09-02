@@ -21,7 +21,6 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         #  pcq c'est bizarre le truc où j'ai besoin ou pas des fcts evol...
 
-
         # Initialise the Graph with the estimator
         super().__init__(estimator=estimator, fct_parameters=fct_parameters,
                          *args, **kwargs)
@@ -37,7 +36,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     @classmethod
     def get_evolution_name_extremes(cls, data):
         values = data.groupby([cls.evolution_name])['value']
-        return (values.min(), values.max())
+        return values.min(), values.max()
 
     def get_evolution_name_true_value(self, data):
         return self.get_evolution_name_specific_data(data, 'true value')
@@ -45,18 +44,18 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     def get_evolution_name_plot_data(self, data):
         return self.get_evolution_name_specific_data(data, 'value')
 
-    def get_evolution_name_specific_data(self, data, str):
-        '''
+    def get_evolution_name_specific_data(self, data, my_str):
+        """
         returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
 
         Args:
             data:
-            str:
+            my_str:
 
         Returns:
 
-        '''
-        return data.groupby([self.evolution_name])[str].mean().values
+        """
+        return data.groupby([self.evolution_name])[my_str].mean().values
 
     # section ######################################################################
     #  #############################################################################
@@ -74,8 +73,8 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         return fig_dict
 
     def draw(self, separators=None, separator_colour=None, kernel_plot_param=None,
-             one_kernel_plot_param=None, all_kernels_drawn = False):
-        '''
+             one_kernel_plot_param=None, all_kernels_drawn=False):
+        """
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
         I draw the kernels iff I give kernel_plot_param.
@@ -90,7 +89,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             all_kernels_drawn: conditions used when one wants to draw all the kernels on the plot.
         Returns:
 
-        '''
+        """
         # we use the coloured keys for identifying which colors goes to whom in the one kernel plot case. We assume in the list_of_kernels all name are unique.
 
         NB_OF_KERNELS_DRAWN = 14
@@ -105,11 +104,12 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
             for counter, plots in enumerate(list_of_plots):
                 # for each eval point
                 for number, (kernel, a_time) in enumerate(zip(list_of_kernels, Times)):
-                    condition = all_kernels_drawn or not (len(Times) // NB_OF_KERNELS_DRAWN) or (not number % (len(Times) // NB_OF_KERNELS_DRAWN))
+                    condition = all_kernels_drawn or not (len(Times) // NB_OF_KERNELS_DRAWN) or (
+                        not number % (len(Times) // NB_OF_KERNELS_DRAWN))
                     if condition:
                         # first : whether I want all kernels to be drawn
-                        #the second condition is checking whether len(TIMES) > NB_OF_KERNELS_DRAWN. Otherwise, there is a modulo by 0, which returns an error.
-                        #third condition is true for all 14 selected kernels.
+                        # the second condition is checking whether len(TIMES) > NB_OF_KERNELS_DRAWN. Otherwise, there is a modulo by 0, which returns an error.
+                        # third condition is true for all 14 selected kernels.
                         tt = [np.linspace(0, self.T_max, 3000)]
                         yy = kernel.eval(tt, a_time, self.T_max)
                         plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
@@ -156,6 +156,5 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
                 #                         "linestyle": "--"})
                 name_file = 'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)
-
 
         return

@@ -1,11 +1,11 @@
-##### normal libraries
+#normal libraries
 
 
-##### my libraries
+#my libraries
 from library_classes.estimators.graphs.class_statistic_plot_estimator import *
 from library_errors import Error_forbidden
 
-##### other files
+#other files
 from classes.class_estimator_hawkes import *
 
 
@@ -29,18 +29,18 @@ class Statistic_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Statistic_plot_est
         # I multiply by 50 bc I convert the time axis to jump axis, and a mini T corresponds to 50 jumps.
         return [times[i] // mini_T * 50 for i in range(len(times))]
 
-    def rescale_sum(self, sum, times):
-        '''
+    def rescale_sum(self, my_sum, times):
+        """
         rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
 
         Args:
-            sum:
+            my_sum:
             times:
 
         Returns:
 
-        '''
-        return sum / self.nb_of_guesses
+        """
+        return my_sum / self.nb_of_guesses
 
     # section ######################################################################
     #  #############################################################################

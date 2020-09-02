@@ -1,4 +1,4 @@
-'''
+"""
 import csv
 import numpy as np
 from classical_functions import *
@@ -150,4 +150,4 @@ time_computational(my_time, time.time(), "scipy function NEWTON CONJUGATE GRADIE
 # multi_simul_Hawkes_and_estimation_MSE(tt, ALPHA, BETA, MU, mini_T = mini_T, nb_of_guesses= 100)
 plt.show()
 
-'''
+"""

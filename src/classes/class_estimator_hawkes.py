@@ -1,11 +1,11 @@
-##### normal libraries
+# normal libraries
 
 
-##### my libraries
+# my libraries
 from library_classes.estimators.class_estimator import *
 
 
-##### other files
+# other files
 
 
 # section ######################################################################
@@ -13,10 +13,12 @@ from library_classes.estimators.class_estimator import *
 # class
 
 class Estimator_Hawkes(Estimator):
-    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation', 'weight function', 'value', 'T_max', 'time_burn_in',
+    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation',
+                         'weight function', 'value', 'T_max', 'time_burn_in',
                          'true value', 'number of guesses'}
 
-    # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
+    # DF is a dataframe from pandas. Storing information inside is quite easy,
+    # easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
     def __init__(self, df=None):
 
@@ -37,9 +39,16 @@ class Estimator_Hawkes(Estimator):
         return cls(df)
 
     def mean(self, separator=None):
-        # the output format is list of lists with on each line [ans_N, ans_A, ans_B],
-        # and on every single additional dimension, the separator.
-        ## separators is a list, of the estimators to gather together.
+        """
+
+        Args:
+            separator: is a list, of the estimators to gather together.
+
+        Returns: the output format is list of lists with on each line [ans_N, ans_A, ans_B],
+        and on every single additional dimension, the separator.
+
+        """
+
         separators = ['parameter', 'm', 'n']
         M = self.DF["m"].max() + 1
         ans_dict = {}

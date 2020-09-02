@@ -1,9 +1,9 @@
-##### normal libraries
-##### my libraries
+#normal libraries
+#my libraries
 
 # errors:
 
-##### other files
+#other files
 from classes.class_estimator_hawkes import *
 from classes.class_kernel import *
 

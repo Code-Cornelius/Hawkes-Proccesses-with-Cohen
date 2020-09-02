@@ -1,10 +1,10 @@
-##### normal libraries
+# normal libraries
 import bisect
 
-##### my libraries
+# my libraries
 from library_functions.tools.decorators_functions import Memoization
 
-##### other files
+# other files
 from classes.class_kernel import *
 
 
@@ -145,8 +145,8 @@ def del_L_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     my_jumps = T - np.array(T_t[n])
-    ANS1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * (my_jumps))))
-    ANS2 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
+    ANS1 = np.sum(w[n] * (1 - np.exp(- BETA[m, n] * my_jumps)))
+    ANS2 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * my_jumps)))
 
     vector_denomR = np.array([denomR(m=m, k=i, T_t=T_t, ALPHA=ALPHA, BETA=BETA, MU=MU) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
@@ -216,10 +216,10 @@ def del_L_beta_mu_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 
 def del_L_beta_alpha(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     my_jumps = T - np.array(T_t[n])
-    ANS1 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * (my_jumps))))
+    ANS1 = np.sum(w[n] * (my_jumps * np.exp(- BETA[m, n] * my_jumps)))
     ANS1 *= -1 / BETA[m, n]
     ANS2 = np.sum(w[n] *
-                  (1 - np.exp(- BETA[m, n] * (my_jumps)))
+                  (1 - np.exp(- BETA[m, n] * my_jumps))
                   )
     ANS2 *= 1 / BETA[m, n] / BETA[m, n]
 
@@ -250,12 +250,12 @@ def del_L_beta_alpha_dif_dif(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
 def del_L_beta_beta(m, n, n_dash, T_t, ALPHA, BETA, MU, T, w):
     B = BETA[m, n]
     my_jumps = T - np.array(T_t[n])
-    ANS1 = np.sum(w[n] * (1 - np.exp(- B * (my_jumps))))
+    ANS1 = np.sum(w[n] * (1 - np.exp(- B * my_jumps)))
     ANS1 *= - 2 * ALPHA[m, n] / (B * B * B)
-    ANS2 = np.sum(w[n] * (my_jumps * np.exp(- B * (my_jumps))))
+    ANS2 = np.sum(w[n] * (my_jumps * np.exp(- B * my_jumps)))
     ANS2 *= 2 * ALPHA[m, n] / (B * B)
-    ANS3 = np.sum(w[n] * (my_jumps * my_jumps * np.exp(- B * (my_jumps))))
-    ANS3 *= ALPHA[m, n] / (B)
+    ANS3 = np.sum(w[n] * (my_jumps * my_jumps * np.exp(- B * my_jumps)))
+    ANS3 *= ALPHA[m, n] / B
 
     vector_R_dash_dash = np.array([get_R_dash_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])
     vector_R_dash = np.array([get_R_dash(m, n, i + 1, T_t, BETA) for i in range(len(T_t[m]))])

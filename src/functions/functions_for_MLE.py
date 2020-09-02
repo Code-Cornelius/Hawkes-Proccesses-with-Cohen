@@ -1,10 +1,10 @@
 # normal libraries
 import warnings
 
-##### my libraries
+# my libraries
 from library_errors.Error_convergence import *
 
-##### other files
+# other files
 from classes.class_hawkes_process import *
 from functions.functions_derivatives_MLE import *
 from functions.functions_my_newton_raphson import newtons_method_multi_MLE
@@ -70,7 +70,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
     _, M = np.shape(alpha_hat)
     T_max = tt[-1]
     for s in range(M):
-        estimator.DF = (estimator.DF).append(pd.DataFrame(
+        estimator.DF = estimator.DF.append(pd.DataFrame(
             {"time estimation": [time_estimation],
              "parameter": ["nu"],
              "n": [s],
@@ -84,7 +84,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
              }), sort=True
         )
         for t in range(M):
-            estimator.DF = (estimator.DF).append(pd.DataFrame(
+            estimator.DF = estimator.DF.append(pd.DataFrame(
                 {"time estimation": [time_estimation],
                  "parameter": ["alpha"],
                  "n": [s],
@@ -97,7 +97,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
-            estimator.DF = (estimator.DF).append(pd.DataFrame(
+            estimator.DF = estimator.DF.append(pd.DataFrame(
                 {"time estimation": [time_estimation],
                  "parameter": ["beta"],
                  "n": [s],
