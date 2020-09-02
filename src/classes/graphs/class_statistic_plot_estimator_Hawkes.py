@@ -2,7 +2,7 @@
 
 
 ##### my libraries
-from library_classes.graphs.class_statistic_plot_estimator import *
+from library_classes.estimators.graphs.class_statistic_plot_estimator import *
 from library_errors import Error_forbidden
 
 ##### other files

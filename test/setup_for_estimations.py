@@ -14,7 +14,9 @@ from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
-from test.paramsConverter import LENGTH, FUNCTION_NUMBER, KERNEL_DIVIDER, FILE_ONE, FILE_TWO
+
+
+from test.paramsConverter import *
 
 np.random.seed(124)
 

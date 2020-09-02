@@ -2,7 +2,7 @@
 
 
 ##### my libraries
-from library_classes.graphs.class_evolution_plot_estimator import *
+from library_classes.estimators.graphs.class_evolution_plot_estimator import *
 
 ##### other files
 from classes.class_kernel import *

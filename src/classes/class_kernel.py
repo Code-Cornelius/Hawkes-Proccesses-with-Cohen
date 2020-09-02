@@ -3,7 +3,7 @@ from inspect import signature  # used in the method eval of the class
 
 import numpy as np
 import scipy.stats  # functions of statistics
-from library_classes.graphs.class_graph_estimator import *
+from library_classes.estimators.graphs.class_graph_estimator import *
 ##### my libraries
 from library_functions.tools import classical_functions_integration
 
@@ -104,7 +104,7 @@ class Kernel:
     # getters setters
     @property
     def fct_kernel(self):
-        return self._fct_ke<rnel
+        return self._fct_kernel
 
     @fct_kernel.setter
     def fct_kernel(self, new_fct_kernel):
