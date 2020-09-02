@@ -91,7 +91,7 @@ class Hawkes_process:
         self.NU = self.the_update_functions[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
         self.M = np.shape(self.ALPHA)[1]
-        self.plot_parameters_hawkes()
+        self.plot_parameters_respect_to_time_hawkes()
 
     def __call__(self, t, T_max):
         NU, ALPHA, BETA = multi_list_generator(self.M)
@@ -106,7 +106,7 @@ class Hawkes_process:
     def __repr__(self):
         return self.__call__(0, 1000)
 
-    def plot_parameters_hawkes(self):
+    def plot_parameters_respect_to_time_hawkes(self):
         # I m printing the evolution of the parameters there.
         aplot = class_aplot.APlot(how=(1, self.M))
         tt = np.linspace(0, 1, 1000)
@@ -191,7 +191,6 @@ class Hawkes_process:
             for m_dims in range(self.M):
                 for i_where_from in range(self.M + 1):
                     if i_where_from == 0:
-                        # todo change function MU
                         aa[m_dims, i_where_from] = lewis_non_homo(T_max + Hawkes_process.time_burn_in,
                                                                   last_jump,
                                                                   max_nu[m_dims],
@@ -311,7 +310,6 @@ class Hawkes_process:
         if plot_bool:
             for i_line in range(self.M):
                 for counter_times, i_times in enumerate(tt_burn):
-                    # todo change function NU
                     intensity[i_line, counter_times] = self.NU[i_line](i_times, T_max, Hawkes_process.time_burn_in)
                     for j_from in range(self.M):
                         intensity[i_line, counter_times] += small_lambdas[j_from, i_line, counter_times]

@@ -85,9 +85,9 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         Args:
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
-            kernel_plot_param:     list_of_kernels, Times = kernel_plot_param
-            one_kernel_plot_param:
-            all_kernels_drawn:
+            kernel_plot_param: list_of_kernels, Times = kernel_plot_param. Used in order to plot all the decided kernels.
+            one_kernel_plot_param:  Plots only the middle kernel. For a centred drawing, pic an even number of times.
+            all_kernels_drawn: conditions used when one wants to draw all the kernels on the plot.
         Returns:
 
         '''
@@ -144,7 +144,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
                         else:
                             kernel_counter += 1
                     if kernel_counter > len(list_of_kernels):  # if he hasn't found the kernel, there is an error.
-                        raise ("The kernels given and ploted are not matching.")
+                        raise Exception("The kernels given and plotted are not matching.")
                     tt = [np.linspace(self.T_max * 0.05, self.T_max * 0.95, 3000)]
                     yy = kernel.eval(tt, Time, self.T_max)
                     plots.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
@@ -156,3 +156,6 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
                 #                         "linestyle": "--"})
                 name_file = 'double_estimation_result_{}'.format(counter)
                 plots.save_plot(name_save_file=name_file)
+
+
+        return
