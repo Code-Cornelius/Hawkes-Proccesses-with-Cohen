@@ -15,10 +15,10 @@ from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
 
-
 from test.paramsConverter import *
 
 np.random.seed(124)
+
 
 def choice_parameter(dim, styl):
     # dim chooses how many dimensions
@@ -47,7 +47,7 @@ def choice_parameter(dim, styl):
 
 
     elif dim == 2:
-        if styl ==1:
+        if styl == 1:
             ALPHA = [[2, 1],
                      [1, 2]]
             BETA = [[7, 4],
@@ -76,7 +76,7 @@ def choice_parameter(dim, styl):
         MU = [0.2, 0.2, 0.2, 0.2, 0.2]
         T0, mini_T = 0, 5
 
-    else :
+    else:
         raise Exception("HAAAAAA")
 
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
@@ -113,21 +113,18 @@ test_mode = False
 #  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
 dim = 1
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim = dim  , styl = 1)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim=dim, styl=1)
 print(PARAMETERS)
 the_update_functions = update_functions(FUNCTION_NUMBER, PARAMETERS)
-
 
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
     nb_of_guesses, T_max = 3, LENGTH * mini_T
 else:
-    nb_of_guesses, T_max = 50, LENGTH * mini_T #in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, LENGTH * mini_T  # in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
-
-
 
 HAWKSY = Hawkes_process(the_update_functions)
 # for not keeping the data, I store it in the bin:
@@ -136,7 +133,6 @@ trash_path = '~/Desktop/N/out/estimators.csv'
 # for the first estimate in the adaptive strategy I store it there:
 first_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_ONE)
 second_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_TWO)
-
 
 # section ######################################################################
 #  #############################################################################

@@ -10,7 +10,8 @@ from functions.functions_derivatives_MLE import *
 from functions.functions_my_newton_raphson import newtons_method_multi_MLE
 
 
-# the function returns a flag for the reason beeing that if it failed to converge too many times, it s perhaps better to try on a new data set.
+# the function returns a flag for the reason beeing that if it failed to converge too many times,
+# it s perhaps better to try on a new data set.
 # now there is an error raised.
 def simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation):
     T_max = tt[-1]
@@ -31,19 +32,20 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     # w shouldn't be None, however as a safety measure, just before doing the computations !
     if w is None:
         w = Kernel(fct_plain, "plain", T_max=T).eval(T_t, 0, T_max=T)
-        # eval point equals 0 because, if the weights haven't been defined earlier, it means we don't care when we estimate.
+        # eval point equals 0 because, if the weights haven't been defined earlier,
+        # it means we don't care when we estimate.
     M = len(T_t)
-    MU = np.full(M, 0.1)
+    NU = np.full(M, 0.1)
     ALPHA = np.full((M, M), 0.7)
     BETA = 0.2 + 1.1 * M * M * ALPHA
 
     # ALPHA = np.array([[2, 1], [1, 2]]) * 0.99
     # BETA = np.array([[5, 3], [3, 5]]) * 0.99
-    # MU = np.array([0.2, 0.2]) * 0.99
+    # NU = np.array([0.2, 0.2]) * 0.99
 
     # ALPHA = np.array([[1, 2], [1, 2]])
     # BETA = np.array([[5, 10], [5, 10]])
-    # MU = np.array([1, 1])
+    # NU = np.array([1, 1])
 
     # print("debug")
     # T = 20
@@ -52,18 +54,29 @@ def call_newton_raph_MLE_opt(T_t, T, w=None, silent=True):
     # w = Kernel(fct_plain, "plain").eval(T_t, 0)
     # print("debug")
 
-    df = lambda MU, ALPHA, BETA: first_derivative(T_t, ALPHA, BETA, MU, T, w)
-    ddf = lambda MU, ALPHA, BETA: second_derivative(T_t, ALPHA, BETA, MU, T, w)
+    df = lambda nu, alpha, beta: first_derivative(T_t, alpha, beta, nu, T, w)
+    ddf = lambda nu, alpha, beta: second_derivative(T_t, alpha, beta, nu, T, w)
 
-    MU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, silent=silent)
-    return ALPHA, BETA, MU
+    NU, ALPHA, BETA = newtons_method_multi_MLE(df, ddf, ALPHA, BETA, NU, silent=silent)
+    return ALPHA, BETA, NU
 
 
 def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, time_estimation=0,
                   silent=True):
-    ## function_weight should be ONE kernel from class_kernel.
-    ## hp is a hawkes process
-    ## the flag notes if the convergence was a success. If yes, function hands in the results
+    """
+
+    Args:
+        hp:  hawkes process
+        estimator:
+        tt:
+        nb_of_guesses:
+        kernel_weight:  should be ONE kernel from class_kernel.
+        time_estimation:
+        silent:
+
+    Returns:
+
+    """
 
     alpha_hat, beta_hat, mu_hat = simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation)
 
@@ -130,9 +143,7 @@ def multi_estimations_at_one_time(hp, estimator, tt, nb_of_guesses, kernel_weigh
     return  # no need to return the estimator.
 
 
-# those two functions are quite useless right now. I don't want to spend time on them to refractor them.
-
-
+# those two functions are quite useless right now. I don't want to spend time on them to refactor them.
 '''
 def one_long_and_longer_estimation(tt, ALPHA, BETA, MU, mini_T):
     _, M = np.shape(ALPHA)

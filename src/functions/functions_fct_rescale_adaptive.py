@@ -1,5 +1,6 @@
 # normal libraries
 import math  # quick math functions
+
 from scipy.stats.mstats import gmean
 
 # my libraries
@@ -134,9 +135,7 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
         ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
     if not silent:
         print("vect  :", vect_of_estimators)
-        # print("interm :", rescale_vector)
         print("the norms ", ans)
-        # print('mean : ', G)
     scaling_factors = my_rescale_sin(ans, L=L, R=R, h=h, l=l, silent=silent)
     return scaling_factors
 
@@ -149,9 +148,6 @@ def creator_list_kernels(my_scalings, previous_half_width):
         list_of_kernels.append(
             Kernel(fct_biweight, name=f"Adaptive Biweight with first width {2 * previous_half_width}",
                    a=-new_scaling, b=new_scaling))
-        # list_of_kernels.append(Kernel(fct_biweight, name=f"Biweight {2*new_scaling} width",
-        #                              a=-new_scaling, b=new_scaling)) # I would have put the scaling but that would have been a problem.
-        # for plots. So I keep it simple with the previous width.
     return list_of_kernels
 
 
@@ -159,9 +155,11 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
                              silent=True):
     # by looking at the previous estimation, we deduce the scaling
     # for that I take back the estimate
-    # there is a problem of data compatibility, so I put the keys as integers, assuming that there is no estimation on the same integer.
+    # there is a problem of data compatibility, so I put the keys as integers,
+    # assuming that there is no estimation on the same integer.
 
-    # tolerance is by how much the dimension has to move in order to consider that it is worth updating wrt to it. Tol is % of base value.
+    # tolerance is by how much the dimension has to move in order to consider
+    # that it is worth updating wrt to it. Tol is % of base value.
 
     my_estimator_dict = my_estimator_mean_dict.mean(
         separator='time estimation')  # take back the value of the estimation at a given time.
@@ -180,36 +178,3 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
     # the kernel is taken as biweight.
     list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_half_width=half_width)
     return list_of_kernels
-
-# section ######################################################################
-#  #############################################################################
-# test
-
-
-############ test adaptive window
-# T_t = [np.linspace(0.1,100,10000)]
-# G = 10.
-# #T_t = [np.random.randint(0,6*G, 20)]
-# eval_point = [0]
-# for i in eval_point:
-#     min = np.quantile(T_t, 0.02)
-#     max = np.quantile(T_t, 0.75)
-#     res = test_geom_kern(T_t, G, min = min, max = max)
-#     aplot = APlot(how = (1,1))
-#     aplot.uni_plot(nb_ax = 0, xx = T_t[0], yy = res[0])
-#     aplot.plot_vertical_line(G, np.linspace(-5,105, 1000), nb_ax=0, dict_plot_param={'color':'k', 'linestyle':'--', 'markersize':0, 'linewidth':2, 'label':'geom. mean'})
-#     aplot.plot_vertical_line(min, np.linspace(-5, 105, 1000), nb_ax=0,
-#                              dict_plot_param={'color': 'g', 'linestyle': '--', 'markersize': 0, 'linewidth': 2, 'label':'lower bound'})
-#     aplot.plot_vertical_line(max, np.linspace(-5, 105, 1000), nb_ax=0,
-#                              dict_plot_param={'color': 'g', 'linestyle': '--', 'markersize': 0, 'linewidth': 2, 'label':'upper bound'})
-#     aplot.set_dict_fig(0, {'title':'Adaptive scaling for Adaptive Window Width','xlabel':'Value', 'ylabel':'Scaling'})
-#     aplot.show_legend()
-#
-# eval_point = [0]
-# for i in eval_point:
-#     res = test_normal_kernel(T_t, G, gamma = 0.5)
-#     aplot = APlot(how = (1,1))
-#     aplot.uni_plot(nb_ax = 0, xx = T_t[0], yy = res[0])
-#     aplot.plot_vertical_line(G, np.linspace(-1,10, 1000), nb_ax=0, dict_plot_param={'color':'k', 'linestyle':'--', 'markersize':0, 'linewidth':2, 'label':'geom. mean'})
-#     aplot.set_dict_fig(0, {'title':'Adaptive scaling for Adaptive Window Width','xlabel':'Value', 'ylabel':'Scaling'})
-#     aplot.show_legend()

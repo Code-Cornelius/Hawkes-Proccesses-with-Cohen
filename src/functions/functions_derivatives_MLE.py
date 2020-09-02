@@ -27,9 +27,6 @@ def denomR(m, k, T_t, ALPHA, BETA, MU):
 @Memoization(key_names=['m', 'n', 'k'])
 def R(m, n, k, T_t, BETA, end=-10):
     constant = 0
-    # M AND N STARTS AT 0 AND FINISH AT M-1.
-    # if k < 1:
-    #    raise Exception("k < 1 problem in R.")
     if k == 1:
         if m == n:
             return 0
@@ -57,7 +54,7 @@ def R(m, n, k, T_t, BETA, end=-10):
     if end == -1:
         return 0
 
-    # thats the sum on the right. We are above the inequalities so we only check for the lower bound.
+    # that's the sum on the right. We are above the inequalities so we only check for the lower bound.
     i = -1  # making sure the variable exists, though i should always be created.
     for i in range(end, -1, -1):
         if T_t[m][k - 2] <= T_t[n][i]:
@@ -68,25 +65,8 @@ def R(m, n, k, T_t, BETA, end=-10):
     return first_coeff * R(m=m, n=n, k=k - 1, T_t=T_t, BETA=BETA, end=i) + constant
 
 
-# R, dont forget to put k as k+1 in the loops
-# closed form of R
-@Memoization(key_names=['m', 'n', 'k'])
-def compute_R2(m, n, k, T_t, BETA, end=10):
-    # M AND N STARTS AT 0 AND FINISH AT M-1.
-    if k < 1:
-        raise Exception("YOu moRoN")
-    if k == 1:
-        return 0
-    constant = 0
-    for i in range(len(T_t[n])):
-        if T_t[n][i] < T_t[m][k - 1]:
-            constant += np.exp(-BETA[m, n] * (T_t[m][k - 1] - T_t[n][i]))
-        else:
-            break
-    return constant
 
-
-def compute_R_dashes(m, n, T_t, BETA, end=0):
+def compute_R_dashes(m, n, T_t, BETA):
     matrix_diff = np.subtract.outer(np.array(T_t[m]), np.array(T_t[n]))
     matrix_diff[matrix_diff < 0] = 0
     # my way is faster
@@ -104,10 +84,10 @@ previous_Rs_dash = {}
 
 
 # here the k has to be shifted
-def get_R_dash(m, n, k, T_t, BETA, end=-10):
+def get_R_dash(m, n, k, T_t, BETA):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if (m, n) not in previous_Rs_dash:
-        compute_R_dashes(m, n, T_t, BETA, end=end)
+        compute_R_dashes(m, n, T_t, BETA)
 
     return previous_Rs_dash[(m, n)][k - 1]
 
@@ -116,10 +96,10 @@ previous_Rs_dash_dash = {}
 
 
 # here the k has to be shifted
-def get_R_dash_dash(m, n, k, T_t, BETA, end=-10):
+def get_R_dash_dash(m, n, k, T_t, BETA):
     # go from 1 to the number jumps included. However, compute gives back shifted. From 0 to number jumps excluded. So the bounding has to be done here.
     if (m, n) not in previous_Rs_dash_dash:
-        compute_R_dashes(m, n, T_t, BETA, end=end)
+        compute_R_dashes(m, n, T_t, BETA)
     return previous_Rs_dash_dash[(m, n)][k - 1]
 
 
@@ -317,10 +297,10 @@ def small_square_matrix(size, function_diag, function_sides, i, j, **kwargs):
 
 # This is for the diagonal of the second order derivative
 def matrix_creator_square(size, function_diag, function_sides, function_wings, **kwargs):
-    # I GO THROUGHT THE MATRIX BLUE. I discriminate diagonal and upper triangular matrix.
+    # I GO THROUGH THE MATRIX BLUE. I discriminate diagonal and upper triangular matrix.
     # THe lower triangular matrix is filled by transposition
 
-    ## ii and jj go through the big blocks of the matrix with reds on the diagonal and black else where.
+    # ii and jj go through the big blocks of the matrix with reds on the diagonal and black else where.
     matrix = np.zeros((size ** 2, size ** 2))
     for ii in range(size):
         for jj in range(size):
