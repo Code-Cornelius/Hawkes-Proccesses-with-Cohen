@@ -1,13 +1,10 @@
-from .setup_for_estimations import *
+from test.test_my_simulations.setup_for_estimations import *
 
 ##### normal libraries
-import time
 import unittest
 
 ##### my libraries
-from library_functions.tools import recurrent_functions
 from library_functions.tools import decorators_functions
-from functions import functions_change_point_analysis
 from functions import functions_fct_rescale_adaptive
 
 ##### other files
@@ -15,8 +12,6 @@ from functions import functions_for_MLE
 from classes.graphs.class_Graph_Estimator_Hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
-from functions.functions_fct_evol_parameters import update_functions
-
 
 L=L_PARAM
 R=R_PARAM
@@ -225,7 +220,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
     def test_over_the_time_adaptive_two_draw(self):
         path_for_first_simul = r'csv_files/first_estimations/super_4_second.csv'
-        path_for_second_simul = r'/second_estimations\super_smaller_4_second.csv'
+        path_for_second_simul = r'../../csv_files/second_estimations/super_smaller_4_second.csv'
 
         considered_param = ['nu','alpha','beta']
 

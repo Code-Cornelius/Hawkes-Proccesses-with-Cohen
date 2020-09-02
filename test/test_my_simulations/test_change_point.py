@@ -1,4 +1,4 @@
-from .setup_for_estimations import *
+from test.test_my_simulations.setup_for_estimations import *
 
 L=0.02
 R=0.98

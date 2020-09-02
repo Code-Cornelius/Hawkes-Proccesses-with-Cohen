@@ -1,19 +1,12 @@
 ##### normal libraries
-import time
-import unittest
 
 ##### my libraries
-from library_functions.tools import recurrent_functions
 
-from classes.class_hawkes_process import *
-from classes.graphs.class_Graph_Estimator_Hawkes import *
-from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.graphs.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
 from classes.graphs.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
 ##### other files
 from functions import functions_for_MLE
-from functions.functions_fct_evol_parameters import update_functions
-from .setup_for_estimations import *
+from test.test_my_simulations.setup_for_estimations import *
 
 
 class Test_Simulation_Hawkes_simple(unittest.TestCase):
