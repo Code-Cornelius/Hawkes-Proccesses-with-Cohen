@@ -83,7 +83,7 @@ class Hawkes_process:
         print("Creation of a Hawkes Process.")
         print("-" * 78)
 
-        self.M = np.shape(self.ALPHA)[1]
+        self.M = np.shape(the_update_functions[1])[1]
 
         self.the_update_functions = the_update_functions.copy()
         # without the copy, if I update the the_update_functions inside HP,

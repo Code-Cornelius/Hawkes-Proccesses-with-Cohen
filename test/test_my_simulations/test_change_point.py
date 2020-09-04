@@ -1,19 +1,38 @@
 from test.test_my_simulations.setup_for_estimations import *
+from functions.functions_change_point_analysis import change_point_analysis_and_plot
 
-L = 0.02
-R = 0.98
-h = 2.5
-l = width_kernel / T_max / 2
+# section ######################################################################
+#  #############################################################################
+# setup
 
+type_analysis = "optimal"
+number_of_breakpoints = 1
+model = "l2"
+min_size = 5
+width = 5
+
+if type_analysis == "optimal":
+    parameters_for_analysis = number_of_breakpoints, model, min_size
+
+elif type_analysis == "window":
+    parameters_for_analysis = number_of_breakpoints, model, width
 
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
-    # section ######################################################################
-    #  #############################################################################
-    # setup
+    def tearDown(self):
+        plt.show()
 
     def test_change_point_analysis(self):
-        # BIANCA problem path
 
-        functions.functions_change_point_analysis.change_point_plot(
-            r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\estimators_kernel_mountain_multi.csv',
-            width=5, min_size=5, n_bkps=1, model="l2", column_for_multi_plot_name='weight function')
+
+        # BIANCA problem path
+        print(change_point_analysis_and_plot(
+            path = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimations\super_2_second.csv',
+            type_analysis = type_analysis,
+            parameters_for_analysis = parameters_for_analysis,
+            column_for_multi_plot_name='weight function'))
+
+        print(change_point_analysis_and_plot(
+            path = r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimations\super_2_first.csv',
+            type_analysis = type_analysis,
+            parameters_for_analysis = parameters_for_analysis,
+            column_for_multi_plot_name='weight function'))

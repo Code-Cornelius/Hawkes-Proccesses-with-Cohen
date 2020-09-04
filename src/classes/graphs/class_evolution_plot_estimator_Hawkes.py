@@ -15,7 +15,7 @@ from classes.class_estimator_hawkes import Estimator_Hawkes
 
 
 class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_estimator):
-    evolution_name = 'time estimation'
+    EVOLUTION_NAME = 'time estimation'
 
     def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.

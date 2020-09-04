@@ -4,6 +4,7 @@
 
 # normal libraries
 import ruptures as rpt
+import matplotlib.pyplot as plt
 
 # other files
 from classes.graphs.class_graph_estimator_hawkes import *
@@ -13,21 +14,58 @@ from classes.class_kernel import *
 # my libraries
 
 
-def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_multi_plot_name=None):
-    # number of breakpoints doesn't support a different value of bkps for each variable.
-    # path should be with \\
-    # path is where the file is located
-    # column_for_multi_plot_name a string
-    estimator = Estimator_Hawkes()
-    estimator.append(pd.read_csv(path))
-    # get the max value which is M-1
-    M = estimator.DF["m"].max() + 1
+def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
+                                   type_analysis = "optimal",
+                                   parameters_for_analysis = (1,"l2", 1),
+                                   column_for_multi_plot_name=None):
+    '''
 
-    #################################### my code version
-    separators = ['parameter', 'm', 'n']
+    Args:
+        path:  path is where the file is located where one can read the estimator Hawkes.
+        estimator_hawkes:
+        fct_parameters:
+        width:
+        min_size:
+        number_of_breakpoints:
+        model:
+        column_for_multi_plot_name:
+
+    Returns:
+
+    '''
+    # number of breakpoints doesn't support a different value of breakpoints for each variable.
+    # path should be with \\
+    #
+    # column_for_multi_plot_name a string
+
+    if type_analysis == "optimal":
+        number_of_breakpoints, model, min_size = parameters_for_analysis
+
+    elif type_analysis == "window":
+        number_of_breakpoints, model, width = parameters_for_analysis
+    else:
+        raise ValueError("Not good type of analysis.")
+
+
+
+    if estimator_hawkes is None:
+        the_estimator = Estimator_Hawkes.from_path(path)
+
+    elif path is None:
+        the_estimator = estimator_hawkes
+
+    else:
+        raise ValueError("Path and Estimator_Hawkes can't be both None.")
+
+
+
+
+
+
+    SEPARATORS = ['parameter', 'm', 'n']
 
     dict_serie = {}
-    global_dict = estimator.DF.groupby(separators)
+    global_dict = the_estimator.DF.groupby(SEPARATORS)
     for k1, k2, k3 in global_dict.groups.keys():
         if column_for_multi_plot_name is not None:
             super_dict = global_dict.get_group((k1, k2, k3)).groupby([column_for_multi_plot_name])
@@ -48,13 +86,17 @@ def change_point_plot(path, width, min_size, n_bkps=1, model="l2", column_for_mu
     for k in dict_serie.keys():  # iterate through dictionary
         dict_serie[k] = np.transpose(dict_serie[k])
 
-    model = model
     ############################################## dynamic programming   http://ctruong.perso.math.cnrs.fr/ruptures-docs/build/html/detection/dynp.html
+    ans = []
     for k in dict_serie.keys():
-        algo = rpt.Dynp(model=model, min_size=min_size, jump=1).fit(dict_serie[k])
-        my_bkps1 = algo.predict(n_bkps=n_bkps)
-        rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
-        algo = rpt.Window(width=width, model=model).fit(dict_serie[k])
-        my_bkps1 = algo.predict(n_bkps=1)
-        rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
-    plt.show()
+        if type_analysis == "optimal":
+            algo = rpt.Dynp(model=model, min_size=min_size, jump=1).fit(dict_serie[k])
+            my_bkps1 = algo.predict(n_bkps=number_of_breakpoints)
+            rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
+
+        elif type_analysis == "window":
+            algo = rpt.Window(width=width, model=model).fit(dict_serie[k])
+            my_bkps1 = algo.predict(n_bkps=1)
+            rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
+        ans.append(my_bkps1)
+    return ans

@@ -10,23 +10,22 @@ from classes.class_kernel import *
 
 # batch_estimation is one dataframe with the estimators.
 class Graph_Estimator_Hawkes(Graph_Estimator):
-    evolution_name = 'time estimation'
-    separators = ['parameter', 'm', 'n']
+    EVOLUTION_NAME = 'time estimation'
+    SEPARATORS = ['parameter', 'm', 'n']
 
     def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         
-        #BIANCA OK?
         if not isinstance(estimator_hawkes, Estimator_Hawkes):
             raise Error_type_setter(f'Argument is not an {str(Estimator_Hawkes)}.')
             
 
         super().__init__(estimator=estimator_hawkes, fct_parameters=fct_parameters,
-                         separators=Graph_Estimator_Hawkes.separators,
+                         separators=Graph_Estimator_Hawkes.SEPARATORS,
                          *args, **kwargs)
 
         # parameters is a list of lists of lists of functions
-        self.M = np.shape(self.ALPHA)[1]
+        self.M = np.shape(fct_parameters[1])[1]
         self.ALPHA = fct_parameters[1]  # I split the ALPHA BETA AND NU instead
         self.BETA = fct_parameters[2]  # of one parameter fct_parameters because such names are more readable.
         self.NU = fct_parameters[0]

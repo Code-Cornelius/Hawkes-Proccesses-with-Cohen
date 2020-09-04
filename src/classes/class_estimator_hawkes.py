@@ -13,7 +13,7 @@ from library_classes.estimators.class_estimator import *
 # class
 
 class Estimator_Hawkes(Estimator):
-    set_column_hawkes = {'parameter', 'n', 'm', 'time estimation',
+    SET_COLUMN_HAWKES = {'parameter', 'n', 'm', 'time estimation',
                          'weight function', 'value', 'T_max', 'time_burn_in',
                          'true value', 'number of guesses'}
 
