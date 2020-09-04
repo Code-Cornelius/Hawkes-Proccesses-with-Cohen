@@ -51,7 +51,7 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
         dict_param = {'bins': Histogram_estimator_Hawkes.nb_of_bins,
                       'label': 'Histogram',
                       'color': 'green',
-                      'my_range': my_range,
+                      'range': my_range,
                       'cumulative': True
                       }
         return dict_param

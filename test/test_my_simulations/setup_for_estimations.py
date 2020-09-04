@@ -77,7 +77,7 @@ def choice_parameter(dim, styl):
         T0, mini_T = 0, 5
 
     else:
-        raise Exception("HAAAAAA")
+        raise ValueError("Problem with given dimension")
 
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
                                                                                                 dtype=np.float)  # I precise the type because he might think the np.array is int type.
@@ -120,19 +120,22 @@ the_update_functions = update_functions(FUNCTION_NUMBER, PARAMETERS)
 estimator_multi = Estimator_Hawkes()
 
 if test_mode:
-    nb_of_guesses, T_max = 3, LENGTH * mini_T
+    nb_of_guesses, T_max = 3, NUMBER_OF_MINI_T_IN_SIMULATION * mini_T
 else:
-    nb_of_guesses, T_max = 50, LENGTH * mini_T  # in terms of how many jumps, I want roughly 7500 jumps
+    nb_of_guesses, T_max = 50, NUMBER_OF_MINI_T_IN_SIMULATION * mini_T  # in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
 HAWKSY = Hawkes_process(the_update_functions)
 # for not keeping the data, I store it in the bin:
-trash_path = '~/Desktop/N/out/estimators.csv'
 
+trash_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files/estimators.csv"
 # for the first estimate in the adaptive strategy I store it there:
-first_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_ONE)
-second_estimation_path = '~/Desktop/N/out/{}.csv'.format(FILE_TWO)
+
+#BIANCA problem path
+first_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_ONE)
+second_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_TWO)
+third_estimation_path =  r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_THREE)
 
 # section ######################################################################
 #  #############################################################################

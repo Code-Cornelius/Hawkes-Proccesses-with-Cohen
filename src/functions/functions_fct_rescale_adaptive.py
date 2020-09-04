@@ -153,6 +153,8 @@ def creator_list_kernels(my_scalings, previous_half_width):
 
 def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, L, R, h, l, tol=0.1,
                              silent=True):
+    #todo check times match
+
     # by looking at the previous estimation, we deduce the scaling
     # for that I take back the estimate
     # there is a problem of data compatibility, so I put the keys as integers,
