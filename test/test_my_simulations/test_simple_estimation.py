@@ -32,7 +32,6 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T_max, silent=False))
 
     # BIANCA problem path
-
     def test_from_csv(self):
         hist_test = Histogram_estimator_Hawkes.from_path(
             r'C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\first_estimation\super_0_first.csv',

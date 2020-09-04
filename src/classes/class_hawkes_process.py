@@ -75,13 +75,15 @@ def step_fun(tt, time_real):
 
 class Hawkes_process:
     # how to acces class fields?
-    time_burn_in = 100
-    nb_points_burned = 6000
-    points_burned = np.linspace(0, time_burn_in, nb_points_burned)
+    TIME_BURN_IN = 100
+    NB_POINTS_BURNED = 6000
+    POINTS_BURNED = np.linspace(0, TIME_BURN_IN, NB_POINTS_BURNED)
 
     def __init__(self, the_update_functions):
         print("Creation of a Hawkes Process.")
         print("-" * 78)
+
+        self.M = np.shape(self.ALPHA)[1]
 
         self.the_update_functions = the_update_functions.copy()
         # without the copy, if I update the the_update_functions inside HP,
@@ -90,16 +92,17 @@ class Hawkes_process:
         self.BETA = self.the_update_functions[2]
         self.NU = self.the_update_functions[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA))
-        self.M = np.shape(self.ALPHA)[1]
+
+        # I plot the functions in order to know the evolution:
         self.plot_parameters_respect_to_time_hawkes()
 
     def __call__(self, t, T_max):
         NU, ALPHA, BETA = multi_list_generator(self.M)
         for i in range(self.M):
-            NU[i] = self.NU[i](t, T_max, Hawkes_process.time_burn_in)
+            NU[i] = self.NU[i](t, T_max, Hawkes_process.TIME_BURN_IN)
             for j in range(self.M):
-                ALPHA[i][j] = self.ALPHA[i][j](t, T_max, Hawkes_process.time_burn_in)
-                BETA[i][j] = self.BETA[i][j](t, T_max, Hawkes_process.time_burn_in)
+                ALPHA[i][j] = self.ALPHA[i][j](t, T_max, Hawkes_process.TIME_BURN_IN)
+                BETA[i][j] = self.BETA[i][j](t, T_max, Hawkes_process.TIME_BURN_IN)
 
         return f'a Hawkes process, with parameters at time {t} : {NU}, {ALPHA}, {BETA}'
 
@@ -142,7 +145,7 @@ class Hawkes_process:
         # I want to add burn in, je dois simuler plus longtemps et effacer le début.
         # en gros je fais une simul sur T + un param, genre 100,
         # et je cherche intensity et jump après 100 jusqu'à T+100.
-        tt_burn = np.append(Hawkes_process.points_burned, tt + Hawkes_process.time_burn_in)
+        tt_burn = np.append(Hawkes_process.POINTS_BURNED, tt + Hawkes_process.TIME_BURN_IN)
         T_max = tt[-1]
 
         if not silent:
@@ -183,7 +186,7 @@ class Hawkes_process:
         # I need the max value of mu for thinning simulation:
         # it is an array with the max in each dimension.
         the_funct_nu = [np.vectorize(self.NU[i]) for i in range(self.M)]
-        max_nu = [np.max(the_funct_nu[i](tt_burn, T_max, Hawkes_process.time_burn_in)) for i in range(self.M)]
+        max_nu = [np.max(the_funct_nu[i](tt_burn, T_max, Hawkes_process.TIME_BURN_IN)) for i in range(self.M)]
         while condition:
             # aa is the matrix of the a_m^i. Each column represents one i, each row a m,
             # just the way the equations are written.
@@ -193,12 +196,12 @@ class Hawkes_process:
             for m_dims in range(self.M):
                 for i_where_from in range(self.M + 1):
                     if i_where_from == 0:
-                        aa[m_dims, i_where_from] = lewis_non_homo(T_max + Hawkes_process.time_burn_in,
+                        aa[m_dims, i_where_from] = lewis_non_homo(T_max + Hawkes_process.TIME_BURN_IN,
                                                                   last_jump,
                                                                   max_nu[m_dims],
                                                                   self.NU[m_dims],
                                                                   T_max=T_max,
-                                                                  time_burn_in=Hawkes_process.time_burn_in)
+                                                                  time_burn_in=Hawkes_process.TIME_BURN_IN)
                     # cases where the other processes can have an impact. If not big enough, it can't:
                     # ( spares some computations )
                     elif previous_lambda[i_where_from - 1, m_dims] < 10e-10:
@@ -210,7 +213,7 @@ class Hawkes_process:
                         aa[m_dims, i_where_from] = \
                             CDF_LEE(U, previous_lambda[i_where_from - 1, m_dims],
                                     self.BETA[i_where_from - 1][m_dims]
-                                    (0, T_max, Hawkes_process.time_burn_in))
+                                    (0, T_max, Hawkes_process.TIME_BURN_IN))
             # next_a_index indicates the dimension in which the jump happens.
             if self.M > 1:
                 # it is tricky : first find where the min is (index) but it is flatten.
@@ -238,7 +241,7 @@ class Hawkes_process:
 
             if T_max is not None:  # and not already_added:
                 # already_added = True
-                if last_jump < T_max + Hawkes_process.time_burn_in:
+                if last_jump < T_max + Hawkes_process.TIME_BURN_IN:
                     T_t[next_a_index].append(last_jump)
             # if nb_of_sim is not None and not already_added:
             #     if (counter < nb_of_sim - 1):
@@ -251,12 +254,12 @@ class Hawkes_process:
                     if jj == next_a_index:
                         # todo change function ALPHA BETA
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
-                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in) * next_a_value) + \
-                                                  self.ALPHA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in)
+                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.TIME_BURN_IN) * next_a_value) + \
+                                                  self.ALPHA[jj][ii](last_jump, T_max, Hawkes_process.TIME_BURN_IN)
                     else:
                         # todo change function BETA
                         previous_lambda[jj, ii] = previous_lambda[jj, ii] * math.exp(
-                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.time_burn_in) * next_a_value)
+                            - self.BETA[jj][ii](last_jump, T_max, Hawkes_process.TIME_BURN_IN) * next_a_value)
 
             if plot_bool:
                 # print("previous : ", previous_jump)
@@ -273,9 +276,9 @@ class Hawkes_process:
                                 if i_line == next_a_index:
                                     # todo change function ALPHA BETA
                                     small_lambdas[i_line, j_column, i_times] = \
-                                        self.ALPHA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * \
+                                        self.ALPHA[i_line][j_column](last_jump, T_max, Hawkes_process.TIME_BURN_IN) * \
                                         np.exp(
-                                            - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in)
+                                            - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.TIME_BURN_IN)
                                             * (tt_burn[i_times] - last_jump))
                                 # since we are at the jump, one doesn't have to look further.
                                 # break is going out of time loop.
@@ -286,7 +289,7 @@ class Hawkes_process:
                             if previous_jump < tt_burn[i_times] < last_jump:
                                 small_lambdas[i_line, j_column, i_times] += small_lambdas[
                                                                                 i_line, j_column, i_times - 1] * np.exp(
-                                    - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.time_burn_in) * (
+                                    - self.BETA[i_line][j_column](last_jump, T_max, Hawkes_process.TIME_BURN_IN) * (
                                             tt_burn[i_times] - tt_burn[i_times - 1]))
 
             # condition part:
@@ -308,13 +311,13 @@ class Hawkes_process:
                         print(f"Time {round(last_jump, -1)} out of total time : {T_max}.")
                 # IF YOU ARE TOO BIG IN TIME:
                 # I add the burn in
-                if not (last_jump < T_max + Hawkes_process.time_burn_in):
+                if not (last_jump < T_max + Hawkes_process.TIME_BURN_IN):
                     condition = False
         # will be an empty list if not for plot purpose.
         if plot_bool:
             for i_line in range(self.M):
                 for counter_times, i_times in enumerate(tt_burn):
-                    intensity[i_line, counter_times] = self.NU[i_line](i_times, T_max, Hawkes_process.time_burn_in)
+                    intensity[i_line, counter_times] = self.NU[i_line](i_times, T_max, Hawkes_process.TIME_BURN_IN)
                     for j_from in range(self.M):
                         intensity[i_line, counter_times] += small_lambdas[j_from, i_line, counter_times]
 
@@ -323,17 +326,17 @@ class Hawkes_process:
         # conditions on the times, we want a subset of them.
 
         # intensity bis is the truncated version of intensity.
-        intensity_bis = np.zeros((self.M, len(tt_burn) - Hawkes_process.nb_points_burned))
+        intensity_bis = np.zeros((self.M, len(tt_burn) - Hawkes_process.NB_POINTS_BURNED))
         for i in range(len(T_t)):
             # find the times big enough.
             i_time = classical_functions_vectors.find_smallest_rank_leq_to_K(np.array(T_t[i]),
-                                                                             Hawkes_process.time_burn_in)
+                                                                             Hawkes_process.TIME_BURN_IN)
             # shift the times
             T_t[i] = list(
-                np.array(T_t[i][i_time:]) - Hawkes_process.time_burn_in
+                np.array(T_t[i][i_time:]) - Hawkes_process.TIME_BURN_IN
             )
             intensity_bis[i, :] = list(
-                np.array(intensity[i][Hawkes_process.nb_points_burned:])
+                np.array(intensity[i][Hawkes_process.NB_POINTS_BURNED:])
             )
 
         # tricks, not giving back a list of list but a list of numpy array.
@@ -408,6 +411,44 @@ class Hawkes_process:
 
         return
 
-# section ######################################################################
-#  #############################################################################
-# test
+    # section ######################################################################
+    #  #############################################################################
+    # getter/setters
+
+    @property
+    def ALPHA(self):
+        return self._ALPHA
+
+    @ALPHA.setter
+    def ALPHA(self, new_ALPHA):
+        if classical_functions_vectors.is_iterable(new_ALPHA) and all([callable(new_ALPHA[i][j])
+                                           for i in range(self.M) for j in range(self.M)]):
+            # check if the new parameters is a list and if all of the inputs are functions
+            self._ALPHA = new_ALPHA
+        else:
+            raise Error_type_setter(f'Argument is not an function.')
+
+    @property
+    def BETA(self):
+        return self._BETA
+
+    @BETA.setter
+    def BETA(self, new_BETA):
+        if classical_functions_vectors.is_iterable(new_BETA) and all([callable(new_BETA[i][j])
+                                          for i in range(self.M) for j in range(self.M)]):
+            # check if the new parameters is a list and if all of the inputs are functions
+            self._BETA = new_BETA
+        else:
+            raise Error_type_setter(f'Argument is not an function.')
+
+    @property
+    def NU(self):
+        return self._NU
+
+    @NU.setter
+    def NU(self, new_NU):
+        if classical_functions_vectors.is_iterable(new_NU) and all([callable(new_NU[i]) for i in range(self.M)]):
+            # check if the new parameters is a list and if all of the inputs are functions
+            self._NU = new_NU
+        else:
+            raise Error_type_setter(f'Argument is not an function.')

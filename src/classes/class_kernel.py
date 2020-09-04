@@ -65,7 +65,7 @@ class Kernel:
     def __repr__(self):
         return repr(self._fct_kernel)
 
-    def eval(self, T_t, eval_point, T_max):
+    def eval(self, T_t, eval_point, T_max, debug = False):
         length_elements_T_t = [len(T_t[i]) for i in range(len(T_t))]
         # ans is the kernel evaluated on the jumps
         ans = self._fct_kernel(T_t=T_t, eval_point=eval_point, length_elements_T_t=length_elements_T_t,
@@ -95,10 +95,11 @@ class Kernel:
                 # I also divide by the sum, the vector is normalized, however,
                 # possibly we're on the edge and we need to take that into account.
 
-                # print(f"inside kernel debug, "
-                #       f"that's my integral : "
-                #       f"{np.sum(ans[i][:-1]) * T_max / (len(ans[i]) - 1)}. "
-                #       f"Name : {self.fct_kernel.__name__}.")
+        if debug:
+            print(f"inside kernel debug, "
+                  f"that's my integral : "
+                  f"{np.sum(ans[i][:-1]) * T_max / (len(ans[i]) - 1)}. "
+                  f"Name : {self.fct_kernel.__name__}.")
         return ans
 
     # section ######################################################################

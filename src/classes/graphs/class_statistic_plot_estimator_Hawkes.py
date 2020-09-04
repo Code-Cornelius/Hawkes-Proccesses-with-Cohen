@@ -10,7 +10,7 @@ from classes.class_estimator_hawkes import *
 
 
 # batch_estimation is one dataframe with the estimators.
-from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
+from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
 
 
 class Statistic_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Statistic_plot_estimator):
@@ -18,8 +18,7 @@ class Statistic_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Statistic_plot_est
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         # Initialise the Graph with the estimator
-        super().__init__(estimator=estimator, fct_parameters=fct_parameters,
-                         *args, **kwargs)
+        super().__init__(estimator, fct_parameters, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

@@ -18,13 +18,14 @@ def simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation):
     _, time_real = hp.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False,
                                                            silent=True)  # don't store intensity, only used for plots.
     w = kernel_weight.eval(T_t=time_real, eval_point=time_estimation, T_max=T_max)
-    # print(time_real)
+
+    # One shouldn't get an infinite loop here, at some point, the algorithm should converge.
+    # There is also a warning triggered if algorithm didn't converged.
     try:
         alpha_hat, beta_hat, mu_hat = call_newton_raph_MLE_opt(time_real, T_max, w, silent=silent)
     except Error_convergence as err:
         warnings.warn(err.message)
         return simulation_and_convergence(tt, hp, kernel_weight, silent, time_estimation)
-    # One shouldn't get an infinite loop here. It's probability.
     return alpha_hat, beta_hat, mu_hat
 
 
@@ -91,8 +92,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
              "weight function": [kernel_weight.name],
              "value": [mu_hat[s]],
              'T_max': [T_max],
-             'time_burn_in': [Hawkes_process.time_burn_in],
-             'true value': [hp.NU[s](time_estimation, T_max, Hawkes_process.time_burn_in)],
+             'time_burn_in': [Hawkes_process.TIME_BURN_IN],
+             'true value': [hp.NU[s](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
              'number of guesses': [nb_of_guesses]
              }), sort=True
         )
@@ -105,8 +106,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
                  "weight function": [kernel_weight.name],
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
-                 'time_burn_in': [Hawkes_process.time_burn_in],
-                 'true value': [hp.ALPHA[s][t](time_estimation, T_max, Hawkes_process.time_burn_in)],
+                 'time_burn_in': [Hawkes_process.TIME_BURN_IN],
+                 'true value': [hp.ALPHA[s][t](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -118,8 +119,8 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
                  "weight function": [kernel_weight.name],
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
-                 'time_burn_in': [Hawkes_process.time_burn_in],
-                 'true value': [hp.BETA[s][t](time_estimation, T_max, Hawkes_process.time_burn_in)],
+                 'time_burn_in': [Hawkes_process.TIME_BURN_IN],
+                 'true value': [hp.BETA[s][t](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
@@ -141,66 +142,3 @@ def multi_estimations_at_one_time(hp, estimator, tt, nb_of_guesses, kernel_weigh
                       nb_of_guesses=nb_of_guesses)
 
     return  # no need to return the estimator.
-
-
-# those two functions are quite useless right now. I don't want to spend time on them to refactor them.
-'''
-def one_long_and_longer_estimation(tt, ALPHA, BETA, MU, mini_T):
-    _, M = np.shape(ALPHA)
-    # my final guesses
-
-    # mini_T should represent a time interval of roughly 50 jumps.
-    T = [5 * mini_T, 10 * mini_T, 15 * mini_T, 20 * mini_T, 25 * mini_T, 30 * mini_T, 35 * mini_T, 40 * mini_T,
-         45 * mini_T,
-         50 * mini_T, 55 * mini_T, 60 * mini_T, 65 * mini_T, 75 * mini_T, 80 * mini_T, 90 * mini_T,
-         100 * mini_T, 110 * mini_T, 125 * mini_T, 150 * mini_T, 175 * mini_T, 200 * mini_T,
-         220 * mini_T, 250 * mini_T, 275 * mini_T, 300 * mini_T, 400 * mini_T]
-    # test
-    # T = [2 * mini_T, 3 * mini_T, 4 * mini_T]
-    list_of_succesive_coefficients = np.zeros((len(T), M + 2 * M * M))
-
-    # I can't call the function gen_plus_conv_hawkes so be careful using the function.
-    intensity, time_real = simulation_Hawkes_exact(tt, ALPHA, BETA, MU,
-                                                   T_max=T[-1], plot_bool=False)
-    actual_times = [[] for i in range(M)]
-    for i in range(len(T)):
-        print("=" * 78)
-        print("One longer simulation : Step {} out of {}.".format(i + 1, len(T)))
-        indeces = find_smallest_rank_leq_to_K(np.array(time_real), T[i], sorted=True)
-        for j in range(M):
-            # TODO one can optimize this by avoiding repetition of the extension of stuff already put in (extend)
-            actual_times[j] = time_real[j][:indeces[j]]
-        # print("debug : ", actual_times)
-        flag_success, alpha_hat, beta_hat, mu_hat = functions_MLE.call_newton_raph_MLE_opt(actual_times, T[i])
-        if flag_success:  # means the algo converged. If didn't, I leave the spaces as 0.
-            for j in range(M):
-                list_of_succesive_coefficients[i][j] = mu_hat[j]
-            for j in range(M * M):
-                list_of_succesive_coefficients[i][j + M] = alpha_hat[j]
-                list_of_succesive_coefficients[i][j + M + M * M] = beta_hat[j]
-
-    # print(list_of_succesive_coefficients)
-    # plot the graphs for every coefficient
-    for i in range(len(list_of_succesive_coefficients[0, :])):
-        if i < M:
-            title = " Evolution of the estimation of the estimator of the parameter NU, {}th value of the vector.".format(
-                i + 1)
-            y = np.full(len(T), MU[i])
-            save_name = "evolution_time_mu_{}".format(i + 1)
-        elif i < M + M * M:
-            title = " Evolution of the estimation of the parameter ALPHA, {}th value of the vector.".format(i + 1 - M)
-            save_name = "evolution_time_alpha_{}".format(i + 1 - M)
-            y = np.full(len(T), np.ravel(ALPHA)[i - M])
-        else:
-            title = " Evolution of the estimation of the parameter BETA, {}th value of the vector.".format(
-                i + 1 - M - M * M)
-            y = np.full(len(T), np.ravel(BETA)[i - M - M * M])
-            save_name = "evolution_time_beta_{}".format(i + 1 - M - M * M)
-        plot_functions.plot_graph(T, list_of_succesive_coefficients[:, i], title=[title],
-                                  labels=["Time", "Value of the Estimator"],
-                                  parameters=[ALPHA, BETA, MU], name_parameters=["ALPHA", "BETA", "NU"],
-                                  name_save_file=save_name)
-        plt.plot(T, y, color='blue', marker="None", linestyle='dashed', linewidth=2)
-    return alpha_hat, beta_hat, mu_hat
-
-'''

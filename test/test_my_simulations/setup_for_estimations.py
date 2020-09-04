@@ -10,7 +10,7 @@ import functions.functions_fct_rescale_adaptive
 
 # other files
 import functions.functions_for_MLE
-from classes.graphs.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_graph_estimator_hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions

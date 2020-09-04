@@ -6,7 +6,7 @@
 import ruptures as rpt
 
 # other files
-from classes.graphs.class_Graph_Estimator_Hawkes import *
+from classes.graphs.class_graph_estimator_hawkes import *
 from classes.class_kernel import *
 
 

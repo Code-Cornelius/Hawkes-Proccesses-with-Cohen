@@ -6,8 +6,8 @@ from library_classes.estimators.graphs.class_evolution_plot_estimator import *
 
 # other files
 from classes.class_kernel import *
-from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
-
+from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
+from classes.class_estimator_hawkes import Estimator_Hawkes
 
 # section ######################################################################
 #  #############################################################################
@@ -17,13 +17,10 @@ from classes.graphs.class_Graph_Estimator_Hawkes import Graph_Estimator_Hawkes
 class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_estimator):
     evolution_name = 'time estimation'
 
-    def __init__(self, estimator, fct_parameters, *args, **kwargs):
+    def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
         #  pcq c'est bizarre le truc où j'ai besoin ou pas des fcts evol...
-
-        # Initialise the Graph with the estimator
-        super().__init__(estimator=estimator, fct_parameters=fct_parameters,
-                         *args, **kwargs)
+        super().__init__(estimator_hawkes, fct_parameters, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

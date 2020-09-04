@@ -20,17 +20,17 @@ class Estimator_Hawkes(Estimator):
     # DF is a dataframe from pandas. Storing information inside is quite easy,
     # easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
-    def __init__(self, df=None):
-
+    def __init__(self, df=None, *args, **kwargs):
         if df is not None:
-            # test that the good columns are given.
-            if Estimator_Hawkes.set_column_hawkes.issubset(df.columns):
-                super().__init__(df)
+            # test that the columns of the DF are the right one, corresponding to the class argument.
+            if Estimator_Hawkes.SET_COLUMN_HAWKES.issubset(df.columns):
+                super().__init__(df, *args, **kwargs)
             else:
-                raise ValueError("Problem, the columns of the dataframe do not match the estimator hawkes.")
-        # if no df:
+                raise ValueError("Problem, the columns of the dataframe do not match "
+                                 "the ones from the classical estimator hawkes.")
+        # if no df, we create an empty one.
         else:
-            super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.set_column_hawkes)))
+            super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.SET_COLUMN_HAWKES)))
 
     @classmethod
     def from_path(cls, path):
@@ -75,24 +75,4 @@ class Estimator_Hawkes(Estimator):
             ans_dict[key] = [ans_N, ans_A, ans_B]
         return ans_dict
 
-# example:
-#
-#  estimators = estimators.append(pd.DataFrame(
-#                             {"time estimation": T[i],
-#                              "parameter": "alpha",
-#                              "n": s,
-#                              "m": t,
-#                              "weight function": str(function_weight[i_weights].name),
-#                              "value": ALPHA_HAT[s, t]
-#                              }), sort=True
-#                         )
-#
-# estimators = estimators.append(pd.DataFrame(
-#     {"time estimation": T[i],
-#      "parameter": "nu",
-#      "n": s,
-#      "m": 0,
-#      "weight function": str(function_weight[i_weights].name),
-#      "value": MU_HAT[s]
-#      }), sort=True
-# )
+
