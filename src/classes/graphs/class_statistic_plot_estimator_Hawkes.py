@@ -3,8 +3,7 @@
 
 #my libraries
 from library_classes.estimators.graphs.class_statistic_plot_estimator import *
-from library_errors import Error_forbidden
-
+from library_errors.Error_not_yet_allowed import Error_not_yet_allowed
 #other files
 from classes.class_estimator_hawkes import *
 
@@ -57,4 +56,4 @@ class Statistic_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Statistic_plot_est
             }
             return dict_fig
         else:
-            raise Error_forbidden
+            raise Error_not_yet_allowed("MSE has to be given as convergence_in parameter.")

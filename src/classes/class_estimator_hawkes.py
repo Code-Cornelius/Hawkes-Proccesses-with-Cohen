@@ -3,6 +3,7 @@
 
 # my libraries
 from library_classes.estimators.class_estimator import *
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 
 
 # other files
@@ -11,6 +12,7 @@ from library_classes.estimators.class_estimator import *
 # section ######################################################################
 #  #############################################################################
 # class
+
 
 class Estimator_Hawkes(Estimator):
     SET_COLUMN_HAWKES = {'parameter', 'n', 'm', 'time estimation',
@@ -26,7 +28,7 @@ class Estimator_Hawkes(Estimator):
             if Estimator_Hawkes.SET_COLUMN_HAWKES.issubset(df.columns):
                 super().__init__(df, *args, **kwargs)
             else:
-                raise ValueError("Problem, the columns of the dataframe do not match "
+                raise Error_not_allowed_input("Problem, the columns of the dataframe do not match "
                                  "the ones from the classical estimator hawkes.")
         # if no df, we create an empty one.
         else:

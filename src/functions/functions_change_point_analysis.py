@@ -12,6 +12,8 @@ from classes.class_kernel import *
 
 
 # my libraries
+from library_errors.Error_not_yet_allowed import Error_not_yet_allowed
+from library_errors.Error_not_enough_information import Error_not_enough_information
 
 
 def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
@@ -44,7 +46,7 @@ def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
     elif type_analysis == "window":
         number_of_breakpoints, model, width = parameters_for_analysis
     else:
-        raise ValueError("Not good type of analysis.")
+        raise Error_not_yet_allowed("Not good type of analysis.")
 
 
 
@@ -55,7 +57,7 @@ def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
         the_estimator = estimator_hawkes
 
     else:
-        raise ValueError("Path and Estimator_Hawkes can't be both None.")
+        raise Error_not_enough_information("Path and Estimator_Hawkes can't be both None.")
 
 
 

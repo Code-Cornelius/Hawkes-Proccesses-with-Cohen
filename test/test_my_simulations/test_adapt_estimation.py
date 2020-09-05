@@ -47,7 +47,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         list_of_kernels = [Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)]
 
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
 
         total_nb_tries = len(Times) * len(list_of_kernels)
         actual_state = [0]  # initialization
@@ -74,7 +74,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                 actual_state[0] += 1
                 simulation(count_times, Times, count_kernels, list_of_kernels, HAWKSY, estimator_kernel, tt,
                            nb_of_guesses, kernel, a_time, silent)
-        plot_param = list_of_kernels, Times[nb_of_times // 2]  # we plot the kernel in the middle
+        plot_param = list_of_kernels, Times[NB_OF_TIMES // 2]  # we plot the kernel in the middle
         evol_graph = Evolution_plot_estimator_Hawkes(estimator_kernel, the_update_functions)
         evol_graph.draw(separator_colour='weight function', one_kernel_plot_param=plot_param)
         estimator_kernel.DF.to_csv(trash_path,
@@ -100,9 +100,9 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             #                   ]
 
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
 
-        plot_param = list_of_kernels, Times[nb_of_times // 2]  # we plot the kernel in the middle
+        plot_param = list_of_kernels, Times[NB_OF_TIMES // 2]  # we plot the kernel in the middle
 
         evol_graph = Evolution_plot_estimator_Hawkes.from_path(path, the_update_functions)
         # the parameter I am giving says to plot only one kernel on the graph.
@@ -116,7 +116,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
         actual_state = [0]  # initialization
 
         @decorators_functions.prediction_total_time(total_nb_tries=len(Times),
@@ -154,8 +154,10 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
     def test_over_the_time_adaptive_one_draw(self):
         #  put optimal kernel here
         my_opt_kernel = Kernel(fct_biweight, name=f"Biweight {width_kernel} width", a=-b, b=b)
+        #todo ce que je peux faire c'est lire les temps depuis le DF, pour ça,  my_df['time estimation'].unique()
+
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
 
         evol_graph = Evolution_plot_estimator_Hawkes.from_path(first_estimation_path, the_update_functions)
         list_of_kernels = []
@@ -167,16 +169,15 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                         kernel_plot_param=plot_param)
 
     def test_over_the_time_adaptive_two_simulate(self):
-        considered_param = CONSIDERED_PARAM
+        #todo ce que je peux faire c'est lire les temps depuis le DF, pour ça,  my_df['time estimation'].unique()
 
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
         estimator_kernel = Estimator_Hawkes.from_path(first_estimation_path)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
-            my_estimator_mean_dict=estimator_kernel, Times=Times,
-            considered_param=considered_param, half_width=b,
-            L=l, R=R, h=h, l=l, tol=0.1, silent=silent)
+            my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
+            list_previous_half_width=[b] * NB_OF_TIMES, L=l, R=R, h=h, l=l, tol=0.1, silent=silent)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
         actual_state = [0]  # initialization
@@ -211,16 +212,15 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         path_for_first_simul = first_estimation_path
         path_for_second_simul = second_estimation_path
 
-        considered_param = CONSIDERED_PARAM
+        #todo ce que je peux faire c'est lire les temps depuis le DF, pour ça,  my_df['time estimation'].unique()
 
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
         estimator_kernel = Estimator_Hawkes.from_path(path_for_first_simul)
 
         list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
-            my_estimator_mean_dict=estimator_kernel, Times=Times,
-            considered_param=considered_param, half_width=b, L=L, R=R, h=h, l=l,
-            tol=0.1, silent=silent)
+            my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
+            list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
 
         evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_first_simul, the_update_functions)
         plot_param = list_of_kernels, Times
@@ -236,44 +236,51 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
         df_2 = pd.read_csv(path_for_second_simul)
         my_df = pd.concat([df_1, df_2], axis=0, join='outer', ignore_index=False, keys=None,
                           levels=None, names=None, verify_integrity=False, copy=True)
-        Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
-        estimator_kernel = Estimator_Hawkes(my_df)
-        considered_param = CONSIDERED_PARAM
+        #todo ce que je peux faire c'est lire les temps depuis le DF, pour ça,  my_df['time estimation'].unique()
 
-        list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
-            my_estimator_mean_dict=estimator_kernel, Times=Times,
-            considered_param=considered_param, half_width=b, L=L, R=R, h=h, l=l,
-            tol=0.1, silent=silent)
+        Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
+        estimator_kernel = Estimator_Hawkes(df_1)
+
+        _, list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
+            my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
+            list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
         my_estim = Estimator_Hawkes(my_df)
         evol_graph = Evolution_plot_estimator_Hawkes(my_estim, the_update_functions)
         plot_param = list_of_kernels, Times
         # I am plotting many kernels here.
         evol_graph.draw(separator_colour='weight function',
-                        kernel_plot_param=plot_param)
+                        kernel_plot_param=plot_param,
+                        all_kernels_drawn=False)
 
-    def test_comparison_three_estimations(self):
-        path_for_first_simul = first_estimation_path
+    def test_comparison_three_estimations_draw(self):
+        path_for_first_simul  = first_estimation_path
         path_for_second_simul = second_estimation_path
-        path_for_third_simul = third_estimation_path
+        path_for_third_simul  = third_estimation_path
 
         df_1 = pd.read_csv(path_for_first_simul)
         df_2 = pd.read_csv(path_for_second_simul)
-        df_3 = pd.read_csv(path_for_second_simul)
+        df_3 = pd.read_csv(path_for_third_simul)
 
-        my_df = pd.concat([df_1, df_2, df_3], axis=0, join='outer', ignore_index=False, keys=None,
+        my_total_df = pd.concat([df_1, df_2, df_3], axis=0, join='outer', ignore_index=False, keys=None,
                           levels=None, names=None, verify_integrity=False, copy=True)
+        #todo ce que je peux faire c'est lire les temps depuis le DF, pour ça,  my_df['time estimation'].unique()
         Times = np.linspace(Test_Simulation_Hawkes_adaptive.lower_percent_bound * T_max,
-                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, nb_of_times)
-        estimator_kernel = Estimator_Hawkes(my_df)
-        considered_param = ['nu', 'alpha', 'beta']
+                            Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
+        estimator_kernel_total = Estimator_Hawkes(my_total_df)
+        estimator_kernel_df1 = Estimator_Hawkes(df_1)
+        estimator_kernel_df2 = Estimator_Hawkes(df_2)
 
-        list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
-            my_estimator_mean_dict=estimator_kernel, Times=Times,
-            considered_param=considered_param, half_width=b, L=L, R=R, h=h, l=l,
-            tol=0.1, silent=silent)
-        my_estim = Estimator_Hawkes(my_df)
-        evol_graph = Evolution_plot_estimator_Hawkes(my_estim, the_update_functions)
+        #first list of kernels.
+        list_half_width, _ = functions_fct_rescale_adaptive.creator_kernels_adaptive(
+            my_estimator_mean_dict=estimator_kernel_df1, Times=Times, considered_param=CONSIDERED_PARAM,
+            list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
+
+        # we take back the kernels for the second plot.
+        _, list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
+            my_estimator_mean_dict=estimator_kernel_df2, Times=Times, considered_param=CONSIDERED_PARAM,
+            list_previous_half_width=list_half_width, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
+        evol_graph = Evolution_plot_estimator_Hawkes(estimator_kernel_total, the_update_functions)
         plot_param = list_of_kernels, Times
         # I am plotting many kernels here.
         evol_graph.draw(separator_colour='weight function',

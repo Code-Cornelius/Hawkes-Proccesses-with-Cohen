@@ -5,7 +5,7 @@ from scipy.stats.mstats import gmean
 
 # my libraries
 from library_functions.tools import classical_functions_vectors
-
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # other files
 from classes.class_kernel import *
 
@@ -62,15 +62,15 @@ def AKDE_scaling(times, G=10., gamma=0.5):
     return ans
 
 
-def rescale_min_max(vect):
-    the_max = max(vect)
-    the_min = min(vect)
-    the_mean = classical_functions_vectors.mean_list(vect)
-    ans = [(vect[i] - the_mean) / (the_max - the_min) + 1 for i in range(len(vect))]
+def rescale_min_max(my_vect):
+    the_max = max(my_vect)
+    the_min = min(my_vect)
+    the_mean = classical_functions_vectors.mean_list(my_vect)
+    ans = [(my_vect[i] - the_mean) / (the_max - the_min) + 1 for i in range(len(my_vect))]
     return ans
 
 
-def check_evoluating(vector, tol):
+def check_if_any_evolution(vector, tol):
     """ if all values of the vector are inside the tube mean +/- tol, return false.
     Args:
         vector:
@@ -91,8 +91,8 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
     # then it s where in the matrix.
     # considered_param should be which parameters are important to consider.
 
-    # ans is my vector of normes. Each value is for one time.
-    ans = np.zeros(len(times))
+    # norm_over_the_time is my vector of norms. Each value is for one time.
+    norm_over_the_time = np.zeros(len(times))
 
     # times and first_estimate same length.
     # I need to pick the good parameters and rescale them accordingly.
@@ -121,7 +121,7 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
             include_estimation[i] = True
 
         if include_estimation[i]:
-            if not check_evoluating(vect_of_estimators[i], tol):  # we don't keep the True
+            if not check_if_any_evolution(vect_of_estimators[i], tol):  # we don't keep the True
                 include_estimation[i] = False
     if not silent:
         print("which dim to include for norm : (nu,alpha,beta);", include_estimation)
@@ -130,30 +130,49 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
     for i in range(total_M):
         if include_estimation[i]:
             rescale_vector.append(rescale_min_max(vect_of_estimators[i]))
+    print(rescale_vector[0])
+    print(rescale_vector[1])
+    print(vect_of_estimators[1])
 
     for j in range(len(times)):
-        ans[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
+        norm_over_the_time[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
     if not silent:
         print("vect  :", vect_of_estimators)
-        print("the norms ", ans)
-    scaling_factors = my_rescale_sin(ans, L=L, R=R, h=h, l=l, silent=silent)
+        print("the norms ", norm_over_the_time)
+    scaling_factors = my_rescale_sin(norm_over_the_time, L=L, R=R, h=h, l=l, silent=silent)
     return scaling_factors
 
 
-def creator_list_kernels(my_scalings, previous_half_width):
+def creator_list_kernels(my_scalings, list_previous_half_width, special_name_for_kernel='', first_width=None):
+    # we want that both inputs my_scalings and list_previous_half_width are the same size
+
     # the kernel is taken as biweight.
+    list_half_width = []
     list_of_kernels = []
-    for scale in my_scalings:
-        new_scaling = previous_half_width / scale
+
+    if not len(my_scalings) == len(list_previous_half_width):
+        raise Error_not_allowed_input("Both lists need to be the same size.")
+
+    if first_width is None:
+        first_width = list_previous_half_width[0]
+
+    for half_width, scale in zip(list_previous_half_width, my_scalings):
+        new_scaling = half_width / scale
+        list_half_width.append(new_scaling)
         list_of_kernels.append(
-            Kernel(fct_biweight, name=f"Adaptive Biweight with first width {2 * previous_half_width}",
-                   a=-new_scaling, b=new_scaling))
-    return list_of_kernels
+            Kernel(fct_biweight,
+                   name=f"Adaptive Biweight with first width {2 * first_width}, {special_name_for_kernel}.",
+                   a=-new_scaling, b=new_scaling)
+        )
+    return list_half_width, list_of_kernels
 
 
-def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, half_width, L, R, h, l, tol=0.1,
-                             silent=True):
-    #todo check times match
+def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, list_previous_half_width, L, R, h, l,
+                             tol=0.1, silent=True):
+    # todo check times match
+
+    #list half width:  sequence of all the half width.
+    #list_of_kernels :  sequence of all the new kernels.
 
     # by looking at the previous estimation, we deduce the scaling
     # for that I take back the estimate
@@ -178,5 +197,5 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, ha
     if not silent:
         print('the scaling : ', my_scaling)
     # the kernel is taken as biweight.
-    list_of_kernels = creator_list_kernels(my_scalings=my_scaling, previous_half_width=half_width)
-    return list_of_kernels
+    list_half_width, list_of_kernels = creator_list_kernels(my_scalings=my_scaling, list_previous_half_width=list_previous_half_width)
+    return list_half_width, list_of_kernels

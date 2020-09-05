@@ -98,7 +98,7 @@ class Kernel:
         if debug:
             print(f"inside kernel debug, "
                   f"that's my integral : "
-                  f"{np.sum(ans[i][:-1]) * T_max / (len(ans[i]) - 1)}. "
+                  f"{np.sum(ans[0][:-1]) * T_max / (len(ans[0]) - 1)}. "
                   f"Name : {self.fct_kernel.__name__}.")
         return ans
 

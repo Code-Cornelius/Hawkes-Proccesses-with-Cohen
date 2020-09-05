@@ -4,6 +4,7 @@ import math
 import matplotlib.pyplot as plt
 from library_classes.plot import class_aplot
 # my libraries
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 from library_functions.tools import classical_functions_vectors
 
 # other files
@@ -160,7 +161,7 @@ class Hawkes_process:
 
         # here alpha and beta should be scalars in a matrix form.
         if np.shape(self.ALPHA) != np.shape(self.BETA):
-            raise ValueError("Why are the the_update_functions not of the good shape ?")
+            raise Error_not_allowed_input("Why are the the_update_functions not of the good shape ?")
 
         ########################################################################################
         # empty vector for stocking the information (the times at which something happens).

@@ -13,7 +13,7 @@ from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
 
 
 class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
-    nb_of_bins = 60
+    NB_OF_BINS = 60
 
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
@@ -47,7 +47,7 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
     # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_param(self, key, mean):
         my_range = self.get_range(key, mean)
-        dict_param = {'bins': Histogram_estimator_Hawkes.nb_of_bins,
+        dict_param = {'bins': Histogram_estimator_Hawkes.NB_OF_BINS,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': my_range,

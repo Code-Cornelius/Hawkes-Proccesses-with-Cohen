@@ -10,7 +10,6 @@ from classes.class_kernel import *
 
 # batch_estimation is one dataframe with the estimators.
 class Graph_Estimator_Hawkes(Graph_Estimator):
-    EVOLUTION_NAME = 'time estimation'
     SEPARATORS = ['parameter', 'm', 'n']
 
     def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
@@ -101,7 +100,9 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     @nb_of_guesses.setter
     def nb_of_guesses(self, new_nb_of_guesses):
-        if isinstance(new_nb_of_guesses, int):
+        # here it is tricky because th original nb_of_guesses is not an int but a numpy.int. So I have to use the test from numpy.
+        if np.issubdtype(new_nb_of_guesses, int):
                 self._nb_of_guesses = new_nb_of_guesses
         else:
             raise Error_type_setter(f'Argument is not an {str(int)}.')
+

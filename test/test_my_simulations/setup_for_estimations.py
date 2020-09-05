@@ -3,6 +3,7 @@ import time
 import unittest
 
 # my libraries
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 from library_functions.tools import recurrent_functions
 from library_functions.tools import decorators_functions
 import functions.functions_change_point_analysis
@@ -14,8 +15,7 @@ from classes.graphs.class_graph_estimator_hawkes import *
 from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
-
-from test.paramsConverter import *
+from test.parameter_converter_JSON import *
 
 np.random.seed(124)
 
@@ -77,7 +77,7 @@ def choice_parameter(dim, styl):
         T0, mini_T = 0, 5
 
     else:
-        raise ValueError("Problem with given dimension")
+        raise Error_not_allowed_input("Problem with given dimension")
 
     ALPHA, BETA, MU = np.array(ALPHA, dtype=np.float), np.array(BETA, dtype=np.float), np.array(MU,
                                                                                                 dtype=np.float)  # I precise the type because he might think the np.array is int type.
@@ -143,9 +143,9 @@ third_estimation_path =  r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHE
 
 
 if test_mode:
-    nb_of_times = 5
+    NB_OF_TIMES = 5
 else:
-    nb_of_times = 50
+    NB_OF_TIMES = 50
 
 width_kernel = 1 / KERNEL_DIVIDER * T_max
 b = width_kernel / 2.

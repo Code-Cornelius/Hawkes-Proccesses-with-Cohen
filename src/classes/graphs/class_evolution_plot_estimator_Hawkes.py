@@ -28,11 +28,11 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
 
     @classmethod
     def get_evolution_name_unique_values(cls, data):
-        return data[cls.evolution_name].unique()
+        return data[cls.EVOLUTION_NAME].unique()
 
     @classmethod
     def get_evolution_name_extremes(cls, data):
-        values = data.groupby([cls.evolution_name])['value']
+        values = data.groupby([cls.EVOLUTION_NAME])['value']
         return values.min(), values.max()
 
     def get_evolution_name_true_value(self, data):
@@ -41,7 +41,8 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     def get_evolution_name_plot_data(self, data):
         return self.get_evolution_name_specific_data(data, 'value')
 
-    def get_evolution_name_specific_data(self, data, my_str):
+    @classmethod
+    def get_evolution_name_specific_data(cls, data, my_str):
         """
         returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
 
@@ -52,7 +53,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         Returns:
 
         """
-        return data.groupby([self.evolution_name])[my_str].mean().values
+        return data.groupby([cls.EVOLUTION_NAME])[my_str].mean().values
 
     # section ######################################################################
     #  #############################################################################
