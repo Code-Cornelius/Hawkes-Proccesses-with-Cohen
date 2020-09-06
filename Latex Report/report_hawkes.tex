@@ -870,9 +870,9 @@ However, the task is way harder concerning the decays ($\beta$).
 
 To sum-up:
 \begin{itemize}
-\item deterministic $\alpha$ is already included in the previous algorithm.
-\item deterministic $\beta$??????  The task with beta is quite harder. A usual choice is a parameter piecewise constant. 
-\item deterministic $\nu$ needs some work. We are using a basic and classical thinning algorithm for that. One can find more about it in appendix part \ref{subsection:thinning}.
+\item deterministic $\alpha$ can be simulated thanks to the previous algorithm,
+\item deterministic $\beta$; The task with beta is quite harder. A usual choice is a parameter piecewise constant, changing at each jump. The problem lies in evaluating the integral; it is easy when $\beta$ is not a function of the parameter with respect to which we integrate, 
+\item deterministic $\nu$ requires a few changes in the algorithm. In order to make $\nu$ time dependant, we are using a basic and classical thinning algorithm. One can find more information about such methods in appendix part \ref{subsection:thinning}.
 \end{itemize}
 
 
@@ -880,7 +880,9 @@ To sum-up:
 
 \willprecise{talk about the betas it with Ed}
 
-It would also be possible to compute the CDF of the interarrival times related to a function $\nu(t)$ and inverse the formula. However, such approach makes it compulsory to solve equations by hand in order to find the inverse. The inverse can be more or less challenging to find. 
+\begin{remarque} 
+Thinning algorithms have the drawback of being non exact method. It would also be possible to compute the CDF of the interarrival times related to a function $\nu(t)$ and inverse the formula, in the same fashion as we did in the first simulation algorithm in order to achieve a perfect method. However, such approach would require solving by hand the inverse of some formulas, which does not always exist in close form, and require human intervention. For that reason, we decided to keep the flawed but well working thinning algorithm.
+\end{remarque}
 
 
 \begin{theoreme}{Non-homogeneous Poisson process interarrival times}
@@ -987,7 +989,7 @@ We also need the following equation, which deals with the deterministic $\alpha$
 
 \vspace{0.5cm}
 
-One can see a few example of realized univariate processes where the parameters change over time in fig. \ref{fig:param_dep_hawkes}. 
+One can see a few example of realized univariate processes where the parameters change over time in fig. \ref{fig:param_dep_hawkes}.  The impact of the time upon the parameters is crystal-clear.
 
 
 \begin{figure}
@@ -1005,7 +1007,7 @@ One can see a few example of realized univariate processes where the parameters 
 \includegraphics[width = 0.48 \textwidth]{imag/chap2/simul/Hawkes_sin.png}
 }}
 
-\caption{On the basis of the functions from fig. \ref{fig:evol_functions}, we modify $\alpha$ and $\nu$ with respect to time. One can notice the jumps, as well as the underlying intensity, changing with respect to time. For the one corresponding to "one jump" function, we zoomed in in order to emphasize the phenomena.}
+\caption{On the basis of the functions from fig. \ref{fig:evol_functions}, we modify $\alpha$ and $\nu$ with respect to time. One can notice the jumps, as well as the underlying intensity, changing with respect to time. For the one corresponding to "one jump" function, we zoomed-in in order to emphasize the phenomena.}
 \label{fig:param_dep_hawkes}
 \end{figure}
 
@@ -2472,14 +2474,14 @@ What has been done here is that we created on a function that:
 \end{itemize}
 
 \begin{remarque}
-We recommand taking $h$ in the interval $[1,5]$ depending on the amount of data one has. The smaller the window, the more imprecise the estimate; $l$ should be depending on the size of the first window estimation, as being twice smaller\footnote{If the first width is $d$, then $l = d / 2$} or less. In fact, we would like the minimum of the rescale function to be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period; $L$ and $R$ and quantiles depending on a guess about the shape of the function. $4$ and $96 \%$ are good in practice, but should be increased (resp. lowered) if there are relatively many values (low values) of the type "small" for $L$ and "high" for $R$.
+We recommand taking $h$ in the interval $[1,5]$ depending on the amount of data one has. The smaller the window, the more imprecise the estimate; $l$ should be depending on the size of the first window estimation, as being twice smaller\footnote{If the first width is $d$, then $l = d / 2$.} or less. In fact, we would like the minimum of the rescale function to be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period; $L$ and $R$ and quantiles depending on a guess about the shape of the function. $4$ and $96 \%$ are good in practice, but should be increased (resp. lowered) if there are relatively many values (low values) of the type "small" for $L$ and "high" for $R$.
 \end{remarque}
 
 
 \begin{remarque}
 A quick word about the choice of $L$ and $R$ quantiles : The function $g$ is flat on the sides and for that reason, chosing $2$ and $98$ could also be done. 
 
-Albeit only $4\%$ of the values being considered as extrems is not much, the number of points having the kernels narrowed is actually much bigger in practice, due to the flat behaviour of $g$ near the end of the branches. Putting $10-90$ did actually yielded half of the kernel being extremely narrowed.
+Albeit only $4\%$ of the values being considered as extrems is not much, the number of points having the kernels narrowed is actually much bigger in practice, due to the flat behaviour of $g$ near the end of the branches. Putting $10-90$ did actually yielded half of the kernel being extremely narrowed in most cases.
 \end{remarque}
 
 
@@ -2723,7 +2725,7 @@ Also, we also mentionned the burn-in period as being compulsory in order to reac
 
 
 \section{Sum-Up Algorithms}
-\subsection{Algorithm for Adaptive WMLE: HATDEP}
+\subsection{Algorithm for Adaptive WMLE: the HATDEP}
 Following the algorithm \ref{algo:adaptive1}, we write our final version of the adaptive weighting algorithm. The major changes that we apply are:
 
 \begin{itemize}
@@ -2794,7 +2796,7 @@ I won't have time for that. There was the topic of radial basis function as well
 \chapter{Numerical Results of HATDEP}
 
 \section{Presentation}
-This section is for presenting some empirical observations à propos the new adaptive algorithm using the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We hope that through the presentation of a few examples, the behaviour of the adaptive algorithm would be clearer. 
+This section presents some empirical observations à propos the new adaptive algorithm using the new introduced function $g$ defined in theorem \ref{thrm:new_g}. We hope that through the presentation of a few examples, the behaviour of the adaptive algorithm would be clearer. 
 
 We first precise our settings, then the results and we try to give some meaningful observations and interpretations. It yields some critical ideas about how to chose the parameters. We first show how the HAPDEP improves estimation in the case of windows that are too big, and secondly how the algorithm isn't harming estimations that are already good.
 
@@ -2820,10 +2822,26 @@ We first precise our settings, then the results and we try to give some meaningf
 \label{fig:evol_functions}
 \end{figure}
 
-We are going to consider a few evolution functions for the parameters. We want to see how different functions influences the results. We chose constant parameters, linear evolution, one-jump evolution (piece-wise constant), linear evolution combined with one-jump evolution and finally a sinusoidal evolution followed by a constant value. In the three last, there is a breakpoint in the function: either a jump, or the stop of a periodic behaviour. This choice is motivated for change-point analysis in 
-chapter \ref{chap:change_point}. We observe the basic functions in figure \ref{fig:evol_functions}.
+In order to consider a few different realistic situations for testing the HATDEP, we evaluate our algorithm upon a few evolution functions for the parameters. We want to see how different functions influences the results\footnote{The actual values of the functions is not important, only the shape of the evolution. Indeed, the standardization of the estimates does that only matters how the values are related to the min and the max of the function}.
 
-Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_interact} how the parameters evolve with respect to each other. Those coefficients are the one we use for the simulations. We observe the process over an interval $[0,T]$ which corresponds to roughly 7500 jumps. This number of event is quite important, and allows us to observe almost asymptotic behaviour for our estimation. At the same time, such high number of jumps is not making the simulation too long for them to not be doable. We estimated for each of the 50 points on [0.05*T,0.95 * T]\footnote{We chosed to skip the 5$\%$ at the boundaries of the simulation. That way, we hope to minimize the effect of boundaries on the estimation.}  50 times; hence each plot represents the conclusion of 2500 simulations. The data is available in CSV files available on the github of the project (cf. in appendix section \ref{csv-files}).
+We chose 
+
+\begin{itemize}
+\item constant parameters, 
+\item linear evolution, 
+\item one-jump evolution (piece-wise constant), 
+\item linear evolution combined with one-jump evolution 
+\item sinusoïdal evolution followed by a constant value.
+\end{itemize}
+
+In the three last, there is a breakpoint when the function changes its behaviour: either a jump for the latter's two first, or the stop of a periodic behaviour for the latter's third function. This choice is motivated for change-point analysis in 
+chapter \ref{chap:change_point}. 
+
+We observe the basic functions in figure \ref{fig:evol_functions}.
+
+A $M$-dimensional Hawkes process has $M+2M^2$ parameters, and for that reason, one has to chose $M+2M^2$ functions for the process. We make the choice of having the parameters $\alpha$ and $\nu$ evolving with respect to the same functions, and $\beta$ being constant. This yields 5 different cases, corresponding to the 5 different functions, and we plot in fig. \ref{fig:evol_functions_interact} how the parameters evolve with respect to each other and to time. These coefficients are the one we use for the simulations. 
+
+We observe the process over an interval $[0,T]$ which corresponds to roughly 7000 jumps. This number of event is quite important, and allows us to observe almost asymptotic behaviour for our estimation. At the same time, such high number of jumps is not making the simulation too long for them to not be doable. We estimated for each of the 50 points on [0.05*T,0.95 * T]\footnote{We chosed to skip the 5$\%$ at the boundaries of the simulation. That way, we hope to minimize the effect of boundaries on the estimation.}  50 times; hence each plot represents the conclusion of 2500 simulations. The data is available in CSV files available on the github of the project (cf. in appendix section \ref{csv-files}).
 
 \begin{figure}
 \centering
@@ -2863,11 +2881,7 @@ Essentially, in the univariate case, we plot in fig. \ref{fig:evol_functions_int
 As a first array of trials, we consider our recommanded parameters: $L$ and $R$ defined respectively as being the $4$ and $96$ quantiles; $h$ being $2.5$. We chose $l$ as a function of the first width. The reason for that is that if one takes a width smaller than the total length, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line, independently of its center.
 
 
-
-Also, we notice a small bump in the first estimations. It is due to the value of $l$ being too big: a large kernel is suppose to appear for values close to the mean, however, for such values, 
-
-
-We are also going to use $1/4$ of the observation length as being the width for the kernels of the first estimate (hence $l = 1/8$), following the recommandation from section \ref{subsection:optimal_width} of using an arbitrary kernel width. This width is quite big relatively to the total number of jumps, and we could have used a smaller one. However, we want to observe the behaviour under non perfect condition of the adaptive algorithm.
+We are also going to use $1/3$ of the observation length as being the width for the kernels of the first estimate (hence $l = 1/6$), following the recommandation from section \ref{subsection:optimal_width} of using an arbitrary kernel width. This width is quite big relatively to the total number of jumps, and we could have used a smaller one. However, we want to observe the behaviour under non perfect condition of the adaptive algorithm.
 
 
 
@@ -2875,12 +2889,16 @@ We are also going to use $1/4$ of the observation length as being the width for 
 The figures are drawn in apendix as: \ref{fig:first_estimate_0_alpha}, \ref{fig:first_estimate_0_beta}, \ref{fig:first_estimate_0_nu}. 
 
 
-We previously mentionned how the scaling is interfering with rescaling the kernels for constant parameters. The scaling is then more focused on the noise than anything relevant about the data (cf subsection \ref{subsection:scaling}). We draw on the fig. \ref{fig:impact_g_flat} some estimation for one parameter (based on the same data as for \ref{fig:first_estimate_0_nu}), and we observe how it impacts the kernel adaptive process. The evolution is hectic and there is definetely no clear pattern. In such case, one should increase the width of the kernels to the maximum and weight all the data in the same manner. Basically, the first estimate parametrize the second as being a constant estimation. 
+We previously mentionned how the standardization of the inputs is interfering with rescaling the kernels for constant parameters (cf. \ref{subsection:scaling}). In a few words, in such case, the scaling of the inputs is more focused on the noise rather than upon anything relevant about the data. We draw on the fig. \ref{fig:impact_g_flat} the estimation with all the respective rescaled kernels for the parameter $\nu$ (the plot is based upon the same data as for \ref{fig:first_estimate_0_nu}). 
+
+We observe how it impacts the kernel adaptive process. The evolution is hectic and there is definetely no clear pattern. In such case, an obvious choice in order to improve the estimation is to increase the width of the kernels to the maximum and weight all the observed data in the same manner. 
+
+Basically, in the case of constant parameters, the first estimate should parametrize the second as being a constant estimation. This case scenario is very specific and other situations are a bit more challenging.
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/flat_all_kernels.png}
-\caption{TO WRITE.}
+\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that the HATDEP interpreted small variations as the extreme cases. This confirms the necessity of a threshold under which, the algorithm shouldn't consider changes as intrinsec properties and view these solely as noise.}
 \label{fig:impact_g_flat}
 \end{figure}
 
@@ -2895,16 +2913,14 @@ We observe an expected improvement. It isn't directly induced by $g$, but by the
 \subsection{Linear Growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_1_alpha}, \ref{fig:first_estimate_1_beta}, \ref{fig:first_estimate_1_nu}.
 
-Let's first give a look to how the kernels are evolving with the first estimate. On fig. \ref{fig:impact_g_linear}, we see the expected behaviour for the evolution of the kernels. Extreme values are estimated with smaller kernels, and values close to the mean with wider kernels\footnote{They are wide and it makes sense. Both sides compensate each other, the parameters in the middle appear like being the average of the whole observed period.}. At the core, it is the behaviour one could expect.
+On fig. \ref{fig:impact_g_linear}, we see the expected behaviour for the evolution of the kernels in the case of linear growth. Extreme values are estimated with smaller kernels, and values close to the mean with wider kernels\footnote{They are wide and it makes sense. Both sides compensate each other, the parameters in the middle appear like being the average of the whole observed period.}. At the core, it is the behaviour one could expect.
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/linear_growth_all_kernels.png}
-\caption{TO WRITE.}
+\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that central estimations have wider kernels, and extreme estimations, which lie on the sides, narrower windows.}
 \label{fig:impact_g_linear}
 \end{figure}
-
-It does show some improvements, since the estimate looks overall flatter. Then, the function $g$ works great for linear trends. The points where the kernels are the smallest show signs of more variability. This is due to having a parameter $h$ too big for this case scenario / an original kernel width too small.
 
 
 \textbf{Conclusion:} Hawkes Adaptive Time Dependant Estimation of Parameters can be tried with a few different first trials, in the exact same way as KDE.
@@ -2915,50 +2931,48 @@ It does show some improvements, since the estimate looks overall flatter. Then, 
 \subsection{Simple Jump}
 The figures are drawn in apendix as: \ref{fig:first_estimate_2_alpha}, \ref{fig:first_estimate_2_beta}, \ref{fig:first_estimate_2_nu}.
 
-We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is the length of the kernel. Over the two phases, we observe small kernels, and during the jump bigger kernels. 
+We observe a transition phase in between the two stationary phases. It is roughly 1000 long, which is equal to half of the length of the kernel.
 
 
-\willlastcheck{ paragraph not useful later? }
-A last comment, there is a spike in beta's estimation, that is simply due to an overwhelmingly high estimate and to an effect of batch-mean, that can happen due to the estimation used method. It is totally random, and should be considered as extreme noise. For that reason, we excluded the beta dimension from the scaling algorithm.
 
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/jump_all_kernels.png}
-\caption{TO WRITE.}
+\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that the HATDEP widens the kernels in the middle of the jump but shorten the one at the end of the transition.}
 \label{fig:impact_g_jump}
 \end{figure}
 
 
-\textbf{Conclusion:}
+\textbf{Conclusion:} Despite some non-expected behaviour in $\beta$'s dimension, the algorithm is doing great, reducing the transition phase of the jumps' estimation. One can however notice that the algorithm struggles to make a meaningful decision about kernel's width when the different parameters are behaving differently with respect to time. 
 
+\begin{remarque}
+The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for $\alpha$ and $\nu$ are at different times, it isn't clear how to adapt in the best fashion. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
 
+For the sake of comparison, we are going to show in a second approach how HATDEP captures the jump when all parameters are jumping at the same time.
+\end{remarque}
 
 
 
 \subsection{Linear Growth and Jump}
 The figures are drawn in apendix as: \ref{fig:first_estimate_3_alpha}, \ref{fig:first_estimate_3_beta}, \ref{fig:first_estimate_3_nu}.
 
-The first estimate struggles to capture accuratly the jump in the parameters' function. There is a transition phase between the two behaviours which could be shortened. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to the size of the kernel.
+The first estimate struggles to capture accuratly the jump in the parameters' function. There is a transition phase between the two behaviours which could be shortened. For parameter $\alpha$, it last for 1000, for parameter $\nu$ roughly 800. It corresponds to half the size of the kernel.
 
-We see that the jump is way better estimated after HATDEP. The transition reduces to around 600 but more importantly, one clearly distinguishes the two phases. Also, we observe that the adaptive algorithm did increase the phenomena appearing in the first graph: alpha was estimated close to the jump (and after the adaptive process, even closer) while for nu, the jump was detected too early, and it increased with the adaptive. So the algorithm is pinpointing some underlying phenomenas, as expected.
+We see that the jump is better estimated after HATDEP. The transition reduces to around 600 but more importantly, one clearly distinguishes the two phases. Also, we observe that the adaptive algorithm did increase the phenomena appearing in the first graph: alpha was estimated close to the jump (and after the adaptive process, even closer) while for nu, the jump was detected too early, and it increased with the adaptive. So the algorithm is pinpointing some underlying phenomenas, as expected.
 
-Another thing to consider is that the jump isn't perfectly located, but it is a dimensionality problem. The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for alpha and nu are at different times, it isn't clear how to adapt in the best fashion. Here, the algorithm has increased the kernels for all points in between the two jumps, making the left side of the jump for alpha as well as the right side of the jump for nu very precise. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
+Another thing to consider is, in the same way as for the single jump case, that the jump isn't perfectly located, and it is a dimensionality problem. The algorithm isn't adapting with respect to one parameter, but with respect to all the parameters. Since the jumps for $\alpha$ and $\nu$ are at different times, it isn't clear how to adapt in the best fashion. Here, the algorithm has increased the kernels for all points in between the two jumps, making the left side of the jump for alpha as well as the right side of the jump for nu very precise. Overall, the two jumps are better localized, and the function is sharper (reflecting the non continuous behaviour of it).
 
 \textbf{Conclusion:} The algorithm is limited to low dimensional problems, like 2 or 3 dimensions maximum.
 
 \subsection{Sinusoïdal Growth}
 The figures are drawn in apendix as: \ref{fig:first_estimate_4_alpha}, \ref{fig:first_estimate_4_beta}, \ref{fig:first_estimate_4_nu}.
 
-We change $L$ for a bigger value, because we expect to have many small values induced by the plateau ending phase. We take $L=10\%$, and $R$ reduced to $98\%$.
-
-The first estimate struggles to capture the variability of the sinus. We have blatantly used a too wide kernel. However, it is interesting to see how the algorithm would react to it.
-
 We observe on our test image \ref{fig:impact_g_sin} that high peak values have narrow kernels and that the stationary phase after 6000 has the low narrow kernels. Then we expect the high points to be precise but the fact that no small kernels are left for the low points of the sinus might be an issue for a precise estimation.
 
 
+The first estimate struggles to capture the variability of the sinus. The second does show some improvement: the high peaks are captured by the second estimation. However, the first estimation wasn't precise enough about the lower points of the sinus and hence the algorithm didn't precisely estimated the lowest points. A smaller first kernel would solve the problem. 
 
-Now we observe that the changing point at 6000 is better captured. However, on the other hand, since we scale the kernel accordingly, it also means the lower parts of the sinus are missed, while the upper parts aren't. We would have observed a different behaviour if the final value of the parameters would have centred with respect to the sinus. In order to compensate for that, one should increase the number of kernels for low-extremal values (the parameter 	L), as well as used smaller kernels from the beginning; that should take into account the variability of the function.
 
 \textbf{Conclusion:} Depending on the expected behaviour of the function, whether there are many low points or many high points, one should adapt the quantiles $L$ and $R$.
 
@@ -2966,7 +2980,7 @@ Now we observe that the changing point at 6000 is better captured. However, on t
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/sin_all_kernels.png}
-\caption{TO WRITE.}
+\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP.}
 \label{fig:impact_g_sin}
 \end{figure}
 
@@ -2975,33 +2989,28 @@ Now we observe that the changing point at 6000 is better captured. However, on t
 
 \section{Better First Guess}
 \label{section_second_simul}
-We now use a smaller kernel from the beginning. We are studying simply the one jump case, the linear growth and jump case and the sinusoïdal curve. For them, we use $1/5$ for all of them apart from $1/8$ for the sinusoïdal curve. 
-
-\subsection{Simple Jump}
-
-The figures are drawn in apendix as: \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
+We now use a smaller kernel from the beginning. We are studying the one jump case, the linear growth and jump case and the sinusoïdal curve. For them, we use $1/5$ for all of them apart from $1/8$ for the sinusoïdal curve. 
 
 
-\subsection{Linear growth and Jump}
+
+For the simple jump, the figures are drawn in apendix as: \ref{fig:second_estimate_2_alpha}, \ref{fig:second_estimate_2_beta}, \ref{fig:second_estimate_2_nu}.
+
+For the linear growth and jump, the figures are drawn in apendix as: \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
+
+For the sinusoïdal case, the figures are drawn in apendix as: \ref{fig:second_estimate_4_alpha}, \ref{fig:second_estimate_4_beta}, \ref{fig:second_estimate_4_nu}.
+
+In all cases, we observe that the original fit is already very good (given the precise windows) and the HATDEP doesn't harm the estimation by adjusting the windows. It also improves the interesting parts, as the extreme parts of the sinus, or the discontinuity in the jump case.
 
 
-The figures are drawn in apendix as: \ref{fig:second_estimate_3_alpha}, \ref{fig:second_estimate_3_beta}, \ref{fig:second_estimate_3_nu}.
+We also give a closer look at the case where all the jumps are at the same time, with a precise kernel of $1/5$. 
 
 
-\subsection{Sinusoïdal Growth}
-
-
-The figures are drawn in apendix as: \ref{fig:second_estimate_4_alpha}, \ref{fig:second_estimate_4_beta}, \ref{fig:second_estimate_4_nu}.
 
 
 \section{Conclusion About the Algorithm}
+HATDEP is a two step adaptive algorithm, inspired by the theory of Kernel Density Estimation, used in order to get preciser results in the MSE sense of the estimation of time-dependant Hawkes process' parameters. It relies upon the idea that extreme points estimated should have narrower kernels. Based on that idea, we created a HATDEP function out of two sinuses. We tested HATDEP for a few situations, and it showed significant improvements. It reduces the interval over which the discontinuities are captured by a transition effect, and short time effects (like peaks) are also more visible.
 
-It doesn't harm much the estimation. Of course a bit, then one can reduce the number $h$.
-
-problem of dimensionality. 
-
-problem of multiple shape: better for one time jumps. If all dimensions can have similar behaviour.
-
+It suffers nonetheless from a problem of dimensionality. Better results are given by processes with similar behaviour on every dimension.
 
 
 
