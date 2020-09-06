@@ -37,7 +37,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
         # path has to be raw. with \\
         estimator = Estimator_Hawkes()
         estimator.append(pd.read_csv(path))
-        return cls(estimator=estimator, fct_parameters=parameters)
+        return cls(estimator_hawkes=estimator, fct_parameters=parameters)
 
 
     # section ######################################################################
@@ -101,7 +101,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
     @nb_of_guesses.setter
     def nb_of_guesses(self, new_nb_of_guesses):
         # here it is tricky because th original nb_of_guesses is not an int but a numpy.int. So I have to use the test from numpy.
-        if np.issubdtype(new_nb_of_guesses, int):
+        if isinstance(new_nb_of_guesses, (int,np.integer)):
                 self._nb_of_guesses = new_nb_of_guesses
         else:
             raise Error_type_setter(f'Argument is not an {str(int)}.')

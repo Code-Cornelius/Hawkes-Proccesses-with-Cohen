@@ -1,12 +1,12 @@
 {
   "one": {
-    "function": 12,
-    "number_of_mini_t_in_simulation": 80,
-    "kernel_div": 3,
+    "function": 3,
+    "number_of_mini_t_in_simulation": 100,
+    "kernel_div": 5,
     "L": 0.04,
     "R": 0.96,
-    "name_file_one": "second_estimations/super_smaller_12_first.csv",
-    "name_file_two": "second_estimations/super_smaller_12_second.csv",
+    "name_file_one": "second_estimations/super_smaller_3_first.csv",
+    "name_file_two": "second_estimations/super_smaller_3_second.csv",
     "name_file_three": "second_estimations/super_smaller_12_third.csv",
     "considered_parameters": ["nu","alpha", "beta"]
   }

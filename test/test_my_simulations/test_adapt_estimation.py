@@ -175,7 +175,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                             Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
         estimator_kernel = Estimator_Hawkes.from_path(first_estimation_path)
 
-        list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
+        _, list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
             my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
             list_previous_half_width=[b] * NB_OF_TIMES, L=l, R=R, h=h, l=l, tol=0.1, silent=silent)
 
@@ -218,7 +218,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                             Test_Simulation_Hawkes_adaptive.higher_percent_bound * T_max, NB_OF_TIMES)
         estimator_kernel = Estimator_Hawkes.from_path(path_for_first_simul)
 
-        list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
+        _, list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
             my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
             list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
 

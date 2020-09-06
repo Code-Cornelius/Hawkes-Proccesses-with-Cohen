@@ -130,9 +130,6 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
     for i in range(total_M):
         if include_estimation[i]:
             rescale_vector.append(rescale_min_max(vect_of_estimators[i]))
-    print(rescale_vector[0])
-    print(rescale_vector[1])
-    print(vect_of_estimators[1])
 
     for j in range(len(times)):
         norm_over_the_time[j] = np.linalg.norm([rescale_vector[i][j] for i in range(len(rescale_vector))], 2)
