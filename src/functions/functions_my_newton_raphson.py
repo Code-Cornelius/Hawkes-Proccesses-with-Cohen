@@ -179,6 +179,8 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
 
     # I put .all, I only update if every dimension helps improving.
     # a > 10e-1O in order to not have a too small step.
+
+    #todo problem with the a, should be all(a) ???
     while not all(condition) and a > 10e-10:
         a *= b
         changed = True

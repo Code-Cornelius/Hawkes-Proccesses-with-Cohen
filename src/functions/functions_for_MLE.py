@@ -85,7 +85,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
     T_max = tt[-1]
     for s in range(M):
         estimator.DF = estimator.DF.append(pd.DataFrame(
-            {"time estimation": [time_estimation],
+            {"time estimation": [round(time_estimation, 8)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
              "parameter": ["nu"],
              "n": [s],
              "m": [0],
@@ -93,13 +93,13 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
              "value": [mu_hat[s]],
              'T_max': [T_max],
              'time_burn_in': [Hawkes_process.TIME_BURN_IN],
-             'true value': [hp.NU[s](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
+             'true value': [hp.NU[s](round(time_estimation, 8), T_max, Hawkes_process.TIME_BURN_IN)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
              'number of guesses': [nb_of_guesses]
              }), sort=True
         )
         for t in range(M):
             estimator.DF = estimator.DF.append(pd.DataFrame(
-                {"time estimation": [time_estimation],
+                {"time estimation": [round(time_estimation, 8)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
                  "parameter": ["alpha"],
                  "n": [s],
                  "m": [t],
@@ -107,12 +107,12 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
                  "value": [alpha_hat[s, t]],
                  'T_max': [T_max],
                  'time_burn_in': [Hawkes_process.TIME_BURN_IN],
-                 'true value': [hp.ALPHA[s][t](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
+                 'true value': [hp.ALPHA[s][t](round(time_estimation, 8), T_max, Hawkes_process.TIME_BURN_IN)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )
             estimator.DF = estimator.DF.append(pd.DataFrame(
-                {"time estimation": [time_estimation],
+                {"time estimation": [round(time_estimation, 8)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
                  "parameter": ["beta"],
                  "n": [s],
                  "m": [t],
@@ -120,7 +120,7 @@ def estimation_hp(hp, estimator, tt, nb_of_guesses, kernel_weight=kernel_plain, 
                  "value": [beta_hat[s, t]],
                  'T_max': [T_max],
                  'time_burn_in': [Hawkes_process.TIME_BURN_IN],
-                 'true value': [hp.BETA[s][t](time_estimation, T_max, Hawkes_process.TIME_BURN_IN)],
+                 'true value': [hp.BETA[s][t](round(time_estimation, 8), T_max, Hawkes_process.TIME_BURN_IN)], # the time_estimation is rounded because sometimes the registered number is not exactly correct.
                  'number of guesses': [nb_of_guesses]
                  }), sort=True
             )

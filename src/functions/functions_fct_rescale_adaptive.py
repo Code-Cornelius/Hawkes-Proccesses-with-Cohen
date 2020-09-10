@@ -140,7 +140,9 @@ def rescaling_kernel_processing(times, first_estimate, considered_param, L, R, h
     return scaling_factors
 
 
-def creator_list_kernels(my_scalings, list_previous_half_width, special_name_for_kernel='', first_width=None):
+def creator_list_kernels(my_scalings, list_previous_half_width, first_width=None):
+    #todo would be interesting to add name to the function such that one can do iterative adaptive scaling.
+
     # we want that both inputs my_scalings and list_previous_half_width are the same size
 
     # the kernel is taken as biweight.
@@ -158,7 +160,7 @@ def creator_list_kernels(my_scalings, list_previous_half_width, special_name_for
         list_half_width.append(new_scaling)
         list_of_kernels.append(
             Kernel(fct_biweight,
-                   name=f"Adaptive Biweight with first width {2 * first_width}, {special_name_for_kernel}.",
+                   name=f"Adaptive Biweight with first width {2 * first_width}.",
                    a=-new_scaling, b=new_scaling)
         )
     return list_half_width, list_of_kernels
