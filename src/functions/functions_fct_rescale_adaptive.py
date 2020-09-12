@@ -27,6 +27,9 @@ def my_rescale_sin(value_at_each_time, L=0.02, R=0.98, h=2.5, l=0.2 / 2, silent=
     L_quant = np.quantile(value_at_each_time, L)
     R_quant = np.quantile(value_at_each_time, R)
 
+    if not L_quant < G < R_quant:
+        raise Error_not_allowed_input("L < G < R for the well definiteness of the function.")
+
     if not silent:
         print("Left boundary : ", L_quant)
     if not silent:
