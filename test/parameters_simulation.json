@@ -1,17 +1,22 @@
 {
   "one": {
-    "function": 1,
+    "function": 4,
     "number_of_mini_t_in_simulation": 70,
     "kernel_div": 3,
     "L": 0.04,
     "R": 0.96,
     "h": 2.5,
     "l": "automatic with respect to the total size",
-    "name_file_one": "first_estimations/super_1_first.csv",
-    "name_file_two": "first_estimations/super_1_second.csv",
+    "name_file_one": "first_estimations/super_4_first.csv",
+    "name_file_two": "first_estimations/super_4_second.csv",
     "name_file_three": "second_estimations/super_smaller_12_third.csv",
-    "considered_parameters": ["nu","alpha"],
-    "all_kernels_drawn": false
+    "considered_parameters": ["nu", "alpha"],
+    "all_kernels_drawn": false,
+    "type_analysis": "optimal",
+    "number_of_breakpoints": 1,
+    "model": "l2",
+    "min_size": 5,
+    "width": 5
   }
 }
 

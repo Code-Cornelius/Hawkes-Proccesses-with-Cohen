@@ -19,7 +19,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_form_evol_functions(self):
         for i in range(5):
-            the_update_functions = update_functions(i, PARAMETERS)
+            the_update_functions, _ = update_functions(i, PARAMETERS)
             Hawkes_process(the_update_functions)
 
     def test_plot_hawkes(self):

@@ -10,26 +10,24 @@ import matplotlib.pyplot as plt
 from classes.graphs.class_graph_estimator_hawkes import *
 from classes.class_kernel import *
 
-
 # my libraries
 from library_errors.Error_not_yet_allowed import Error_not_yet_allowed
 from library_errors.Error_not_enough_information import Error_not_enough_information
 
 
 def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
-                                   type_analysis = "optimal",
-                                   parameters_for_analysis = (1,"l2", 1),
+                                   type_analysis="optimal",
+                                   parameters_for_analysis=(1, "l2", 1),
+                                   true_breakpoints=None,
                                    column_for_multi_plot_name=None):
     '''
 
     Args:
+        true_breakpoints: should be a dict with keys ["parameter", m, n], all elements being lists.
+        type_analysis:
+        parameters_for_analysis:
         path:  path is where the file is located where one can read the estimator Hawkes.
         estimator_hawkes:
-        fct_parameters:
-        width:
-        min_size:
-        number_of_breakpoints:
-        model:
         column_for_multi_plot_name:
 
     Returns:
@@ -48,21 +46,17 @@ def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
     else:
         raise Error_not_yet_allowed("Not good type of analysis.")
 
-
-
     if estimator_hawkes is None:
         the_estimator = Estimator_Hawkes.from_path(path)
 
     elif path is None:
-        the_estimator = estimator_hawkes
+        if isinstance(estimator_hawkes, Estimator_Hawkes):
+            the_estimator = estimator_hawkes
+        else:
+            raise Error_not_allowed_input("Function needs estimator Hawkes for estimator_hawkes.")
 
     else:
         raise Error_not_enough_information("Path and Estimator_Hawkes can't be both None.")
-
-
-
-
-
 
     SEPARATORS = ['parameter', 'm', 'n']
 
@@ -85,20 +79,27 @@ def change_point_analysis_and_plot(path=None, estimator_hawkes=None,
             dict_serie[(k1, k2, k3)] = global_dict.get_group((k1, k2, k3)).groupby(['time estimation'])[
                 'value'].mean().values.reshape((1, -1))
 
-    for k in dict_serie.keys():  # iterate through dictionary
+    for k in dict_serie.keys():  # iterate through dictionary, the data is not in the right position.
         dict_serie[k] = np.transpose(dict_serie[k])
-
     ############################################## dynamic programming   http://ctruong.perso.math.cnrs.fr/ruptures-docs/build/html/detection/dynp.html
     ans = []
-    for k in dict_serie.keys():
+    for i, k in enumerate(dict_serie.keys()):
         if type_analysis == "optimal":
             algo = rpt.Dynp(model=model, min_size=min_size, jump=1).fit(dict_serie[k])
-            my_bkps1 = algo.predict(n_bkps=number_of_breakpoints)
-            rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
 
         elif type_analysis == "window":
             algo = rpt.Window(width=width, model=model).fit(dict_serie[k])
-            my_bkps1 = algo.predict(n_bkps=1)
-            rpt.show.display(dict_serie[k], my_bkps1, figsize=(10, 6))
+
+        else:
+            raise Error_not_yet_allowed("Only type_analysis optimal and window implemented so far.")
+        my_bkps1 = algo.predict(n_bkps=number_of_breakpoints)
+        true_bkpts = true_breakpoints[k].copy()  # I am doing a copy in order to not alter the original dict.
+        last_value = my_bkps1[-1]  # last value, equal to number of time estimates.
+        for i in range(len(true_bkpts)):
+            true_bkpts[i] = round(true_bkpts[i] * last_value)  # makes an integer out of the number
+        true_bkpts.append(last_value)  # I add to each list the last breakpoint, in my simulations it is 50,
+        # usually it is the number of points of estimation in evolution wrt time.
+        _, my_axs = rpt.show.display(dict_serie[k], computed_chg_pts=my_bkps1, true_chg_pts=true_bkpts, figsize=(10, 6))
         ans.append(my_bkps1)
+    print(true_breakpoints)
     return ans

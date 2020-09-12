@@ -115,7 +115,7 @@ print("\n~~~~~Computations.~~~~~\n")
 dim = 1
 PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim=dim, styl=1)
 print(PARAMETERS)
-the_update_functions = update_functions(FUNCTION_NUMBER, PARAMETERS)
+the_update_functions, true_breakpoints = update_functions(FUNCTION_NUMBER, PARAMETERS)
 
 estimator_multi = Estimator_Hawkes()
 

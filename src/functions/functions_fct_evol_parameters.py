@@ -34,7 +34,8 @@ def moutain_jump(time, when_jump, a, b, base_value, T_max, time_burn_in):
         return base_value
 
 
-def periodic_stop(time, T_max, a, base_value, time_burn_in):  # need longer realisation like 80 mini_T
+def periodic_stop(time, T_max, a, base_value,
+                  time_burn_in):  # need longer realisation like 80 mini_T because a lot of variation
     if time / (T_max + time_burn_in) * 2 * math.pi * 2.25 < 2 * math.pi * 1.75:
         return base_value + a * math.cos(time / (T_max + time_burn_in) * 2 * math.pi * 2.25) * math.cos(
             time / (T_max + time_burn_in) * 2 * math.pi * 2.25)
@@ -49,13 +50,20 @@ def update_functions(case, PARAMETERS):
 
     # for 7500 jumps, do 120 with first sets of param dim 1
     if case == 0:
+        breakpoint_nu = 0.
+        breakpoint_alpha = 0.
+        breakpoint_beta = 0.
+        true_breakpoints = {}
         for i in range(M):
             value = MU[i]
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, index_1: constant_parameter(time=time, constant=value,
-                                                                                      T_max=T_max,
-                                                                                      time_burn_in=time_burn_in),
+                partial(lambda time, T_max, time_burn_in, index_1: constant_parameter(
+                    time=time, constant=value,
+                    T_max=T_max,
+                    time_burn_in=time_burn_in),
                         index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint_nu]
+
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
@@ -68,84 +76,126 @@ def update_functions(case, PARAMETERS):
                             index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in),
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2], T_max=T_max, time_burn_in=time_burn_in),
                         index_1=i,
                         index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint_alpha]
+                true_breakpoints[("beta", i, j)] = [breakpoint_beta]
 
     # for 7500 jumps, do 70 with first sets of param dim 1
     if case == 1:
+        breakpoint_nu = 0.
+        breakpoint_alpha = 0.
+        breakpoint_beta = 0.
+        true_breakpoints = {}
         for i in range(M):
             the_update_functions[0][i] = \
                 partial(
-                    lambda time, T_max, time_burn_in, index_1: linear_growth(time, 1.5 * MU[index_1], MU[index_1] / 2,
-                                                                             T_max, time_burn_in=time_burn_in),
-                    index_1=i)
-
+                    lambda time, T_max, time_burn_in, index_1: linear_growth(
+                        time, 1.5 * MU[index_1], MU[index_1] / 2,
+                        T_max, time_burn_in=time_burn_in), index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint_nu]
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(lambda time, T_max, time_burn_in, index_1, index_2: linear_growth(
-                        time, BETA[index_1, index_2] * 0.8 - ALPHA[index_1, index_2], ALPHA[index_1, index_2], T_max,
+                        time, BETA[index_1, index_2] * 0.8 - ALPHA[index_1, index_2],
+                        ALPHA[index_1, index_2], T_max,
                         time_burn_in=time_burn_in),
                             index_1=i, index_2=j)  # it goes up to BETA 90%
 
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2],
+                            T_max=T_max, time_burn_in=time_burn_in),
+                        index_1=i, index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint_alpha]
+                true_breakpoints[("beta", i, j)] = [breakpoint_beta]
 
     # for 7500 jumps, do 80 with first sets of param dim 1
     elif case == 2:
+        breakpoint_nu = 0.7
+        breakpoint_alpha = 0.4
+        breakpoint_beta = 0
+        true_breakpoints = {}
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, index_1: one_jump(time, 0.7, MU[index_1], 1.7 * MU[index_1],
-                                                                            T_max, time_burn_in=time_burn_in),
+                partial(lambda time, T_max, time_burn_in, index_1: one_jump(
+                    time, breakpoint_nu, MU[index_1],
+                    1.7 * MU[index_1],
+                    T_max, time_burn_in=time_burn_in),
                         index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint_nu]
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(time, 0.4,
-                                                                                         BETA[index_1, index_2] * 0.7,
-                                                                                         -0.5, T_max,
-                                                                                         time_burn_in=time_burn_in),
+                    partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(
+                        time, breakpoint_alpha,
+                        BETA[index_1, index_2] * 0.7,
+                        -0.5, T_max,
+                        time_burn_in=time_burn_in),
                             index_1=i, index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint_alpha]
+                true_breakpoints[("beta", i, j)] = [breakpoint_beta]
+
 
     # for 7500 jumps, do 80 with first sets of param dim 1
     elif case == 12:  # this is the case jump at the same times.
+        breakpoint = 0.7
+        no_breakpoint = 0
+        true_breakpoints = {}
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, index_1: one_jump(time, 0.7, MU[index_1], 1.7 * MU[index_1],
-                                                                            T_max, time_burn_in=time_burn_in),
+                partial(lambda time, T_max, time_burn_in, index_1: one_jump(
+                    time, breakpoint, MU[index_1],
+                    1.7 * MU[index_1],
+                    T_max, time_burn_in=time_burn_in),
                         index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint]
             for j in range(M):
                 the_update_functions[1][i][j] = \
-                    partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(time, 0.7,
-                                                                                         BETA[index_1, index_2] * 0.7,
-                                                                                         -0.5, T_max,
-                                                                                         time_burn_in=time_burn_in),
+                    partial(lambda time, T_max, time_burn_in, index_1, index_2: one_jump(
+                        time, breakpoint,
+                        BETA[index_1, index_2] * 0.7,
+                        -0.5, T_max,
+                        time_burn_in=time_burn_in),
                             index_1=i, index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
-
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint]
+                true_breakpoints[("beta", i, j)] = [no_breakpoint]
     # for 7500 jumps, do 100 with first sets of param dim 1
     elif case == 3:
+        breakpoint_nu = 0.7
+        breakpoint_alpha = 0.5
+        breakpoint_beta = 0
+        true_breakpoints = {}
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, index_1: moutain_jump(time, when_jump=0.7, a=MU[index_1],
-                                                                                b=MU[index_1],
-                                                                                base_value=MU[index_1] * 1.,
-                                                                                T_max=T_max, time_burn_in=time_burn_in),
+                partial(lambda time, T_max, time_burn_in, index_1: moutain_jump(
+                    time, when_jump=breakpoint_nu,
+                    a=MU[index_1],
+                    b=MU[index_1],
+                    base_value=MU[index_1] * 1.,
+                    T_max=T_max, time_burn_in=time_burn_in),
                         index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint_nu]
+
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(
                         lambda time, T_max, time_burn_in, index_1, index_2: moutain_jump(
-                            time, when_jump=0.5,
+                            time, when_jump=breakpoint_alpha,
                             a=2 * (BETA[index_1, index_2] * 0.8 -
                                    ALPHA[index_1, index_2]),
                             b=ALPHA[index_1, index_2],
@@ -154,14 +204,23 @@ def update_functions(case, PARAMETERS):
                             time_burn_in=time_burn_in), index_1=i, index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint_alpha]
+                true_breakpoints[("beta", i, j)] = [breakpoint_beta]
     # for 7500 jumps, do 65 with first sets of param dim 1
     elif case == 4:
+        breakpoint_nu = 0.78
+        breakpoint_alpha = 0.78
+        breakpoint_beta = 0
+        true_breakpoints = {}
         for i in range(M):
             the_update_functions[0][i] = \
-                partial(lambda time, T_max, time_burn_in, index_1: periodic_stop(time, T_max, MU[index_1], 0.2,
-                                                                                 time_burn_in=time_burn_in), index_1=i)
+                partial(lambda time, T_max, time_burn_in, index_1: periodic_stop(
+                    time, T_max, MU[index_1], 0.2,
+                    time_burn_in=time_burn_in), index_1=i)
+            true_breakpoints[("nu", i, 0)] = [breakpoint_nu]
             for j in range(M):
                 the_update_functions[1][i][j] = \
                     partial(
@@ -170,6 +229,10 @@ def update_functions(case, PARAMETERS):
                             ALPHA[index_1, index_2], time_burn_in=time_burn_in), index_1=i, index_2=j)
                 the_update_functions[2][i][j] = \
                     partial(
-                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(time=time, constant=BETA[
-                            index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
-    return the_update_functions
+                        lambda time, T_max, time_burn_in, index_1, index_2: constant_parameter(
+                            time=time, constant=BETA[
+                                index_1, index_2], T_max=T_max, time_burn_in=time_burn_in), index_1=i, index_2=j)
+                true_breakpoints[("alpha", i, j)] = [breakpoint_alpha]
+                true_breakpoints[("beta", i, j)] = [breakpoint_beta]
+
+    return the_update_functions, true_breakpoints
