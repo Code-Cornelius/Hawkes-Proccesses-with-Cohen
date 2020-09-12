@@ -73,9 +73,9 @@
 
 \part{Simulation of Point Processes}
 \chapter{Introduction to Point Processes Simulation}
-We would like to simulate some simple point processes. Firstly, we are going to introduce some theory about the processes of our interest, and then offer a few old and actual algorithms for simulating such processes. 
+In order to simulate simple point processes, firstly, we are going to introduce some bits of theory on the processes of our interest, and then we will offer a few old and actual algorithms for simulation. 
 
-In the sixties, methods of data analysis for point processes focused the attention of some great minds, such as Cox, Lewis or Bartlett. Then, some very practical algorithms appeared in the eighties. It is also at that period of time that we saw the first papers à-propos Hawkes processes, which were formally defined in 1971 by \cite{Hawkes}. That interest was mainly driven by seismic analysis, and one can notice how flourishing the Japanese literature is upon Hawkes processes. From the beginning of the twenty-first century, one saw the increase of a genuine interest for those processes. Such processes are computationally expensive and the possibility of exploiting computers increased the interest in them. Hawkes processes are also very good at describing social-medias phenomena and the ever-stronger growing field of study of social media is benefiting a lot from Hawkes process' study. Self-exciting processes saw also a grow interest within the domain of finance: financial models capable to capture the contagion or clustering effect are nowadays essentially needed
+In the sixties, methods of data analysis for point processes focused the attention of some great minds, such as Cox, Lewis or Bartlett. Then, some very practical algorithms appeared in the eighties. It is also at that period of time that we saw the first papers à-propos Hawkes processes, which were formally defined in 1971 by \cite{Hawkes}. That interest was mainly driven by seismic analysis, and one can notice how flourishing the Japanese literature is upon Hawkes processes. From the beginning of the twenty-first century, one saw the increase of a genuine interest for those processes. Such processes are computationally expensive and the possibility of exploiting computers increased the interest in them. Apart from seismic studiesn, the ever-stronger growing field of study of social media is benefiting a lot from Hawkes process' study. Self-exciting processes saw also a grow interest within the domain of finance: financial models capable to capture the contagion or clustering effect are nowadays essentially needed in the context of financial crises.
 
 A very good book on point process is given by \cite{daley}, which is commonly refered to nowadays in the literature.
 
@@ -85,7 +85,9 @@ By quoting \cite{simullaub}, we hope to give some historical insight on the main
 
 \textit{Point processes gained a significant amount of attention in the eld of statistics during the 1950s and 1960s. First, Cox \cite{hphistorique1} introduced the notion of a doubly stochastic Poisson process (now called the Cox process) and Bartlett \cite{hphistorique2}, \cite{hphistorique3}, \cite{hphistorique4}, investigated statistical methods for point processes based on their power spectral densities. At IBM Research Laboratories, Lewis \cite{hphistorique5} formulated a point process model (for computer failure patterns) which was a step in the direction of the HP. The activity culminated in the significant monograph by Cox and Lewis \cite{hphistorique6} on time series analysis; modern researchers appreciate this text as an important development of point process theory since it canvassed their wide range of applications \cite{Hawkes}. It was in this context that Hawkes \cite{Hawkes} set out to bring Bartlett's spectral analysis approach to a new type of process: a self-exciting point process. The process Hawkes described was a one-dimensional point process (though originally specified for $t \in \R$ as opposed to $t \in [0;\infty[)$, and is defined as follows.}
 
-As an additionnal comment to that, the author would like to mention that Hawkes processes are the natural generalization of Poisson processes. The basic homogeneous Poisson process has constant rate. The direct generalization is given by a deterministic rate and we call such process an inhomogeneous Poisson process. A natural wish would be to get stochastic rates. Hawkes process is essentially the answer to that.
+As an additionnal comment to that, the author would like to mention that Hawkes processes are the natural generalization of Poisson processes. 
+
+The basic homogeneous Poisson process has constant rate. The direct generalization is given by a deterministic rate and we call such process an inhomogeneous Poisson process. A natural wish would be to get stochastic rates. Hawkes process is essentially the answer to that.
 
 Finally, quoting \cite{daley}:
 
@@ -98,9 +100,9 @@ Finally, quoting \cite{daley}:
 
 \section{Point Process Theory}
 \subsection{Classic Concepts}
-We list in here a few essential processes for the understanding of Hawkes processes. For more information about birth-processes, renewal processes, branching processes and Poisson (homogeneous / inhomogeneous / compound) processes, we recommend the book \cite{Grimmett} and the lecture notes from Applied Probability given by A. Veraart at Imperial College \cite{Veraart}. One can also be interested in reading the sum-up on Poisson processes from Chen in \cite{simulchen}.
+We list in here a few essential prerequired definitions in the purpose of understanding Hawkes processes. For more information about birth-processes, renewal processes, branching processes and Poisson (homogeneous / inhomogeneous / compound) processes, we recommend the book \cite{Grimmett} and the lecture notes from Applied Probability given by A. Veraart at Imperial College \cite{Veraart}. One can also be interested in reading the sum-up on Poisson processes from Chen in \cite{simulchen}.
 
-We based our definition from many different sources, but in particular we use the book \cite{daley} which defined most processes on any complete, separable, metric space (c.s.m.s.) $\mathcal X$. However, we don't need here such generality. For some definitions we keep that notation though we are only interested in the particular case of the c.s.m.s. $\R$. The authors of the book \cite{daley} tried to be as general as possible and that is the reason why they use general topological spaces as well as defining processes as measures. 
+We based our definition from many different sources, but in particular we use the book \cite{daley} which defined most processes on any complete, separable, metric space (c.s.m.s.) $\mathcal X$. However, we don't need here such generality. We are only interested in the particular case of the c.s.m.s. $\R$. The authors of the book \cite{daley} tried to be as general as possible and that is the reason why they use general topological spaces as well as defining processes as measures. 
 
 \begin{definition}[Counting Process]
 A counting process on a time interval $I$, $\{N(t)\}_{t \in I}$, is a stochastic process satisfying the following conditions: 
@@ -131,11 +133,11 @@ Example of point processes are given in Ogata's paper (\cite{Ogata}) where he pr
 
 \begin{remarque}
 \label{remarque:inter_arrival_times}
-The sequence of differences in times, $$\tau = \sequence{ T_{i+1} - T_i } $$ is called the inter-arrival time sequence.
+The sequence of differences in times, $$\tau = \sequence{ T_{i+1} - T_i } $$ is called the interarrival time sequence.
 \end{remarque}
 
 
-In fact, it should be noted that counting processes, point processes and inter-arrival times are in fact equivalent\footnote{each process fully describe the others.} processes. Hence, the following theorem is fairly intuitive:
+In fact, it should be noted that counting processes, point processes and interarrival times are in fact equivalent\footnote{i.e. each process fully describe the others.} processes. Hence, the following theorem is fairly intuitive:
 
 \begin{theoreme}{Counting process associated with the point process}
 To every point process $\sequence{T_i}$, it is possible to associate a counting process by defining the right-continuous process:
@@ -155,9 +157,9 @@ Defining counting / point processes like that is not good enough for generalisat
 \end{enumerate}
 
 
-The only general enough way to describe counting processes in more abstract spaces is through measures and for that reason, we stick to it. We are going to redefine the previous definition through counting measures. The definition becomes straight-forward.
+The only general enough way to describe counting processes in more abstract spaces is through measures and for that reason, we stick to it. We are going to redefine the previous definition through counting measures.
 
-The idea would be to define a function $N$ that, for all subset $A$ of a complete separable metric space $\mathcal X$, counts the number of events lying inside the set.
+The idea would be to define a function $N$, which naturally reduces to a measure, and that, for all subset $A$ of a complete separable metric space $\mathcal X$, counts the number of events lying inside the set.
 
 In other words, if $\#$ denotes the number of elements of the sequence,
 
@@ -200,13 +202,13 @@ $$N(t) = \left\{
 \end{definition}
 
 
-Notice that the defined function respects the property of the previous section: integer-valued, locally bounded, right-continuous, centred...
+Notice that the defined function $N$ respects the property of the previous section: integer-valued, locally bounded, right-continuous, centred...
 
 \begin{remarque}
-$N(t)$ defines $N(A)$ in the exact same way a cumulative distribution function determines a probability measure on Borel sets.
+$N(t)$ defines $N(A)$ in the exact same way a cumulative distribution function determines a probability measure on Borel sets. It all comes down to the $ \pi - \lambda $ theorem.
 \end{remarque}
 
-Since we actually don't need the half negative line, we will fix $N(t)$ as being $0$ for negative values. It is then very easy to define the associated, and consistent with the previous definition, point process:
+Since we actually don't need the half negative line, we will fix $N(t)$ as being $0$ for negative values. It is then very easy to define the associated, while being consistent with the previous definition, point process:
 
 \begin{definition}[Point Process]
 We refer to the process $T$, the doubly infinite sequence $( \cdots, t_{-1}, t_0, t_1, \cdots)_{i \in \Z}$ as the corresponding point process of the counting process $N$ whenever:
@@ -224,7 +226,9 @@ Such sequence is ordered, i.e.:
 
 $$ \forall i \in \Z, \quad t_i \leq t_{i+1} \qquad \text{ and } \qquad t_0 \leq 0 \leq t_1 $$
 
-Finally, one can set the inter-arrival time process in the exact same fashion as in the previous section (cf. remark \ref{remarque:inter_arrival_times}).
+\begin{remarque}
+One can set the interarrival time process in the exact same fashion as in the previous section (cf. remark \ref{remarque:inter_arrival_times}).
+\end{remarque}
 
 \begin{theoreme}[label = thrm:point_counting]{Equivalence Point / Counting Process}
 \begin{equation}
@@ -260,13 +264,6 @@ page 163 from \cite{daley}.
 
 We now want to extend the notion of point processes to a more advanced topic. It would be also possible to delve into the theory of the corresponding measures (called in \cite{daley}, chapter 6, random counting measures), but we overlook that and focus on the definition.
 
-
-We now want to extend the notion of point processes to a more advanced topic. It would be also possible to delve into the theory of the corresponding measures (called in \cite{daley}, chapter 6, random counting measures), but we overlook that and focus on the definition.
-
-We now want to extend the notion of point processes to a more advanced topic. It would be also possible to delve into the theory of the corresponding measures (called in \cite{daley}, chapter 6, random counting measures), but we overlook that and focus on the definition.
-
-
-We now want to extend the notion of point processes to a more advanced topic. It would be also possible to delve into the theory of the corresponding measures (called in \cite{daley}, chapter 6, random counting measures), but we overlook that and focus on the definition.
 \end{ajoutationV}
 
 
@@ -274,7 +271,7 @@ This example shows how one can create a model that is intrinsically conditional.
 
 
 \begin{definition}[Cox Process]
-$N$ is a Cox process (also called doubly stochastic Poisson process) with intensity process $\lambda$ whenever $\lambda$ is a predictable\footnote{For example it can be left-continuous and adapted.} process and the conditional distribution of $N$ given $\lambda$, $N(t \mid \mathcal F_{t^-})$ is a Poisson process with intensity $\lambda (t) $. 
+$N$ is a Cox process (also called doubly stochastic Poisson process) with intensity process $\lambda$ whenever $\lambda$ is a predictable \footnote{For example it can be left-continuous and adapted.} process and the conditional distribution of $N$ given $\lambda$, $N(t \mid \mathcal F_{t^-})$, is a Poisson process with intensity $\lambda (t) $\footnote{Check equation (\ref{eq:conditional_filtration}) for the details about notation $F_{t^-}$.}. 
 
 In other words, Cox processes are the direct generalization of Poisson processes into processes with stochastic intensities.
 
@@ -293,7 +290,7 @@ Philosophically, $N_c$ is the cluster process that describes where the centers l
 
 
 \end{definition}
-According to \cite{daley}, those processes are extremely common:
+According to \cite{daley}, these processes are rampant and hence their importance:
 
 \textit{Cluster processes form one of the most important and widely used models in point process studies, whether applied or theoretical. They are natural models for the locations of objects in the plane or in three-dimensional space, in a remarkable range of contexts: for example, plants, molecules, protozoa, human settlements, stars, galaxies, and earthquake epicentres. Along the time axis, they have been used to model photoelectric emissions, volcano eruptions, arrivals and departures at queueing systems, nerve signals, faults in computer systems, and many other phenomena. The cluster mechanism is also a natural way to describe the locations of individuals from consecutive generations of a branching process, an application with unexpectedly rich mathematical structure as well as its obvious practical applications.}
 
@@ -302,7 +299,8 @@ One can define independent cluster process by asking that the component processe
 \end{remarque}
 
 
-One very common and important particular cluster process is the following:
+By asking the cluster to follow a Poisson process, we obtain Poisson cluster processes:
+
 \begin{definition}[Poisson Cluster Process]
 \label{def:poisson_cluster}
 If $N$ is a cluster process as defined by definition \ref{def:cluster_process}, to which we add the conditions:
@@ -326,9 +324,10 @@ If $N$ is a cluster process as defined by definition \ref{def:cluster_process}, 
 
 \newpage
 \subsection{Marked Point Processes}
-Quoting the book \cite{daley}:
+Quoting the book \cite{daley}, the rationale for a generalization of point processes is:
 
 \textit{In many stochastic process models, a point process arises not as the primary object of study but as a component of a more complex model; often, the point process is the component that carries the information about the locations in time or space of objects that may themselves have a stochastic structure and stochastic dependency relations. From the point of view of point process theory, many such models can be subsumed under the heading of marked point processes.}
+
 \begin{definition}[Marked Point Process]
 We refer to a stochastic process $N$ as a marked point process, with locations in the c.s.m.s. $\mathcal X$, marks in the c.s.m.s. $\mathcal K$, whenever it is a point process on $\mathcal X \times \mathcal K$ with the property that the marginal process of locations, denoted $N_g$ for ground process, is itself a point process:
 \begin{equation} 
@@ -343,7 +342,8 @@ Then we write the sequence of realisation as $ \sequence{ (x_i,\kappa_i) } $.
 A marked point process is simple if $N_g$ is simple.
 \end{definition}
 
-We are now going to characterize the process with respect to the marks. 
+\vspace{0.2 cm }
+
 
 \begin{definition}[Independent Marks]
 Let us define the marked point process $N$  = $\sequence{ (x_i, \kappa_i) }$ on $\mathcal X \times \mathcal K$. 
@@ -355,7 +355,7 @@ $N$ has independent marks if conditioning on the ground process, the elements of
 \begin{definition}[Unpredictable Marks]
 Let us define the marked point process $N$  = $\sequence{ (x_i, \kappa_i) }$ on $\mathcal X \times \mathcal K$. 
 
-$N$ has unpredictable marks if the distribution of the marks at $x_j$, $j \in \N$, is independent of already occurred locations and marks $\{ (x_i, k_i) \}_{i \leq j}$\footnote{We are assuming the sequence of location $\sequence{x_i}$ is ordered, hence we are looking at the $i$ such that $x_i \leq x_j$.}
+$N$ has unpredictable marks if the distribution of the marks at $x_j$, $j \in \N$, is independent of already occurred locations and marks $\{ (x_i, k_i) \}_{i \leq j}$\footnote{We are assuming the sequence of location $\sequence{x_i}$ is ordered, hence we are looking at the $i$s such that $x_i \leq x_j$.}
 \end{definition}
 
 
@@ -393,12 +393,12 @@ then:
 
 
 \subsection{Conditional Intensity Function}
-we define the hazard function as:
+We define the hazard function as:
 
 $$h_n( t \mid t_1, \cdots, t_{n-1} ) = \frac{ p_n ( t \mid t_1, \cdots, t_{n-1} ) } { S_n ( t \mid t_1, \cdots, t_{n-1} ) }$$
 
-Then, 
-$$ p_n ( t \mid t_1, \cdots, t_{n-1} ) =  h_n( t \mid t_1, \cdots, t_{n-1} ) \exp \left ( - \int_{t_{n-1}}^t h_n( u \mid t_1, \cdots, t_{n-1} ) du \right ) $$
+where $p_n$ is the density of the $n$-th time, $S_n$ is the associated conditional survivor function, as classicaly defined (and recalled in \ref{def:conditional_survivor_functions}).
+
 
 \begin{definition}[Conditional Intensity Function]
 \label{def:lambda_1}
@@ -415,7 +415,7 @@ Given $0 < t_1 < \cdots < t_{n} < \cdots $:
 The function $\lambda$ defined piecewise is also left-continuous. It shall be noticed that because of the dependency on the history-process, the function $\lambda$ is actually a random process. We call it "stochastic conditional intensity function of the point process". 
 \end{definition}
 
-Another equivalent definition is given by the process directly:
+It is possible to define the intensity without the hazard function:
 
 
 \begin{definition}[Conditional Intensity Function]
@@ -427,10 +427,11 @@ When $N_{\cdot}$ is a point process with natural filtration $\mathcal F_{\cdot}$
 which for simple point processes can be rewritten in terms of a conditional expectation:
 \begin{equation}
  \lambda(t \mid \mathcal F_{t^-} ) = \lim_{h \to 0^+ } \frac{\E( N(t+h) - N(t)  \mid \mathcal F_{t^-} )} {h} = \frac{\mathbb E ( dN(t)  \mid \mathcal F_{t^-}) }{dt}
+\label{eq:conditional_filtration}
 \end{equation}
 \end{definition}
 
-Both expressions are equivalent, and reflect that the process is a function of the history. Also, from that second definition, it is then obvious that in the case of simple point processes the conditional intensity function is defining uniquely almost surely the whole process.
+Both expressions are equivalent, and reflect that the process is a function of the history. Also, from that second definition, it is then obvious that in the case of simple point processes the conditional intensity function is defining uniquely almost surely the whole process. The first definition is however easier to manipulate in order to have closed forms.
 
 
 \subsection{Multivariate Point Process}
@@ -456,7 +457,7 @@ One should put particular care in the dependencies between processes, and how th
 \section{A Few Notations Before Hawkes Processes}
 We introduce here a few notations that we will keep throughout that paper.
 
-First, we are going to use the double bracket notation: 
+First, we are going to use the double bracket notation, which is refering to the interval intersected with integer numbers: 
 $$ \{1, \cdots, M\} = \llbracket 1, M \rrbracket $$
 
 Also, for shortness, we denote by $$t^- := \lim_{ \substack{ s \to t \\ s < t}  } s $$ This notation is in particular useful for filtrations.
@@ -492,7 +493,7 @@ Let $N(t) = \left ( N^1(t), \cdots , N^M(t) \right )$ be a simple multivariate c
 $ \mu $ is a kernel function called Hawkes' excitation function\footnote{In this paper, we focus on a common choice, the exponential case, where $\mu(t) = \alpha_{m,n} e^{- \beta_{m,n}  t  }$.}. Replacing the kernel in eq. (\ref{eq:stieltjes_integral1}) leads to eq. (\ref{eq:stieltjes_integral2}).
 
 
-In the end, one can write these equations either in integral or summation notation (the eq. (\ref{eq:stieltjes_integral2}) or eq. (\ref{eq:stieltjes_integral3}) are equivalent) since the theorem (\ref{eq:sum_prod_equiv}):
+In the end, one can write these equations either in integral or summation notation (the eq. (\ref{eq:stieltjes_integral2}) or eq. (\ref{eq:stieltjes_integral3}) are equivalent) since theorem (\ref{eq:sum_prod_equiv}):
 
 $$ \int \mu(t) dN_t = \sum \mu(t_i) $$
  
@@ -511,12 +512,11 @@ In other words, a Hawkes process is a simple point process (thus uniquely define
 \item The parameters of the Hawkes process, with exponential decay, are $$ \forall m,n \in \llbracket 1, M \rrbracket^2, \nu_m, \alpha_{m,n}, \beta_{m,n} \geq 0$$
 
 
-We give more insight about the mean of self-excitement in subsection \ref{section:obral}.
+We give more insight about the meaning of self-excitement in subsection \ref{section:obral}.
 \end{itemize}
 \end{definition}
 
-
-Hence, a Hawkes process consists of the superposition of a homogeneous Poisson process and an inhomogeneous Poisson process (that decomposition exists and is unique, cf. \cite{daley} Theorem 2.4.VI). For that reason, we call $\nu_m$ the background intensity, describing the arrival of events triggered by external sources. Those are independent of the previous events. When the excitation function is constantly equal to $0$, the Hawkes process reduces to a simple homogeneous Poisson process. On the other hand, the inhomogeneous part arises the self-exciting part of the process. The shape of the kernel $\mu$ induces how an event changes the intensity function. Classically, people tend to take monotonically decreasing kernels: a more recent event has a higher influence on the current event intensity, with respect to events which occurred earlier in the time.
+\underline{\textbf{Sum-up:}} Hence, a Hawkes process consists of the superposition of a homogeneous Poisson process and an inhomogeneous Poisson process (that decomposition exists and is unique, cf. \cite{daley} Theorem 2.4.VI). For that reason, we call $\nu_m$ the background intensity, describing the arrival of events triggered by external sources. Those are independent of the previous events. When the excitation function is constantly equal to $0$, the Hawkes process reduces to a simple homogeneous Poisson process. On the other hand, the inhomogeneous part arises the self-exciting part of the process. The shape of the kernel $\mu$ induces how an event changes the intensity function. Classically, people tend to take monotonically decreasing kernels, in which a more recent event has a higher influence on the current event intensity, with respect to events which occurred earlier in the time.
 
 \vspace{0.5cm}
 
@@ -546,7 +546,7 @@ Notice that the intensity changed from having a background homogeneous Poisson p
 
 \begin{figure}
 \centering
-\includegraphics[width = 0.99 \textwidth]{../imag/chap1/hawkes2.png}
+\includegraphics[width = 0.9 \textwidth]{../imag/chap1/hawkes2.png}
 \caption{Sampled path from a bivariate Hawkes process. Top: intensity of each process. Bottom: corresponding counting process. The processes $N_t^m$ are shifted for readability. One can notice the interdependence between the two processes. For example, the first jump (from dimension 2) doesn't increase the two processes by the same value. The second jump (from dimension 1) increases the two processes by the same value.}
 \label{fig:hawkes2}
 \end{figure}
@@ -579,7 +579,7 @@ where $c,k,p > 0$. It is widely used in the seismology literature and in the soc
 \begin{remarque}
 The Hawkes process we described is referred to as the linear Hawkes process. Defining the counting process based upon a conditional intensity function of the form:
 
-$$ \lambda (t \mid \Tau_{t^-}) = \Psi \left ( \int_{-\infty}^t \mu(t-s) dN_s \right ) $$ where $\Psi : \R \to \R_+$, we get the so-called nonlinear Hawkes process. \\Setting $\Psi(u) = \nu_1 + u$, the function reduces to the linear case. 
+$$ \lambda (t \mid \Tau_{t^-}) = \Psi \left ( \int_{-\infty}^t \mu(t-s) dN_s \right ) $$ where $\Psi : \R \to \R_+$, we get the so-called nonlinear Hawkes process. \\Setting $\Psi(u) = \nu + u$, the function reduces to the linear case. 
 
 We mention two works related to nonlinear Hawkes processes, that one can discover inside \cite{nonlinearHP1} and \cite{nonlinearHP2}.
 \end{remarque}
@@ -597,7 +597,7 @@ The terms 'self-exciting'  (and by opposition 'self-regulating') can be made pre
 
 On the other hand, if the conditional intensity function is lowered by events, the process is called self-regulating. 
 
-Copying an image from \cite{obral} that one can find at pages $30$ and $31$, that we display on fig. \ref{fig:obral}, we show two graphs representing a self-exciting and self-regulating processes. 
+Copying an image from \cite{obral} that one can find at pages $30$ and $31$, that we display on fig. \ref{fig:obral}, we observe two graphs representing a self-exciting and self-regulating processes. 
 
 The essential difference if whether the parameters $\alpha$ are taken positive or negative. 
 
@@ -624,21 +624,20 @@ Such processes are not examined hereinafter.
 
 
 \subsection{Hawkes Processes as Branching Structures}
-We notice that Hawkes process are marked simple point processes.
+Hawkes processes can also be viewed as branching structures, by ignoring the time location of the events. Through the superposition
+properties of point processes (cf. \cite{daley}, Theorem 2.4.VI), one can decompose the events into two categories: the immigrants and the offspring. The immigrants are the external events while the offspring is triggered by the previous events in the process. The offspring are structured into clusters associated with the original immigrant parent. That representation is particularly useful for categorizing the different Hawkes process (subcritical / critical / supercritical Hawkes process) as well as for forecast tasks.
 
-Another equivalent view is its branching structure, by ignoring the time location of the events. Through the superposition
-properties of point processes (cf. \cite{daley}, Theorem 2.4.VI), one can decompose the events into two categories: the immigrants and the offspring. The immigrants are the external events while the offspring is triggered by the previous events in the process. The offspring are structured into clusters associated with the original immigrant parent. That representation is particularly useful for categorizing the different Hawkes process (subcritical / critical / supercritical Hawkes process) as well as for forecast.
-
-Essentially, the immigrants are distributed as a homogeneous Poisson process; the clusters are each associated to one immigrant and all-together form an independent partition of all the immigrants. The number of offspring is given by a Poisson law of parameter equal to the branching factor (defined below). The times of the events can be computed with the inter-arrival times, which in this case (homogeneous Poisson) are exponentially distributed.
+Essentially, the immigrants are distributed as a homogeneous Poisson process; the clusters are each associated to one immigrant and all-together form an independent partition of all the immigrants. The number of offspring is given by a Poisson law of parameter equal to the branching factor (defined below in definition \ref{def:branching_factor}). The times of the events can be computed with the interarrival times, which in this case (homogeneous Poisson) are exponentially distributed.
 
 An accessible summary about that representation is given in \cite{socialhawkes}. 
 
 \begin{definition}[Branching Factor]
+\label{def:branching_factor}
 The branching factor is defined as the expected number of direct offspring spawned by a single event. For univariate, un-marked Hawkes process, the branching factor $n^*$ can be computed:
 
 $$ n^* = \norm{ \mu }_{L^1} $$
 
-It is fairly intuitive that when that number is greater than one, the number of immigrants might be infinite. 
+It is fairly intuitive that when this number is greater than one, the number of immigrants might be infinite. 
 \end{definition}
 
 
@@ -647,7 +646,16 @@ A critical Hawkes process ($n^* = 1$) must not explode, though it usually does. 
 \end{remarque}
 
 
+The numerous theorems about branching structures is also a rationale for studying Hawkes processes under this aspect. For example:
 
+\begin{theoreme}{Hawkes process asymptotic normality}
+If one has
+
+$$ 0 < n := \norm{ \mu }_{L^1} < 1 \: \text{ and }  \: \norm{ Id \cdot \mu }_{L^1} < \infty $$
+
+then the number of events on the considered segment is asymptotically (with respect to the length of the interval) normally distributed.
+
+\end{theoreme}
 
 
 
@@ -671,7 +679,9 @@ It is a classical practice considering unpredictable marks.
 
 \subsection{Stability of Hawkes Processes}
 
-\willdo{ How Hawkes is stat. conditions, 1D et multi dim ? est ce que algo fonctionne quand même? }
+\willdo{ Is algo still working in none stable HP?}
+
+\willdo{Subsection not finished, basically follow ideas from 22, the paper with the simulations }
 
 An interesting question is whether a Hawkes process is stationary. It is a very important question because we want the process to be stable, and to be simulable, which would be easier when the process is stationary.
 
@@ -692,16 +702,16 @@ A sufficient condition for stationarity of the process is the spectral radius of
 
 In the case of marked Hawkes processes, the matrix $\Gamma$ has a slightly different form. We follow the computations from \cite{my_algo_simul}.
 
-\willdo{ici !!! à écrire; suivre 22.}
+
 
 
 \section{Simulation for Fixed Parameters}
 \subsection{Notations}
 
-The author refers to paper \cite{my_algo_simul} for an interesting solution in order to simulate Hawkes processes. There are different easier ways to simulate a Hawkes process (cf. appendix \ref{appendix_simulate}). However, they do not give as much flexibility as the one from \cite{my_algo_simul} and that's the reason why we use it. It is in fact, even more general than what we need. The algorithm allows the simulation of Marked Multidimensional Hawkes processes. We focus on marks being deterministic (thus we can assume that the parameters are constant).
+The author refers to paper \cite{my_algo_simul} for an interesting solution for simulating Hawkes processes. There are different ways to simulate a Hawkes process (cf. appendix \ref{appendix_simulate}). However, they do not give as much flexibility as the one from \cite{my_algo_simul} and that's the reason why we use it. The algorithm allows the simulation of Marked Multidimensional Hawkes processes. In this section, we focus on marks being deterministic and constant.
 
 
-The algorithm is the following. It is based on the idea that one can simulate the waiting time between jumps. For a $M$-dimensional process, each dimension has an impact on the other. Hence, we can simulate the waiting time for every dimension influencing every other dimension (including itself).
+The algorithm is the following. It is based on the idea that one can simulate directly (without wasting) the waiting time between jumps. For a $M$-dimensional process, each dimension has an impact on the other. Hence, we can simulate the waiting time for every dimension influencing every other dimension (including itself), and pick the smallest interarrival time: it is the next jump. We keep the same notations for readibility.
 
 
 
@@ -710,7 +720,7 @@ The algorithm is the following. It is based on the idea that one can simulate th
 \item $r_j$ is the time of the $j$-th jump and $r_0$ is by convention $0$. We define the vector $\overrightarrow{r} = \sequence{r_i}$ as being the sorted times for all events in the Hawkes processes. 
 \item we also define $\overrightarrow{t}^m = \sequence{ t_i^m } $ as being the jumps' time for one marginal process. Clearly, there is the following relationship between $\overrightarrow{r}$ and $\overrightarrow{t}^m $:
 $$ r = \bigcup_m \bigcup_k  t_k^m $$
-\item $a_{m,j}^i$ reads the waiting time after jump $(j-1)$-th and the jump created by process $i$ upon process $m$ (thus corresponding to intensity $ \lambda^i_m$). In other words, the $i$ index indicates which dimension is triggering the jump, the $m$ index corresponds to the dimension which receives the jumps. This decomposition of the intensity is the rational of the followability of the algorithm, as defined in section \ref{section:definition_algo}.
+\item Finally, we keep track of all the waiting times simulated. There are for a M-dimensionsal process, $M^M + M$ waiting time for each next jump time: essentially one for each underlying fixed intensity, as well as one for each for each pair of dimension. It is important to consider each pair for the latter, since we would like to observe the impact of each dimension on every dimension. For that reason, we introduce $a_{m,j}^i$. It reads the waiting time after jump $(j-1)$-th and the jump created by process $i$ upon process $m$ (thus corresponding to intensity $ \lambda^i_m$). In other words, the $i$ index indicates which dimension is triggering the jump, the $m$ index corresponds to the dimension which receives the jumps. This decomposition of the intensity is the rational of the followability of the algorithm, as defined in section \ref{section:definition_algo}.
 
 
 \begin{remarque}
@@ -770,6 +780,8 @@ Finally, one should know that the update rule for the intensity cache is given a
 \lambda_m^i ( r_j ) = \lambda_m^i ( r_{j-1} )  e^{ - \beta_m^i \min_{m,i} a_{m,j}^i } + \alpha_{i,m} \11charac_{i = m^*}
 \label{eq:update_lambda} 
 \end{equation}
+
+\underline{ \textbf{How to get the values of the process in between the jumps ?} }
 
 Notice that by adjusting this expression, one can easily get the plot of the intensity of a Hawkes process:
 
@@ -871,7 +883,7 @@ However, the task is way harder concerning the decays ($\beta$).
 To sum-up:
 \begin{itemize}
 \item deterministic $\alpha$ can be simulated thanks to the previous algorithm,
-\item deterministic $\beta$; The task with beta is quite harder. A usual choice is a parameter piecewise constant, changing at each jump. The problem lies in evaluating the integral; it is easy when $\beta$ is not a function of the parameter with respect to which we integrate, 
+\item deterministic $\beta$; The task with beta is quite harder. The problem lies in evaluating the integral; it is easy when $\beta$ is not a function of the parameter with respect to which we integrate. A usual choice is a parameter piecewise constant, changing at each jump, 
 \item deterministic $\nu$ requires a few changes in the algorithm. In order to make $\nu$ time dependant, we are using a basic and classical thinning algorithm. One can find more information about such methods in appendix part \ref{subsection:thinning}.
 \end{itemize}
 
@@ -881,12 +893,12 @@ To sum-up:
 \willprecise{talk about the betas it with Ed}
 
 \begin{remarque} 
-Thinning algorithms have the drawback of being non exact method. It would also be possible to compute the CDF of the interarrival times related to a function $\nu(t)$ and inverse the formula, in the same fashion as we did in the first simulation algorithm in order to achieve a perfect method. However, such approach would require solving by hand the inverse of some formulas, which does not always exist in close form, and require human intervention. For that reason, we decided to keep the flawed but well working thinning algorithm.
+Thinning algorithms have the drawback of being a non exact method. It would also be possible to compute the CDF of the interarrival times related to a function $\nu( \cdot )$ and inverse the formula, in the same fashion as we did in the first simulation algorithm in order to achieve a perfect method. We give an example in the following of the inversion of a model. However, such approach would require solving by hand the inverse of some formulas, which does not always exist in close form, and require human intervention. For that reason, we decided to keep the flawed but well working thinning algorithm. 
 \end{remarque}
 
 
 \begin{theoreme}{Non-homogeneous Poisson process interarrival times}
-If the process has intensity $\nu(t)$, one gets that the pdf of the $n$-th jump's time is 
+If the process has intensity $\nu$, one gets that the pdf of the $n$-th jump's time is 
 
 $$
 f_n(t)  = \frac {\left ( \int_0^t \nu(s) ds \right )^{n-1}}{(n-1)!} \nu(t) e^{-  \int_0^t \nu(s) ds }
@@ -929,18 +941,31 @@ If one searches the inverse of a function of the following form:
 
 $$ y(x) = 1 - \exp ( - (\alpha x + \beta x^2) ) $$
 
-we get:
+which by the way could be an interesting question, as an intuitive generalisation of the exponential model where 
+
+$$ y(x) = 1 - \exp ( -\alpha x ) $$
+
+We get the following inverse (picking the positive root):
 
 $$ x(y) = \frac{- \alpha \pm \sqrt{\alpha^2 - 4 \beta \ln(1-y) }  }{2 \beta}$$
 
-Whenever $r_j$ is the time location of the jump, $s$ the time-location after $r_j$ when the next jump occurs. Replacing $$\alpha s + \beta s^2 = ( b + a r_j ) s + \frac 1 2 a s^2 $$ 
-we get back to the scenario $$ \nu(t) =  a t + b $$ which is one of the four models we considered in fig. \ref{fig:evol_functions}.
+Then, if we would like to use the CDF method on a model where $$ \nu(t) =  a t + b $$ 
+which is one of the four models we considered in fig. \ref{fig:evol_functions}, we simply need to include the time location of the $j$-th jump $r_j$, $s$ the interarrival time, through the constants $\alpha$ and $\beta$ and the variable $x$ that become respectively 
+
+\begin{align*}
+\alpha &= b + a r_j  \\
+\beta &= \frac 1 2 a \\
+x &= s
+\end{align*}
+
+
 \end{ajoutationV}
 
 
 \subsection{Algorithm for Time-Dependent Parameters}
 
 In order to simulate the underlying non-homogeneous Poisson process, we define the following law:
+
 $$ \forall m,j \in  \llbracket 1, M \rrbracket, \qquad a_{m,j}^0 \sim \mathcal J_m  $$
 
 Where $\mathcal J_m $ is defined by the CDF:
@@ -989,7 +1014,7 @@ We also need the following equation, which deals with the deterministic $\alpha$
 
 \vspace{0.5cm}
 
-One can see a few example of realized univariate processes where the parameters change over time in fig. \ref{fig:param_dep_hawkes}.  The impact of the time upon the parameters is crystal-clear.
+One can see a few example of realized univariate processes where the parameters change over time in fig. \ref{fig:param_dep_hawkes}. By looking at the pictures, the impact of the time upon the parameters is crystal-clear.
 
 
 \begin{figure}
@@ -1022,7 +1047,7 @@ One can see a few example of realized univariate processes where the parameters 
 
 
 \section{Our Numerical Solution}
-\willdo{ talk about code?}
+
 \subsection{Classes}
 \subsection{Functions}
 
@@ -1046,7 +1071,7 @@ This part investigates the problem of recovering information about data generate
 \item to estimate the parameters $\theta$ by $\hat{\theta} = ( \hat{\nu}, \hat{\alpha}, \hat{\beta} )$. $\theta$ shall belong to a set of possible parameters, named $\Theta$.
 
 \item to estimate the parameters with some temporal dependency on them. We then replace our estimate by: $\hat{\theta}_t$,
-\item to analyze the evolution of parameters on the angle of change point analysis, and we could try to incorporate that analysis inside our estimation process, in an attempt to increase the accuracy of our estimation.
+\item to analyze the evolution of parameters under the angle of change point analysis. A thing to do would be to try to incorporate that analysis inside our estimation process, in an attempt to increase the accuracy of our estimation. In other words, parametrize the estimation with respect to a change point analysis.
 \end{itemize}
 
 
@@ -1098,10 +1123,12 @@ Notice that since $A$ is bounded, the sequence is finite so the $\#\sequence{t_i
 
 
 
-In order to have a closed form expressions for the term $$\frac{\mathbb P \left (N_{\theta}  \text{ has } \# \sequence{t_i} \text{ points in } A \text{ at locations  } (d t_1, \cdots, d t_n) \right ) } {(d t_1, \cdots, d t_n)}  =: \mathbb P ( \mathcal N_{\theta} ) $$
+In order to evaluate it, we need a closed form expressions for the term $$\frac{\mathbb P \left (N_{\theta}  \text{ has } \# \sequence{t_i} \text{ points in } A \text{ at locations  } (d t_1, \cdots, d t_n) \right ) } {(d t_1, \cdots, d t_n)}  =: \mathbb P_{\sequence{t_i}} ( \mathcal N_{\theta} ) $$
 
 we introduce a function:
 \begin{definition}[Conditional Survivor Functions]
+\label{def:conditional_survivor_functions}
+In the exact same way as one can define survivor function, the conditional survivor function exist with respect to the conditional probability measure:
 \begin{equation}
 \forall u \in \R, k \in \N, \qquad S_k ( u \mid t_1, \cdots, t_{k-1} ) = \mathbb P ( t_k - t_{k-1} > u \mid t_1, \cdots, t_{k-1} ) 
 \end{equation}
@@ -1109,22 +1136,22 @@ we introduce a function:
 
 
 
-Then, one can actually prove that for every simple point process, there exists a unique family of survivor functions such that
+Then, one can actually prove that for every simple point process, there exists a unique family of survivor functions that yields a closed form for $\mathbb P_{\sequence{t_i}} ( \mathcal N_{\theta} )$.
 
 \begin{theoreme}{Associated Survivor to a Simple Point Process}
 From proposition 7.2.I in \cite{daley}; we have that there exists a unique family of conditional probability density functions $\sequence{p_i}$\footnote{Thus there exists a bijection between the families of probability density functions as described and the marked point process.} and associated survivor functions, related in the following way:
 \begin{equation}
 \forall 0 < t_1 < \cdots < t_{n-1} < t, \quad S_n( t \mid t_1, \cdots, t_{n-1} ) = 1 - \int_{t_{n-1}}^t p_n ( u \mid t_1, \cdots, t_{n-1} ) du
 \end{equation}
-Then, we have the following expression whenever $0 < t_1 < \cdots < t_{n} < T < \infty $:
+that allows to rewrite the key term ($\mathbb P_{\sequence{t_i}} ( \mathcal N_{\theta} )$) we needed in the following way, whenever $0 < t_1 < \cdots < t_{n} < T < \infty $:
 \begin{equation}
-\mathbb P ( \mathcal N_{\theta} )  =   \prod_{i = 1}^n p_i ( t_i \mid t_1 \cdots t_{i-1} ) \times S_{n+1} ( T \mid t_1, \cdots, t_n )  
+\mathbb P_{\sequence{t_i}} ( \mathcal N_{\theta} )  =   \prod_{i = 1}^n p_i ( t_i \mid t_1 \cdots t_{i-1} ) \times S_{n+1} ( T \mid t_1, \cdots, t_n )  
 \end{equation}
 \end{theoreme}
 
 
 \begin{remarque}
-In layman terms, $p_n$ is the conditional probability density function of the time of the next event knowing the previous events
+In layman terms, $p_n$ is the conditional probability density function of the interarrival time for the next event knowing the previous events.
 \end{remarque}
 
 
@@ -1149,7 +1176,7 @@ yielding  this rough idea of inversion:
 \forall i \leq n, \quad \int_{t_i}^t \lambda_{\theta}( T_i = s \mid \mathcal F_{s^-} ) ds &= - \ln ( S_i (t \mid \mathcal F_{t^-} ))  \\
 & \iff \\
 \forall i \leq n, \quad  S_i( t \mid \mathcal F_{t^-} ) & = 1 -  \exp \left ( - \int_{t_i}^t \lambda_{\theta} ( s \mid \mathcal F_{s^-} ) \right ) ds \\
-& \qquad \text{ and } \\
+& \qquad \implies  \\
 \forall i \leq n, \quad  p_i( T_i = t \mid \mathcal F_{t^-} ) & = \lambda_{\theta} ( T_i = t \mid \mathcal F_{t^-} ) \\
 & \times \quad \exp \left ( - \int_{t_i}^t \lambda_{\theta} ( s \mid \mathcal F_{s^-} ) \right ) ds 
 \end{align*} 
@@ -1187,7 +1214,7 @@ Directly, we derive the log-likelihood of a simple point process, for which one 
 \label{eq:intensity_lambda}
 \end{align}
 
-We highlight the presence of the integral of the conditional intensity function over time, which is known as the compensator of the point process, relative to some given history $\mathcal F$. 
+We highlight the presence of the integral of the conditional intensity function over time, which is known as the compensator of the point process, relative to some given history $\mathcal F_{s^-}$. 
 
 
 \begin{definition}[Compensator]
@@ -1221,9 +1248,9 @@ $$\E [ N^m (t) - N^m (0) ] = \E  \left  [ \E [ N^m (t) - N^m (0) \mid \Lambda_m(
 
 \end{demo}
 
-Actually, the decomposition of the process into the compensator and a martingale comes from the Doob-Mayer decomposition. A very common technique when looking at general stochastic processes is to break them down into separate martingale and drift terms. 
+Actually, the decomposition of the process into the compensator and a martingale comes from the Doob-Mayer decomposition. A very common technique when looking at general stochastic processes is to break them down into separate martingale and drift terms.
 
-This is easiest to describe in the discrete time situation. So, suppose that the process $\sequence{X_i}$  is a stochastic process adapted to the discrete-time filtered probability space  $(\Omega, \mathcal F, \mathcal F_n, \mathbb P )$. If $X$ is integrable, then it is possible to decompose it into the sum of a martingale $M$ and a process $\Lambda$, starting from zero, and such that $\Lambda_n$ is $\mathcal{F}_{n-1}$-measurable for each $n\ge1$. That is, $\Lambda$ is a predictable process. The martingale condition on $M$ enforces the identity:
+This is easier to describe in the discrete time setting. Suppose that the process $\sequence{X_i}$  is a stochastic process adapted to the discrete-time filtered probability space  $(\Omega, \mathcal F, \mathcal F_n, \mathbb P )$. If $X$ is integrable, then it is possible to decompose it into the sum of a martingale $M$ and a process $\Lambda$, starting from zero, and such that $\Lambda_n$ is $\mathcal{F}_{n-1}$-measurable for each $n\ge1$. That is, $\Lambda$ is a predictable process. The martingale condition on $M$ enforces the identity:
 
 \begin{equation}
 \Lambda_n-\Lambda_{n-1}={\mathbb E}[\Lambda_n-\Lambda_{n-1}\vert\mathcal{F}_{n-1}]={\mathbb E}[X_n-X_{n-1}\vert\mathcal{F}_{n-1}]
@@ -1242,7 +1269,7 @@ In continuous time, where we work with respect to a complete, as well as, filter
 Under regularity condition of the adapted process (finite variation and cadlag), the compensator $\Lambda $ is defined with $\Lambda_0=0$, such that $X-\Lambda$ is a local martingale. 
 
 
-\begin{theoreme}{Existence of Compensator}
+\begin{theoreme}{Existence of the Compensator}
 The processes for which a compensator exists are precisely the special semimartingales or, equivalently, the locally integrable semimartingales. 
 \end{theoreme}
 
@@ -1325,11 +1352,11 @@ We show the mean time required for simulating and applying the Newton-Raphson al
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap2/complexity.png}
-\caption{Time in seconds in order to simulate and estimate one Hawkes Process. The plot shows a quadratic trend for the complexity.}
+\caption{Time in seconds in order to simulate and estimate one Hawkes process. The plot shows a quadratic trend for the complexity. This is due to the computational bottleneck.}
 \label{fig:complex}
 \end{figure}
 
-Another issue while using the Newton-Raphson is the neither regular nor convex nature of the derivatives. This leads to the existence of numerous local maxima of the log-likelihood. Hence, the result of an estimation might be a local maxima instead of the desired global maxima. For that reason, a usual technique for checking is using a few different initial conditions or using another searching method.
+Another issue while using the Newton-Raphson is the neither regular nor convex nature of the derivatives. This leads to the existence of numerous local maxima of the log-likelihood. Hence, the result of an estimation might be a local maxima instead of the desired global maxima. For that reason, a usual technique for checking is using a few different initial conditions or using another searching method. However, we didn't strugle too much with local maximums. The main problem we faced was having the searching algorithm escape the area of interesting coefficients towards infinity. For that reason we have put some boundaries to the searching area.
 
 
 
@@ -1382,7 +1409,7 @@ We fix $m,n$ as being inside $\llbracket 1, M \rrbracket ^2 $. Also notice that 
 
 In other words, the gradient simplifies to its corresponding marginal gradient. 
 
-Then, we introduce the function $R$ inside theorem \ref{thrm:ln-like}. The log-likelihood reads:
+Then, we introduce the function $R$\footnote{Credits for the idea to Ogata.} inside theorem \ref{thrm:ln-like}. The log-likelihood reads:
 
 
 \begin{align}
@@ -1842,9 +1869,17 @@ $$H_{1,3} = $$
 \item In particular, creating the Hessian was a riddle. We haven't found a clever way to write it properly. The author's idea was that we only need to create the upper part of the Hessian, and that there are two types of groups of derivatives: the square and the rectangles, as appearing in the previous subsection.
 \item As mentioned, the computational bottleneck makes the algorithms slow. For that reason, the rest of the program has to be optimized in order to compensate that lack of performances. In particular, Python is a slow language. We heavily rely on numpy, a library with which all the numerical computations are made in C.
 \item One shall also introduce some burn-in period before the actual useful part of the simulation of the process; cf. subsection \ref{subsection:burn}.
-\item The optimization algorithm for solving the problem of minimization might be an issue, as mentionned in subsection \ref{subsection:challenge}. We tried to use the in-built optimization functions from the library \textbf{scipy}, but they were not resiliant enough for the dimensionality of the problem. Such algorithms would get stuck because of the unsmooth nature of the problem. For that reason, we built our own newton-raphson algorithm, using the classical algorithm (based upon line search methods) and Armijo Rule for the step size, whenever the algorithm reaches a certain amount of steps. Indeed, Armijo Rule requires the evaluation of the function and it is quite expensive, as well as in most cases, unnecessary.
+\item The optimization algorithm for solving the problem of minimization might be an issue, as mentionned in subsection \ref{subsection:challenge}. We tried to use the in-built optimization functions from the library \textbf{scipy}, but they were not resiliant enough for the dimensionality of the problem. Such algorithms would get stuck because of the unsmooth nature of the problem. For that reason, we built our own Newton-Raphson algorithm. The advantages of our own optimization algorithm are the following:
+\begin{enumerate}
+\item Using the classical algorithm (based upon line search methods), the stepsize changes depending on the number of iterations and the value of the derivative. After some threshold, the algorithm uses the Armijo Rule for the step size. Armijo Rule requires the evaluation of the function and it is computationaly expensive, as well as in most cases, unnecessary.
+\item We set the boundaries for parameters to constraint the minimization problem inside an area of interesting parameters (basically 0-100). Sometimes the algorithm escapes towards infinity yielding totally false estimations. Setting barriers is one way to deal with this problem. 
+\item Clarity. We use memoization in order to reduce computational cost. However, the memorized data has to be changed at each step. Since libraries' algorithms are usually optimized, the flow is not obvious,  when one should clear the memory.
+the flow of the code is not straightforward making it ambiguous where the memory should be cleared.
+\end{enumerate}
 \item Certain sets of parameters lead to unprecise results. In particular, boundarie cases (as $\alpha = \beta$) are problematic, as well as sets of parameters with not enough events occuring during the simulation. The observed interval should be adapted to the parameters. In other words, it is less interesting to talk about the interval [0,T] for simulations than rather the number of events occuring on that interval.
 \end{itemize}
+
+\underline{\textbf{A few ideas:}}
 
 With regards to computational optimization, we mainly made usage of numpy for computations involving long vectors. In particular, using the built-in function for exponential makes running much faster. 
 
@@ -1875,14 +1910,13 @@ Last but not least, we used memoization (and in our case scenario using a decora
 \section{Numerical Results}
 
 
-
 \subsection{Histogram}
 The first thing to do is to run the simulation and the estimation for a given Hawkes Process. We chose a Hawkes process with parameters: $\alpha = 1.5, \beta = 2, \nu = 0.2$. We get the following histograms for the results, when we simulate the process over 7200 units of time (the algorithm observes roughly 3000 events) for a batch of 80 simulations. This leads to figures \ref{fig:hist_1_alpha}, \ref{fig:hist_1_beta}, \ref{fig:hist_1_nu}.
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_1.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps. We clearly see no bias and a low variance. The estimations are good.}
 \label{fig:hist_1_alpha}
 \end{figure}
 
@@ -1890,7 +1924,7 @@ The first thing to do is to run the simulation and the estimation for a given Ha
 \begin{figure}
 \centering
 \includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_2.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps. We clearly see no bias and a low variance. The estimations are good.}
 \label{fig:hist_1_beta}
 \end{figure}
 
@@ -1898,7 +1932,7 @@ The first thing to do is to run the simulation and the estimation for a given Ha
 \begin{figure}
 \centering
 \includegraphics[width = 0.75 \textwidth]{../imag/chap2/hist_3.png}
-\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps.}
+\caption{Histogram for the estimations of a Hawkes Process. The process generates roughly 3000 jumps. We clearly see no bias and a low variance. The estimations are good.}
 \label{fig:hist_1_nu}
 \end{figure}
 
@@ -1928,9 +1962,11 @@ We can also run the program in order to compute the asymptotic MSE, with the num
 \chapter{Estimation: Advanced Glance on the Question}
 \section{Weighted MLE}
 \subsection{Theory of Weighting}
-Following the computations from \cite{Ozaki} and \cite{Likelihood_Hawkes} about the likelihood function of a Hawkes process, we get a formula for a multidimensional ($ M \in \mathbb N^*$) Hawkes process, defined on the interval $[0,T]$, with jumps at times: $ \forall m \leq M: 0 < t_{1}^m \cdots < t_{n_m}^m \leq T $.
+In the previous section, we got the formula of the MLE for a multidimensional ($ M \in \mathbb N^*$) Hawkes process, defined on the interval $[0,T]$, with jumps at times: $ \forall m \leq M: 0 < t_{1}^m \cdots < t_{n_m}^m \leq T $.
 
-We recall that $ \Tau^m $ is referring to the list history, including the jumps' time $( t_{1}^m, \cdots , t_{n_m}^m ) $, and the marks; $\Theta$ represents the set of parameters of the process. Finally, the superscript visible on $L^m$ is mentioned in order to avoid confusion between each likelihood function of each marginal process (with respect to the multi-dimensional Hawkes process). The marginal log-likelihood reads (cf. eq. (\ref{eq:intensity_lambda})):
+We recall that $ \Tau^m $ is referring to the list history, including the jumps' time $( t_{1}^m, \cdots , t_{n_m}^m ) $, and the marks; $\Theta$ represents the set of parameters of the process. Finally, the superscript visible on $L^m$ is mentioned in order to avoid confusion between each likelihood function of each marginal process (with respect to the multi-dimensional Hawkes process). 
+
+The marginal log-likelihood reads (cf. eq. (\ref{eq:intensity_lambda})):
 
 
 \begin{equation}
@@ -1948,7 +1984,7 @@ In section II from \cite{weighted_likelihood}, and by coining the weight functio
 We emphasize on the notation WL to highlight the spirit of the weighted likelihood estimation problem, which is different from the classic likelihood estimation problem.
 
 
-In our case scenario, we add up a time dependence upon the kernel, and replace the $\sequence{X_i}$'s by $\sequence{t_i}$'s.
+In our case scenario, we add up a time dependence upon the kernel, and replace the $\sequence{X_i}$s by $\sequence{t_i}$s.
 
 
 Remember that we had from eq. (\ref{eq:ln_multi}):
@@ -1967,27 +2003,17 @@ And this is also true for the weighted likelihood. Hence, focusing on our margin
 &=  - \int_0^T w(s) \lambda^{m} ( s \mid \Theta , \Tau )  ds +  \sum^{n_m}_i  w(t_i) \ln \lambda^{m} ( t_i \mid \Theta , \Tau )  \label{eq:weighted_log_likelihood2} 
 \end{align}
 
-Notice how if all the weights are equal to unity, then the resulting estimator is the usual maximum likelihood estimator, i.e. if $w \equiv 1$, then eq. (\ref{eq:weighted_log_likelihood}) becomes eq. (\ref{eq:log_likelihood}). We wrote down explicitly eq. (\ref{eq:weighted_log_likelihood2}) in order to emphasize how the kernel function becomes random through the jumps' time $t_i$. 
+Notice how if all the weights are equal to unity, the resulting estimator is the usual maximum likelihood estimator, i.e. if $w \equiv 1$, then eq. (\ref{eq:weighted_log_likelihood}) becomes eq. (\ref{eq:log_likelihood}). We wrote down explicitly eq. (\ref{eq:weighted_log_likelihood2}) in order to emphasize how the kernel function becomes random through the jumps' time $t_i$. 
 
 Weighting should be a way to rescale the information at our disposal. For that reason, we restrict the set of considered kernels to be of norm $T$:
 
 $$\Omega_w := \{ w \colon \mathbb R \to \mathbb R, \text{ such that : } \norm{w}_{L^1 } = T \} $$
 
-By this, we ensure that we conserve, using the physical expression, the energy of each integrand. Also, notice that for the non-weighted case, when $w \equiv 1$, its norm is equal to $T$. That's the reason why we fix the value of the norm of every kernel inside $\Omega_w$ to $T$. Also, we do not need any other restriction on the considered functions. However, one usually considers fixing as well the positivity of kernel and its first moments, for identifiability reasons. Those conditions ensure that the kernels are densities, an enjoyable feature when one estimates densities. 
+Notice that for the non-weighted case, when $w \equiv 1$, its norm is equal to $T$. By this, we ensure that we conserve, using the physical expression, the energy of each integrand. That's the reason why we fix the value of the norm of every kernel inside $\Omega_w$ to $T$. Also, we do not need any other restriction on the considered functions. However, one usually considers fixing as well the positivity of kernel and its first moments, for identifiability reasons\footnote{These conditions ensure that the kernels are densities, an enjoyable feature when one estimates densities.}. 
 
 \subsection{Advantage and Notation of WMLE}
 
 The idea behind using weighted likelihood is that by using a non-constant weight function, solving for the maximum likelihood estimator given by eq. (\ref{eq:weighted_log_likelihood}) can potentially outperform the one given by eq. (\ref{eq:log_likelihood}). 
-
-Let's think about the two extreme cases: 
-
-\begin{enumerate}
-\item A constant kernel considers all the jumps equally and hence, computes an estimator that is equal to the average of the whole simulation time $[0,T]$.
-\item A kernel that considers only a small region will give a very precise estimate for that given region, but with much more variability over the time.
-\end{enumerate}
-
-This phenomenon is due to the well-known bias/variance trade-off.
-\label{section:bias-variance_trade-off}
 
 Essentially, we want to take advantage of the fact that a larger weight w(s) gives to observations in the infinitesimal region $ds$ more influence on the estimation process. This would allow us to estimate parameters that are time dependent by adding that dependence within kernels. Now the main question shall be which kernel should we chose. Recall what Silverman said in \cite{Silverman} at page 43:
 
@@ -1995,19 +2021,30 @@ Essentially, we want to take advantage of the fact that a larger weight w(s) giv
 \textit{It should never be forgotten that the appropriate choice of smoothing parameter will always be influenced by the purpose for which the density estimate is to be used. }
 \vspace{0.5cm}
 
+One should be careful about the choice of the kernel. Let's think about the two extreme cases for weights: 
+
+\begin{enumerate}
+\item A constant kernel considers all the jumps equally and hence, computes an estimator that estimates the average over the whole simulation time $[0,T]$. Overall, the bias will be high, but the variability low.
+\item A kernel that considers only a small region will give a very precise estimate for that given region, but with much more variability over the time.
+\end{enumerate}
+
+This phenomenon is due to the well-known bias/variance trade-off.
+\label{section:bias-variance_trade-off}
 
 \label{section:kernel_weights_first_conversation}
-In the rest of the chapter, we delve into the choice of such windows in order to optimize the performances of the WMLE. Our aim being to estimate parameters that are time dependent, we add that dependency to the WMLE through the kernel, which should be written consequently $w_t$. However, for clarity, it will be kept as $w$. We need to mention an important matter in order to avoid any confusion. Our weight function is evaluated at the points $\sequence{t_i}$ when the jumps of the Hawkes process occur. Also, the time dependence is introduced by centring the kernel around $t$ by a classic substitution: 
+In the rest of the chapter, we delve into the choice of such windows in order to optimize the performances of the WMLE. Our aim being to estimate parameters that are time dependent. We add that dependency to the WMLE through the kernel, which should be written consequently $w_t$. However, for clarity, it will be kept as $w$. We need to mention an important matter in order to avoid any confusion. Our weight function is evaluated at the points $\sequence{t_i}$ when the jumps of the Hawkes process occur. Also, the time dependence is introduced by centring the kernel around $t$ by a classic substitution: 
 
 $$w(t_i) \to w(  t_i - t ) $$
 
-For the same reasons as not underlying $t$ as a subscript, we are not going to write this change of variable inside $w$, in the exact same way we did so far. The times $t$ at which we want to estimate the parameters can't be coined as $\sequence{t_i}$ since it is already our notation for the jumps' time. Hence, we will write these times as $\sequencetime$.
+For the same reasons of clarity, we are not going to write this change of variable inside $w$. Also, the times $t$ at which we want to estimate the parameters can't be coined as $\sequence{t_i}$ since it is already our notation for the jumps' time. Hence, we will write these times as $\sequencetime$.
 
-In the following, we are going to delve into the theory of KDE, where it is common to use the letter $K$ instead of $w$. Also, the objective is slightly different. KDE's aim is to find the estimate of a function $f$ evaluated at the point $t$ by using kernels centred around $t_i$. For that reason, people are using kernels with the following substitution:
+In the following, we are going to delve into the theory of KDE, where it is common to use the letter $K$ instead of $w$. Also, the objective in KDE is slightly different. KDE's aim is to find the estimate of a function $f$ evaluated at the point $t$ by using kernels centred around $t_i$. For that reason, people are using kernels with the following substitution:
 
 $$ K(t) \to K(t - t_i)$$
 
-Hence, in order to avoid confusion, we keep for a few theoretical sections the notation $K$ for kernels, within which we write the substitution. Later, we do propose a definition in section \ref{section:equivalence_bi_rep} that splits the two objects into distinct concepts.
+Hence, in order to avoid confusion, we keep for a few theoretical sections the notation $K$ for kernels, for which we write the substitution. 
+
+Later, we do propose a definition in section \ref{section:equivalence_bi_rep} that splits the two objects into distinct concepts.
 
 
 \subsection{WMLE Algorithm}
@@ -2058,9 +2095,6 @@ Using the theory available in KDE, we are going to find the best kernels with re
 
 \section{Fixed Width Window}
 \label{section:FWW}
-
-A kernel is composed of two things: a basic canonical function shaping the kernel and the variables that adjust the values taken. A first thing to do would be to uncouple the two parameters.
-
 \subsection{Optimal Kernel}
 
 As exposed in \cite{Wand}, it is possible to derive the optimal kernel for KDE. In \cite{Wand}, the formula for asymptotical mean square error is given by their eq. (2.12). The issue here is that the scaling of $K$ is coupled with the bandwidth $h$. However, by a substitution inside $K$ of the form 
@@ -2150,7 +2184,7 @@ where $B(\cdot, \cdot)$ is the beta function. Notice that $p=1$ corresponds to t
 
 We tested the different discovered kernels for WMLE. We would like to see the impact of kernel's choice upon it. Since we haven't discussed the optimal width yet, we fix it to some arbitrary medium value. We discuss that question in the next subsection.
 
-By considering parameters that are constant through time, as displayed on fig. \ref{fig:evol_choice_basic}, we tested different kernels, for fixed width, essentially the one from fig. \ref{fig:kernels_list}. We got the results from fig. \ref{fig:basic_5_kernels_alpha}, \ref{fig:basic_5_kernels_beta}, \ref{fig:basic_5_kernels_nu}. We don't notice any noticeable change. Perhaps it would be interesting to compute the change in MSE depending on the kernel. This confirms our idea that the kernel doesn't impact the estimation too much.
+By considering parameters that are constant through time, as displayed on fig. \ref{fig:evol_choice_basic}, we tested different kernels, for fixed width, essentially the one from fig. \ref{fig:kernels_list}. We got the results from fig. \ref{fig:basic_5_kernels_alpha}, \ref{fig:basic_5_kernels_beta}, \ref{fig:basic_5_kernels_nu}. We did not notice any remarkanle change. Perhaps it would be interesting to compute the change in MSE depending on the kernel. For now, this confirms our idea that the kernel's choice doesn't impact the estimation too much.
 
 
 \begin{figure}
@@ -2172,21 +2206,21 @@ By considering parameters that are constant through time, as displayed on fig. \
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/alpha.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of alpha.}
+\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of alpha. Data in \protect \path{other_estimation/4-different-kernels-over_the_time.csv}.}
 \label{fig:basic_5_kernels_alpha}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/beta.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of beta.}
+\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of beta. Data in \protect \path{other_estimation/4-different-kernels-over_the_time.csv}.}
 \label{fig:basic_5_kernels_beta}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/nu.png}
-\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of nu.}
+\caption{Fixed kernel density estimation, showing the impact of the type of kernels. Plot of nu. Data in \protect \path{other_estimation/4-different-kernels-over_the_time.csv}.}
 \label{fig:basic_5_kernels_nu}
 \end{figure}
 
@@ -2204,7 +2238,7 @@ The optimal width derived within the theory of KDE is not relevant for our conce
 
 $$ \hat{f}(x) := \frac 1 {n h} \sum^n K \left ( \frac{x - X_i } {h}  \right )$$
 
-where $n$ is the number of data you have, $h$ the window's width. However, in our case, the kernel is shaping the data given to the MLE and so the relationship between the estimate and the kernels is more complicated.
+where $n$ is the number of data you have, $h$ the window's width. However, in our case, the kernel is shaping the data given to the MLE and so the relationship between the estimate and the kernels is more ambiguous.
 
 
 Since we weren't able to determine a simple relationship, we recommand chosing a meaningful width for the first optimal width. A good first blind guess can be $1/5$ of the total length of observations. The more the parameters are varying with respect to time, the smaller the width should be. That first guess about the shape of the functions driving the parameters is perhaps the most meaningful first optimal width.
@@ -2218,21 +2252,21 @@ We observe the impact of the width here in fig. \ref{fig:basic_3_kernels_alpha},
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3alpha.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of alpha.}
+\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of alpha. Data in \protect \path{other_estimation/3-sizes-same-kernel-over_the_time.csv}.}
 \label{fig:basic_3_kernels_alpha}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3beta.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of beta.}
+\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of beta. Data in \protect \path{other_estimation/3-sizes-same-kernel-over_the_time.csv}.}
 \label{fig:basic_3_kernels_beta}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/compar_kernel/3nu.png}
-\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of nu.}
+\caption{Fixed kernel density estimation, showing the impact of the width of the biweight kernel. Plot of nu. Data in \protect \path{other_estimation/3-sizes-same-kernel-over_the_time.csv}.}
 \label{fig:basic_3_kernels_nu}
 \end{figure}
 
@@ -2244,7 +2278,7 @@ We observe the impact of the width here in fig. \ref{fig:basic_3_kernels_alpha},
 Another method for KDE is called the Adaptive Kernel Density Estimation (AKDE). The author refers to \cite{Methods_ESTIM} and \cite{AKDE_ex} for more details. We synthesize the method.
 
 
-Adaptive Width Window kernel estimation lies upon the idea that we are going to estimate the function through a two-step process. The first step is giving a rough estimate named the pilot estimate. Strong of that first estimate, one rescales kernels' width with respect to the geometric metric. Geometric mean has the property of being very sensible to small number. Scaling by comparing the value to the geometric mean is then a way to boost the evolution of relatively extremal values. 
+Adaptive Width Window kernel estimation lies upon the idea that we are going to estimate the function through a two-step process. The first step is giving a rough estimate named the pilot estimate. Armed with the first estimate, one rescales kernels' width with respect to the geometric metric. Geometric mean has the property of being very sensible to small number. Scaling by comparing the value to the geometric mean is then a way to boost the evolution of relatively extremal values. 
 Then, the second step is using the new constructed kernels in order to create a good estimate.
 
 
@@ -2428,8 +2462,11 @@ The two definition are linked through those equalities
 \label{fig:new_scaling}
 \end{figure}
 
-In the previous algorithm, by observing a first estimate of the density, there was an adaptive algorithm that was able to automatically rescale the windows and give more precise results. The kernels are scaled with respect to the geometric mean. We observed that high probability points get narrower kernels, and low probability points get wider kernels. It makes sense in the case of AKDE. However, we are looking for creating an algorithm that improves weighted likelihood estimation. The previous behaviour is not the one that one would expect. We would like to scale extremes, while broadening points at the medium.
+In the previous algorithm, by observing a first estimate of the density, there was an adaptive algorithm that was able to automatically rescale the windows and give more precise results. The kernels are scaled with respect to the geometric mean. 
 
+We observed that high probability points get narrower kernels, and low probability points get wider kernels. It makes sense in the case of AKDE. 
+
+However, for parameter estimation in WMLE we would like to scale kernels depending on whether they are extremes, by narrowing them, and broaden kernels at points close to the average.
 
 For that reason, we inspired ourselves from that theory and by changing the rescale function and adapting the algorithm, we came-up with a new algorithm called HATDEP\footnote{HATDEP stands for Hawkes Adaptive Time Dependent Estimation of Parameters.}. We keep the basic idea of the algorithm, being that we rescale the kernels based upon a function $g$, which takes as parameters one element of an array and the geometric mean. 
 
@@ -2474,15 +2511,22 @@ What has been done here is that we created on a function that:
 \end{itemize}
 
 \begin{remarque}
-We recommand taking $h$ in the interval $[1,5]$ depending on the amount of data one has. The smaller the window, the more imprecise the estimate; $l$ should be depending on the size of the first window estimation, as being twice smaller\footnote{If the first width is $d$, then $l = d / 2$.} or less. In fact, we would like the minimum of the rescale function to be adapted to the width of the first kernels, in order that the wider adaptive kernels cover the whole observation period; $L$ and $R$ and quantiles depending on a guess about the shape of the function. $4$ and $96 \%$ are good in practice, but should be increased (resp. lowered) if there are relatively many values (low values) of the type "small" for $L$ and "high" for $R$.
+We recommand taking $h$ in the interval $[1,5]$ depending on the amount of data one has. The smaller the window, the more imprecise the estimate; In fact, it makes sense that $l$ changes depending on the width of the first kernels, in order that the widest second step kernels cover the whole observation period. Hence, we use $$l = \frac{ \text{first width} }{2* \text{T max} }$$
+
+with such value, the widest second step kernels get the width $\text{T max}$
 \end{remarque}
 
 
 \begin{remarque}
-A quick word about the choice of $L$ and $R$ quantiles : The function $g$ is flat on the sides and for that reason, chosing $2$ and $98$ could also be done. 
+$L$ and $R$ and quantiles should be chosen according to a guess about the shape of the function. $4$ and $96 \%$ are good in practice, but should be increased (resp. lowered) if there are relatively many values (low values) of the type "small" for $L$ and "high" for $R$. 
+
+The function $g$ is flat on the sides and for that reason, chosing $2$ and $98$ could also be done. 
 
 Albeit only $4\%$ of the values being considered as extrems is not much, the number of points having the kernels narrowed is actually much bigger in practice, due to the flat behaviour of $g$ near the end of the branches. Putting $10-90$ did actually yielded half of the kernel being extremely narrowed in most cases.
 \end{remarque}
+
+
+
 
 
 One can see how the function $g$ looks like on fig. \ref{fig:new_scaling}. We offer here one implementation in python:
@@ -2540,7 +2584,11 @@ def my_rescale_sin(value_at_each_time, L=None, R=None, h=2.5, l=0.2 / 2, silent=
 \subsection{Is The Rescale Function Well-Defined ?}
 \label{subsection:self-defin}
 
-\willprecise{ do a better job here }
+\willprecise{do a better job here}
+
+
+
+The function $g$ should be well defined. An issue might arise if some values were negatives, but in our study, we deal with self-exciting Hawkes processes whose parameters are all positive (also, the sequence that we use for the geometric mean is the one given by the $l^2$ norm of the parameters, which is obviously positive). Another concern is, when do we have $L \leq G \leq R$? This is fundamental for the function to be well behaved. For now, the user should check it by hand. An error is thrown when it is not the case.
 
 
 That question is left to the reader. As a hint, we thought about the following inequalities, which hold for any sequence of positive numbers $\sequence{a_i}$:
@@ -2554,12 +2602,6 @@ That question is left to the reader. As a hint, we thought about the following i
 && \leq \frac 1 n \sum^n a_i \notag
 \end{alignat}
 where the equality holds when the sequence is constant.
-
-The function $g$ should be well defined. An issue might arise if some values were negatives, but in our study, we deal with self-exciting Hawkes processes whose parameters are all positive (as well as we are computing the $l^2$ norm). Another concern is, when do we have $L \leq G \leq R$? This is fundamental for the function to be well behaved. For now, the user should check by hand.
-
-
-\willdo{ peut etre ailleurs cette section.}
-
 
 
 
@@ -2767,6 +2809,10 @@ $$ (t, t_i) \to \frac 1 {\lambda_{t} h^*} w^* \left ( \frac{t - t_i}{\lambda_{t}
 
 
 \section{Other Fancy Methods}
+
+\subsection{Adaptive window method}
+Another idea, no time for that but, would be that instead of using a global scaling function, one could locally compute a coefficient for scaling. There would be a window centred around the kernel we rescale, and depending on the change in value with the estimates around, the scale would change. Then, instead of looking at the relative global value of one estimate, one rescale according to the relative variation of the estimate.
+
 \subsection{Radial Basis Function}
 
 I won't have time for that. There was the topic of radial basis function as well as the truncated kernels I saw in Wand. 
@@ -2774,7 +2820,7 @@ I won't have time for that. There was the topic of radial basis function as well
 
 \willmuchlater{Need to read about method. \newline and write about it. \newline. Perhaps I wont have the time.}
 
-\willmuchlater{ I also want to look at the truncated kernels. Notamment, sait-on si il y a un jump ou non?}
+\willmuchlater{ I also want to look at the truncated kernels.}
 
 
 
@@ -2818,7 +2864,7 @@ We first precise our settings, then the results and we try to give some meaningf
 \subfloat{{
 \includegraphics[width = 0.32 \textwidth]{imag/chap3/EVOL_PARAM/Figure_5.png}
 }}
-\caption{Plots of the different evolutions we consider.}
+\caption{Plots of the different evolutions we consider for the parameters, wrt time.}
 \label{fig:evol_functions}
 \end{figure}
 
@@ -2876,7 +2922,7 @@ We observe the process over an interval $[0,T]$ which corresponds to roughly 700
 
 
 
-\section{HATDAP for improving performances}
+\section{HATDEP for improving performances}
 \label{section_first_simul}
 As a first array of trials, we consider our recommanded parameters: $L$ and $R$ defined respectively as being the $4$ and $96$ quantiles; $h$ being $2.5$. We chose $l$ as a function of the first width. The reason for that is that if one takes a width smaller than the total length, the kernel is not covering the whole observation window and so it is not consistant, in the sense that the criterea is global but the kernel stays local. For that reason, a good idea would be to adapt the value $l$ to the value of the original kernel. We recommand to use the width of the arbitrary first width divided by 2. That way, one has a kernel considering all the points over the observation line, independently of its center.
 
@@ -2918,7 +2964,7 @@ On fig. \ref{fig:impact_g_linear}, we see the expected behaviour for the evoluti
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/linear_growth_all_kernels.png}
-\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that central estimations have wider kernels, and extreme estimations, which lie on the sides, narrower windows.}
+\caption{We draw the kernels that are going to be used by HATDEP with respect to the first estimate; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that central estimations have wider kernels, and extreme estimations, which lie on the sides, narrower windows.}
 \label{fig:impact_g_linear}
 \end{figure}
 
@@ -2939,7 +2985,7 @@ We observe a transition phase in between the two stationary phases. It is roughl
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/jump_all_kernels.png}
-\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that the HATDEP widens the kernels in the middle of the jump but shorten the one at the end of the transition.}
+\caption{We draw the kernels that are going to be used by HATDEP with respect to the first estimate; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP. We observe that the HATDEP widens the kernels in the middle of the jump but shorten the one at the end of the transition.}
 \label{fig:impact_g_jump}
 \end{figure}
 
@@ -2980,7 +3026,7 @@ The first estimate struggles to capture the variability of the sinus. The second
 \begin{figure}
 \centering
 \includegraphics[width = 0.90 \textwidth]{../imag/chap3/IMPACT_G/sin_all_kernels.png}
-\caption{First estimation of the parameters. We draw the kernels that are going to be used by HATDEP; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP.}
+\caption{We draw the kernels that are going to be used by HATDEP with respect to the first estimate; this intermediary plot is useful in order to observe how different sets of first estimation influence differently the adaptive process of HATDEP.}
 \label{fig:impact_g_sin}
 \end{figure}
 
