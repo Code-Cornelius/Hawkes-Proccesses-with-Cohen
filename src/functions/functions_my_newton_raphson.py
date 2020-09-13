@@ -65,15 +65,15 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # 2. if we are not too close yet of the objective, the derivative equal to 0.
         # One scale by M bc more coeff implies bigger derivative
         # 3. nb of explosions, if there are explosions it means I need to be more gentle to find the objective
-        if number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
-                                                                      2) > 50 * M * M and nb_of_explosions < 2:
+        if False and number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+                                                                                2) > 50 * M * M and nb_of_explosions < 2:
             multi = 1 / M ** 4
-        elif number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
-                                                                        2) > 2 * M * M and nb_of_explosions < 5:
+        elif False and number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+                                                                                  2) > 2 * M * M and nb_of_explosions < 5:
             multi = 0.6 / M ** 4
-        elif number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
+        elif False and number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
             multi = 0.2 / M ** 4
-        elif number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
+        elif False and number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
             multi = 0.05 / M ** 4
         elif number_of_step_crash < 1200:
             variable_in_armijo = MU, ALPHA, BETA
@@ -170,24 +170,20 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
     changed = False
     dir1 = np.reshape(direction[M:M * M + M], (M, M))  # matrix shape
     dir2 = np.reshape(direction[M * M + M:], (M, M))
-    vector_limit_sup = np.matmul(df(MU, ALPHA, BETA), direction) #that s the limit given in Armijo rule.
-    condition = [f(MU + a * direction[:M],
-                   ALPHA + a * dir1,
-                   BETA + a * dir2)
-                 - f(MU, ALPHA, BETA)] <= sigma * a * vector_limit_sup
+    vector_limit_sup = np.matmul(df(MU, ALPHA, BETA), direction)  # that s the limit given in Armijo rule.
+    condition = f(MU + a * direction[:M],
+                  ALPHA + a * dir1,
+                  BETA + a * dir2) - f(MU, ALPHA, BETA) <= sigma * a * vector_limit_sup
 
     # I put .all, I only update if every dimension helps improving.
     # a > 10e-1O in order to not have a too small step.
 
-    #todo problem with the a, should be all(condition) ??? pb with the list after changed = True line 187
     while not all(condition) and a > 10e-10:
         a *= b
         changed = True
-        condition = [f(MU + a * direction[:M],
-                       ALPHA + a * dir1,
-                       BETA + a * dir2)
-                     - f(MU, ALPHA, BETA)
-                     <= sigma * a * vector_limit_sup]
+        condition = f(MU + a * direction[:M],
+                      ALPHA + a * dir1,
+                      BETA + a * dir2) - f(MU, ALPHA, BETA) <= sigma * a * vector_limit_sup
 
     print("we are in ARMIJO condition because too many steps, the ok directions and step :" + str(
         condition) + " and " + str(a))
