@@ -65,34 +65,33 @@ def newtons_method_multi_MLE(df, ddf, ALPHA, BETA, MU, e=10 ** (-10), tol=3 * 10
         # 2. if we are not too close yet of the objective, the derivative equal to 0.
         # One scale by M bc more coeff implies bigger derivative
         # 3. nb of explosions, if there are explosions it means I need to be more gentle to find the objective
-        if False and number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+        if number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
                                                                                 2) > 50 * M * M and nb_of_explosions < 2:
             multi = 1 / M ** 4
-        elif False and number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
+        elif number_of_step_crash - reset_index < 10 and np.linalg.norm(derivative,
                                                                                   2) > 2 * M * M and nb_of_explosions < 5:
             multi = 0.6 / M ** 4
-        elif False and number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
+        elif number_of_step_crash - reset_index < 100 and np.linalg.norm(derivative, 2) > 0.01 * M * M:
             multi = 0.2 / M ** 4
-        elif False and number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
+        elif number_of_step_crash < 500:  # and np.linalg.norm(derivative, 2) > 0.1*M:
             multi = 0.05 / M ** 4
-        elif number_of_step_crash < 1200:
-            variable_in_armijo = MU, ALPHA, BETA
-            multi, changed = armijo_rule(df, ddf, variable_in_armijo, direction, a=multi, sigma=0.5, b=b)
-        # else :
-        # the else is already handled at the beginning.    break
+        else :
+            raise Error_convergence("algorithms fails to converge.")
+            #variable_in_armijo = MU, ALPHA, BETA
+            #multi, changed = armijo_rule(df, ddf, variable_in_armijo, direction, a=multi, sigma=0.5, b=b)
 
         # new position
         x0 = old_x0 - multi * direction
 
-        # if the coefficient given by armijo is too small I change it.
-        if multi < 10e-8:
-            changed = False
-            multi = 10e-3
-
-        # IF armijo was applied,
-        # in order to still got some loose when moving on the derivatives, I divide by the coef
-        if changed:
-            multi /= b
+                                                # # if the coefficient given by armijo is too small I change it.
+                                                # if multi < 10e-8:
+                                                #     changed = False
+                                                #     multi = 10e-3
+                                                #
+                                                # # IF armijo was applied,
+                                                # # in order to still got some loose when moving on the derivatives, I divide by the coef
+                                                # if changed:
+                                                #     multi /= b
 
         # if the max is too big I replace the value by a random number between 0 and 1.
         # Also, I synchronize the alpha and the beta in order to avoid boundary problem.
