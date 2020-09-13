@@ -1,3 +1,5 @@
+import unittest
+
 from test.test_my_simulations.setup_for_estimations import *
 from functions.functions_change_point_analysis import change_point_analysis_and_plot
 
@@ -23,7 +25,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             path=first_estimation_path,
             type_analysis=TYPE_ANALYSIS,
             parameters_for_analysis=parameters_for_analysis,
-            true_breakpoints = true_breakpoints,
+            true_breakpoints=true_breakpoints,
             column_for_multi_plot_name='weight function'))
         print(change_point_analysis_and_plot(
             path=second_estimation_path,

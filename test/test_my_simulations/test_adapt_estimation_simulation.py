@@ -73,7 +73,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
                 count_kernels += 1
                 actual_state[0] += 1
                 simulation(count_times, Times, count_kernels, list_of_kernels, HAWKSY, estimator_kernel, tt,
-                           nb_of_guesses, kernel, a_time, silent)
+                           NB_OF_GUESSES, kernel, a_time, silent)
         plot_param = list_of_kernels, Times[NB_OF_TIMES // 2]  # we plot the kernel in the middle
         evol_graph = Evolution_plot_estimator_Hawkes(estimator_kernel, the_update_functions)
         evol_graph.draw(separator_colour='weight function', one_kernel_plot_param=plot_param)
@@ -109,7 +109,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print(HAWKSY(a_time, T_max))
             count_times += 1
             actual_state[0] += 1
-            simulation(count_times, Times, HAWKSY, estimator_kernel, tt, nb_of_guesses, my_opt_kernel, a_time=a_time,
+            simulation(count_times, Times, HAWKSY, estimator_kernel, tt, NB_OF_GUESSES, my_opt_kernel, a_time=a_time,
                        silent=silent)
 
         estimator_kernel.to_csv(path_for_saving,
@@ -157,7 +157,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             print(HAWKSY(a_time, T_max))
             count_times += 1
             actual_state[0] += 1
-            simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, nb_of_guesses, kernel, a_time, silent)
+            simulation(count_times, Times, HAWKSY, adaptive_estimator_kernel, tt, NB_OF_GUESSES, kernel, a_time, silent)
 
         evol_kernels = Evolution_plot_estimator_Hawkes(adaptive_estimator_kernel, the_update_functions)
         plot_param = list_of_kernels, Times

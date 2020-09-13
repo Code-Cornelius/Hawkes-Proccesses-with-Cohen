@@ -1,21 +1,12 @@
 # normal libraries
-import time
-import unittest
 
 # my libraries
-from library_errors.Error_not_allowed_input import Error_not_allowed_input
-from library_functions.tools import recurrent_functions
-from library_functions.tools import decorators_functions
-import functions.functions_change_point_analysis
-import functions.functions_fct_rescale_adaptive
 
 # other files
-import functions.functions_for_MLE
 from classes.graphs.class_graph_estimator_hawkes import *
-from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.class_hawkes_process import *
 from functions.functions_fct_evol_parameters import update_functions
-from test.parameter_converter_JSON import *
+from test.parameters.parameter_converter_JSON import *
 
 np.random.seed(124)
 
@@ -112,18 +103,15 @@ test_mode = False
 # section ######################################################################
 #  #############################################################################
 print("\n~~~~~Computations.~~~~~\n")
-dim = 1
-PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim=dim, styl=1)
+PARAMETERS, ALPHA, BETA, MU, T0, mini_T = choice_parameter(dim=DIM, styl=STYL)
 print(PARAMETERS)
 the_update_functions, true_breakpoints = update_functions(FUNCTION_NUMBER, PARAMETERS)
 
 estimator_multi = Estimator_Hawkes()
-
-if test_mode:
-    nb_of_guesses, T_max = 3, NUMBER_OF_MINI_T_IN_SIMULATION * mini_T
-else:
-    nb_of_guesses, T_max = 50, NUMBER_OF_MINI_T_IN_SIMULATION * mini_T  # in terms of how many jumps, I want roughly 7500 jumps
+T_max = NUMBER_OF_MINI_T_IN_SIMULATION * mini_T
+# in terms of how many jumps, I want roughly 7500 jumps
 # a good precision is 500*(T-T0)
+
 tt = np.linspace(T0, T_max, M_PREC, endpoint=True)
 
 HAWKSY = Hawkes_process(the_update_functions)
@@ -132,20 +120,18 @@ HAWKSY = Hawkes_process(the_update_functions)
 trash_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files/estimators.csv"
 # for the first estimate in the adaptive strategy I store it there:
 
-#BIANCA problem path
-first_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_ONE)
-second_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_TWO)
-third_estimation_path =  r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(FILE_THREE)
+# BIANCA problem path
+first_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(
+    FILE_ONE)
+second_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(
+    FILE_TWO)
+third_estimation_path = r"C:\Users\nie_k\Desktop\travail\RESEARCH\RESEARCH COHEN\Hawkes process Work\csv_files\{}".format(
+    FILE_THREE)
 
 # section ######################################################################
 #  #############################################################################
 # evolution through time
 
-
-if test_mode:
-    NB_OF_TIMES = 5
-else:
-    NB_OF_TIMES = 50
 
 width_kernel = 1 / KERNEL_DIVIDER * T_max
 b = width_kernel / 2.

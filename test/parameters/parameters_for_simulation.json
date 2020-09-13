@@ -1,0 +1,12 @@
+{
+  "basic_config": {
+    "function": 0,
+    "number_of_mini_t_in_simulation": 80,
+    "kernel_div": 3,
+    "nb_of_times": 50,
+    "nb_of_guesses": 50,
+    "dim": 1,
+    "styl": 1
+  }
+}
+

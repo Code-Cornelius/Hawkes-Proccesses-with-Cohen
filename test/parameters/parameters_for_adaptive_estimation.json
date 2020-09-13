@@ -1,0 +1,11 @@
+{
+  "basic_config": {
+    "L": 0.04,
+    "R": 0.96,
+    "h": 2.5,
+    "l": "automatic with respect to the total size",
+    "considered_parameters": ["nu", "alpha"],
+    "all_kernels_drawn": false
+  }
+}
+

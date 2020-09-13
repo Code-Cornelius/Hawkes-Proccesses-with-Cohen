@@ -1,0 +1,10 @@
+{
+  "basic_config": {
+    "type_analysis": "optimal",
+    "number_of_breakpoints": 1,
+    "model": "l2",
+    "min_size": 5,
+    "width": 5
+  }
+}
+

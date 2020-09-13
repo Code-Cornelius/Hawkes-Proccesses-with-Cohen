@@ -170,12 +170,11 @@ def armijo_rule(f, df, x0, direction, a, sigma, b):
     changed = False
     dir1 = np.reshape(direction[M:M * M + M], (M, M))  # matrix shape
     dir2 = np.reshape(direction[M * M + M:], (M, M))
-    vector_limit_sup = np.matmul(df(MU, ALPHA, BETA), direction)
+    vector_limit_sup = np.matmul(df(MU, ALPHA, BETA), direction) #that s the limit given in Armijo rule.
     condition = [f(MU + a * direction[:M],
                    ALPHA + a * dir1,
                    BETA + a * dir2)
-                 - f(MU, ALPHA, BETA)
-                 <= sigma * a * vector_limit_sup]
+                 - f(MU, ALPHA, BETA)] <= sigma * a * vector_limit_sup
 
     # I put .all, I only update if every dimension helps improving.
     # a > 10e-1O in order to not have a too small step.

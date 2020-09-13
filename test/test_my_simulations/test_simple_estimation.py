@@ -1,10 +1,14 @@
 ##### normal libraries
+import time
+import unittest
 
 ##### my libraries
+from library_functions.tools import recurrent_functions
 
+##### other files
+from classes.graphs.class_evolution_plot_estimator_Hawkes import Evolution_plot_estimator_Hawkes
 from classes.graphs.class_histogram_estimator_Hawkes import Histogram_estimator_Hawkes
 from classes.graphs.class_statistic_plot_estimator_Hawkes import Statistic_plot_estimator_Hawkes
-##### other files
 from functions import functions_for_MLE
 from test.test_my_simulations.setup_for_estimations import *
 
@@ -55,7 +59,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_simple_estimation_multi(self):
         estimator_multi = Estimator_Hawkes()
-        functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, nb_of_guesses, silent=silent)
+        functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_multi, tt, NB_OF_GUESSES, silent=silent)
         hist_test = Histogram_estimator_Hawkes(estimator_multi, the_update_functions)
         estimator_multi.to_csv(trash_path, index=False, header=True)
         hist_test.draw()
@@ -76,7 +80,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             print(
                 f"Time : {count_times} out of : {len(TIMES)}.")
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE,
-                                                            tt, nb_of_guesses, silent=silent)
+                                                            tt, NB_OF_GUESSES, silent=silent)
         stat_test = Statistic_plot_estimator_Hawkes(estimator_MSE, the_update_functions)
         stat_test.draw(mini_T=mini_T, times=TIMES, name_column_evolution='T_max',
                        computation_function=recurrent_functions.compute_MSE, class_for_hist=Histogram_estimator_Hawkes,
@@ -97,17 +101,17 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
             print(f"times {times}")
             start = time.time()
             functions_for_MLE.multi_estimations_at_one_time(HAWKSY, estimator_MSE, tt=tt,
-                                                            nb_of_guesses=nb_of_guesses,
+                                                            nb_of_guesses=NB_OF_GUESSES,
                                                             silent=silent)
             time_simulation = time.time() - start
-            vect_time_simulation[i] = time_simulation / nb_of_guesses
+            vect_time_simulation[i] = time_simulation / NB_OF_GUESSES
 
         aplot = class_aplot.APlot(how=(1, 1))
         aplot.uni_plot(nb_ax=0, xx=T_plot, yy=vect_time_simulation)
         aplot.set_dict_fig(0, {
             'title': "Increase in time for simulation and convergence of the estimation for Hawkes processes, "
                      "batches of {} realisations.".format(
-                nb_of_guesses),
+                NB_OF_GUESSES),
             'xlabel': "Number of Jumps simulated", 'ylabel': "Average time to simulate"})
         aplot.save_plot("Timing_opti")
         return

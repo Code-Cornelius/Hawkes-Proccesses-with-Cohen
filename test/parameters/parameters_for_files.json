@@ -1,0 +1,8 @@
+{
+  "basic_config": {
+    "name_file_one": "first_estimations/super_4_first.csv",
+    "name_file_two": "first_estimations/super_4_second.csv",
+    "name_file_three": "second_estimations/super_smaller_12_third.csv"
+  }
+}
+
