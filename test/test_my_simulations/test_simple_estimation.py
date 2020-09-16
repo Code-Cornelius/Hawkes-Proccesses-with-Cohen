@@ -32,7 +32,7 @@ class Test_Simulation_Hawkes_simple(unittest.TestCase):
 
     def test_simple_unique(self):
         _, time_real = HAWKSY.simulation_Hawkes_exact_with_burn_in(tt=tt, plot_bool=False, silent=True)
-        print(len(time_real[0]))
+        print("test, len of real :", len(time_real[0]))
         print(functions_for_MLE.call_newton_raph_MLE_opt(time_real, T_max, silent=False))
 
     # BIANCA problem path

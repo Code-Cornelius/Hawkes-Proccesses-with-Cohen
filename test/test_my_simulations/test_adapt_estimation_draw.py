@@ -94,7 +94,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
             my_estimator_mean_dict=estimator_kernel_df1, Times=Times, considered_param=CONSIDERED_PARAM,
             list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
 
-        evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_second_simul, the_update_functions)
+        evol_graph = Evolution_plot_estimator_Hawkes.from_path(path_for_first_simul, the_update_functions)
         plot_param = list_of_kernels, Times
         # I am plotting many kernels here.
         evol_graph.draw(separator_colour='weight function',
