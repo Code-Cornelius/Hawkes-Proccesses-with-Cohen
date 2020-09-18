@@ -18,6 +18,10 @@ R = R_PARAM
 h = h_PARAM
 if l_PARAM == "automatic with respect to the total size":
     l = width_kernel / T_max / 2
+elif isinstance(l_PARAM, float):
+    l = l_PARAM
+else :
+    raise Error_not_allowed_input("give a proper value to l.")
 
 
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):

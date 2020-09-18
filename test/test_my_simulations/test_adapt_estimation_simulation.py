@@ -18,6 +18,11 @@ R = R_PARAM
 h = h_PARAM
 if l_PARAM == "automatic with respect to the total size":
     l = width_kernel / T_max / 2
+elif isinstance(l_PARAM, float):
+    l = l_PARAM
+else :
+    raise Error_not_allowed_input("give a proper value to l.")
+
 
 
 class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
@@ -133,7 +138,7 @@ class Test_Simulation_Hawkes_adaptive(unittest.TestCase):
 
         _, list_of_kernels = functions_fct_rescale_adaptive.creator_kernels_adaptive(
             my_estimator_mean_dict=estimator_kernel, Times=Times, considered_param=CONSIDERED_PARAM,
-            list_previous_half_width=[b] * NB_OF_TIMES, L=l, R=R, h=h, l=l, tol=0.1, silent=silent)
+            list_previous_half_width=[b] * NB_OF_TIMES, L=L, R=R, h=h, l=l, tol=0.1, silent=silent)
 
         adaptive_estimator_kernel = Estimator_Hawkes()
         actual_state = [0]  # initialization
