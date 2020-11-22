@@ -27,6 +27,19 @@
 \usepackage{stmaryrd} % pacakge for double brackets, notation for integers.
 \usepackage{url} % for path in names or url in general.
 
+\usepackage[ruled,vlined]{algorithm2e} % for algorithms
+\usepackage{lscape} % for the biiiig table at the end of the document
+\usepackage{rotating} % for the biiiig table at the end of the document
+
+
+
+\hbadness = 15000 % prevention against warning
+\hfuzz = 100 pt % do not trigger any warning related to hbox. I.E. that the line is too long. I had plenty of such useless warnings. 
+\vbadness=\maxdimen % against warning
+
+
+
+
 %%%%%=======================================================================tikz
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta}
@@ -1114,5 +1127,8 @@
 \newcommandx{\willprecise}[1]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,inline]{#1}}
 %purple
 \newcommandx{\willimage}[1]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,inline]{#1}}
+
+\newcommandx{\willlastcheck}[1]{\todo[linecolor=SpringGreen,backgroundcolor=SpringGreen!25,bordercolor=SpringGreen,inline]{#1}}
+\newcommandx{\willmuchlater}[1]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,inline]{#1}}
 %\newcommandx{\thiswillnotshow}[1]{\todo[disable,inline]{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
