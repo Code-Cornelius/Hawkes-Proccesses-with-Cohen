@@ -29,7 +29,7 @@ class Estimator_Hawkes(Estimator):
                 super().__init__(df, *args, **kwargs)
             else:
                 raise Error_not_allowed_input("Problem, the columns of the dataframe do not match "
-                                 "the ones from the classical estimator hawkes.")
+                                              "the ones from the classical estimator hawkes.")
         # if no df, we create an empty one.
         else:
             super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.SET_COLUMN_HAWKES)))
@@ -76,5 +76,3 @@ class Estimator_Hawkes(Estimator):
             # i get triple list like usually.
             ans_dict[key] = [ans_N, ans_A, ans_B]
         return ans_dict
-
-
