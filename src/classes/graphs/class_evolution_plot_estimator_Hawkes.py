@@ -2,8 +2,8 @@
 
 
 # my libraries
-from library_classes.estimators.graphs.class_evolution_plot_estimator import *
-
+from priv_lib_estimator import Evolution_plot_estimator
+from priv_lib_plot import APlot
 # other files
 from classes.class_kernel import *
 from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
@@ -26,14 +26,6 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     #  #############################################################################
     # data
 
-    @classmethod
-    def get_evolution_name_unique_values(cls, data):
-        return data[cls.EVOLUTION_NAME].unique()
-
-    @classmethod
-    def get_evolution_name_extremes(cls, data):
-        values = data.groupby([cls.EVOLUTION_NAME])['value']
-        return values.min(), values.max()
 
     def get_evolution_name_true_value(self, data):
         return self.get_evolution_name_specific_data(data, 'true value')
@@ -41,19 +33,6 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     def get_evolution_name_plot_data(self, data):
         return self.get_evolution_name_specific_data(data, 'value')
 
-    @classmethod
-    def get_evolution_name_specific_data(cls, data, my_str):
-        """
-        returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
-
-        Args:
-            data:
-            my_str:
-
-        Returns:
-
-        """
-        return data.groupby([cls.EVOLUTION_NAME])[my_str].mean().values
 
     # section ######################################################################
     #  #############################################################################

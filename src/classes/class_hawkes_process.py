@@ -2,10 +2,10 @@
 import math
 
 import matplotlib.pyplot as plt
-from library_classes.plot import class_aplot
+from priv_lib_plot import APlot
 # my libraries
-from library_errors.Error_not_allowed_input import Error_not_allowed_input
-from library_functions.tools import classical_functions_vectors
+from priv_lib_error import Error_not_allowed_input
+from priv_lib_util.tools import function_iterable
 
 # other files
 from classes.class_kernel import *
@@ -65,7 +65,7 @@ def step_fun(tt, time_real):
     # At every index where the jumps occurs and onwards, +1 to the step-function.
     y = np.zeros(len(tt))
     for i in range(len(tt)):
-        jumps = classical_functions_vectors.find_smallest_rank_leq_to_K(time_real, tt[i])
+        jumps = function_iterable.find_smallest_rank_leq_to_K(time_real, tt[i])
         y[i] = jumps
     return y
 
@@ -75,7 +75,6 @@ def step_fun(tt, time_real):
 # class
 
 class Hawkes_process:
-    # how to acces class fields?
     TIME_BURN_IN = 100
     NB_POINTS_BURNED = 6000
     POINTS_BURNED = np.linspace(0, TIME_BURN_IN, NB_POINTS_BURNED)
@@ -112,7 +111,7 @@ class Hawkes_process:
 
     def plot_parameters_respect_to_time_hawkes(self):
         # I m printing the evolution of the parameters there.
-        aplot = class_aplot.APlot(how=(1, self.M))
+        aplot = APlot(how=(1, self.M))
         tt = np.linspace(0, 1, 1000)
         my_colors = plt.cm.rainbow(np.linspace(0, 1, 2 * self.M))
         for i_dim in range(self.M):

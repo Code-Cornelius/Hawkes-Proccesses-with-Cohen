@@ -184,7 +184,7 @@ def creator_kernels_adaptive(my_estimator_mean_dict, Times, considered_param, li
     # tolerance is by how much the dimension has to move in order to consider
     # that it is worth updating wrt to it. Tol is % of base value.
 
-    my_estimator_dict = my_estimator_mean_dict.mean(
+    my_estimator_dict = my_estimator_mean_dict.estimator_mean(
         separator='time estimation')  # take back the value of the estimation at a given time.
     my_estimator_dict = {int(key): my_estimator_dict[key] for key in my_estimator_dict.keys()}
     list_of_estimation = []

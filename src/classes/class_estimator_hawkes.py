@@ -1,9 +1,9 @@
 # normal libraries
-
+import pandas as pd
 
 # my libraries
-from library_classes.estimators.class_estimator import *
-from library_errors.Error_not_allowed_input import Error_not_allowed_input
+from priv_lib_estimator import Estimator
+from priv_lib_error import Error_not_allowed_input
 
 
 # other files
